@@ -1,0 +1,25 @@
+name: release expressionmanager
+on:
+  workflow_dispatch: {}
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Publish package
+        run: ./gradlew clean :expressionmanager:publish
+        env:
+          GITHUB_TOKEN: ${{ secrets.ASKOURA_PAT }}
