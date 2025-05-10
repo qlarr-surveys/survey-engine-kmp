@@ -1,6 +1,7 @@
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
+    id("maven-publish")
 }
 
 kotlin {
@@ -53,6 +54,19 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-js"))
                 // Any testing libraries specific to JS
+            }
+        }
+    }
+}
+group = "com.qlarr.survey-engine"
+version = "0.1.6"
+publishing {
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/qlarr-surveys/survey-engine")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
             }
         }
     }
