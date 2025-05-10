@@ -1,3 +1,3 @@
-rootProject.name = "survey-engine-mvp"
+rootProject.name = "survey-engine-kmp"
 include("surveyengine")
 include("scriptengine")

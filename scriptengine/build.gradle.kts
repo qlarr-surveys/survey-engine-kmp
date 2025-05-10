@@ -6,7 +6,7 @@ plugins {
 kotlin {
     jvm()
     js(IR) {
-        moduleName = "survey-engine-mvp"
+        moduleName = "survey-engine-kmp"
         browser()
         nodejs()
         binaries.executable()
