@@ -57,6 +57,19 @@ kotlin {
             }
         }
     }
+    publishing {
+        publications.withType<MavenPublication> {
+            // Set the artifact ID for all publications
+            artifactId = "surveyengine"
+
+            // Alternatively, you can set different names for different targets
+            // when (name) {
+            //     "jvm" -> artifactId = "my-artifact-jvm"
+            //     "js" -> artifactId = "my-artifact-js"
+            //     else -> artifactId = "my-artifact-$name"
+            // }
+        }
+    }
 }
 group = "com.qlarr.survey-engine"
 version = "0.1.6"
