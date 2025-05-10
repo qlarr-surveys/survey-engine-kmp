@@ -3,3 +3,8 @@ jdk:
 before_install:
   - sdk install java 17.0.10-amzn
   - sdk use java 17.0.10-amzn
+env:
+  GROUP: $GROUP
+  VERSION: $VERSION
+install:
+  - ./gradlew clean publishJvmPublicationToMavenLocal -PgroupId=$GROUP -Pversion=$VERSION
