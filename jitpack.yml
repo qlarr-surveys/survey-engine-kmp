@@ -7,4 +7,4 @@ env:
   GROUP: $GROUP
   VERSION: $VERSION
 install:
-  - ./gradlew clean jvmJar publishToMavenLocal -PgroupId=$GROUP -Pversion=$VERSION
+  - ./gradlew clean jvmJar -PgroupId=$GROUP -Pversion=$VERSION
