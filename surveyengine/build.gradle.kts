@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
+    id ("org.jetbrains.kotlin.multiplatform")
+    id ("org.jetbrains.kotlin.plugin.serialization")
     id("maven-publish")
 }
 
@@ -9,6 +9,7 @@ kotlin {
     js(IR) {
         browser()
         nodejs()
+        binaries.executable()
     }
     // Commenting out native targets that are causing build issues
     // linuxX64()

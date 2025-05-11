@@ -1,13 +1,12 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
+    id ("org.jetbrains.kotlin.multiplatform")
+    id ("org.jetbrains.kotlin.plugin.serialization")
     id("maven-publish")
 }
 
 kotlin {
     jvm()
     js(IR) {
-        moduleName = "survey-engine-kmp"
         browser()
         nodejs()
         binaries.executable()
