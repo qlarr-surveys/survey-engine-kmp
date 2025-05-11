@@ -52,7 +52,7 @@ internal class ContextExecutor {
             formatInstructions = formatInstructions,
             codes = codes.toList()
         )
-        return kotlinx.serialization.json.Json.encodeToString(
+        return Json.encodeToString(
             kotlinx.serialization.serializer<NavigationInstructionsInput>(), 
             instructionNavigationInput
         )

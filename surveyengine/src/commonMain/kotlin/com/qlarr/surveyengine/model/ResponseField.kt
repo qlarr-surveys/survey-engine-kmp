@@ -3,6 +3,7 @@ package com.qlarr.surveyengine.model
 import kotlinx.serialization.Serializable
 
 
+
 @Serializable
 data class ResponseField(
     val componentCode: String,
@@ -12,6 +13,7 @@ data class ResponseField(
     @Suppress("unused")
     fun toValueKey() = "$componentCode.${columnName.name.lowercase()}"
 }
+
 
 enum class ColumnName {
     VALUE,

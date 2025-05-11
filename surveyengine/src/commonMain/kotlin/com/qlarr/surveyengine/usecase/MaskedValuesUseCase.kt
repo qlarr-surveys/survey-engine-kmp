@@ -13,20 +13,20 @@ import com.qlarr.surveyengine.navigate.componentsInCurrentNav
 
 
 @Suppress("unused")
-class MaskedValuesUseCase(
-    validationJsonOutput: ValidationJsonOutput,
-) {
+class MaskedValuesUseCase(processedSurvey: String) {
+    private val validationJsonOutput: ValidationJsonOutput =
+        jsonMapper.decodeFromString<ValidationJsonOutput>(processedSurvey)
     private val validationOutput: ValidationOutput = validationJsonOutput.toValidationOutput()
     private val defaultLang = validationJsonOutput.survey.defaultLang()
-    val lang =  defaultLang
+    val lang = defaultLang
     private var survey = validationOutput.survey.sanitize()
         .replaceOrAddInstruction(Instruction.SimpleState(lang, ReservedCode.Lang)) as Survey
     private val surveyJson = validationJsonOutput.survey
     private val contextExecutor = ContextExecutor()
 
-    fun navigate(scriptEngine: ScriptEngineNavigate, useCaseInput: NavigationUseCaseInput): Map<Dependency, Any> {
+    fun navigate(scriptEngine: ScriptEngineNavigate, useCaseInput: NavigationUseCaseInput): Map<String, Any> {
         val script = getNavigationScript(useCaseInput)
-        val scriptResult = scriptEngine.navigate( script)
+        val scriptResult = scriptEngine.navigate(script)
         return processNavigationResult(scriptResult)
     }
 
@@ -70,9 +70,9 @@ class MaskedValuesUseCase(
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun processNavigationResult(scriptResult: String): Map<Dependency, Any> {
+    fun processNavigationResult(scriptResult: String): Map<String, Any> {
         val valuesMap = contextExecutor.processNavigationValues(scriptResult)
-        return valuesMap.first.filterKeys { it.reservedCode == ReservedCode.MaskedValue }
+        return valuesMap.first.filterKeys { it.reservedCode == ReservedCode.MaskedValue }.mapKeys { it.key.asCode() }
 
     }
 

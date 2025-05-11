@@ -6,10 +6,16 @@ import com.qlarr.surveyengine.model.jsonMapper
 import kotlinx.serialization.json.jsonObject
 
 interface ValidationUseCaseWrapper {
-    fun validate(): ValidationJsonOutput
+    // Serialized ValidationJsonOutput
+    fun validate(): String
+
+    companion object {
+        fun create(scriptEngine: ScriptEngineValidate, surveyJson: String): ValidationUseCaseWrapper =
+            ValidationUseCaseWrapperImpl(scriptEngine, surveyJson)
+    }
 }
 
-class ValidationUseCaseWrapperImpl(scriptEngine: ScriptEngineValidate, private val surveyJson: String) :
+internal class ValidationUseCaseWrapperImpl(scriptEngine: ScriptEngineValidate, private val surveyJson: String) :
     ValidationUseCaseWrapper {
     private val useCase: ValidationUseCase
 
@@ -19,16 +25,18 @@ class ValidationUseCaseWrapperImpl(scriptEngine: ScriptEngineValidate, private v
     }
 
 
-    override fun validate(): ValidationJsonOutput {
+    override fun validate(): String {
         val output = useCase.validate()
         val survey = jsonMapper.parseToJsonElement(surveyJson).jsonObject
-        return ValidationJsonOutput(
-            survey = output.survey.copyErrorsToJSON(survey),
-            schema = output.schema,
-            impactMap = output.impactMap,
-            componentIndexList = output.componentIndexList,
-            skipMap = output.skipMap,
-            script = output.script
+        return jsonMapper.encodeToString(
+            ValidationJsonOutput.serializer(), ValidationJsonOutput(
+                survey = output.survey.copyErrorsToJSON(survey),
+                schema = output.schema,
+                impactMap = output.impactMap,
+                componentIndexList = output.componentIndexList,
+                skipMap = output.skipMap,
+                script = output.script
+            )
         )
     }
 }

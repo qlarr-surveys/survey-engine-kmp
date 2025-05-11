@@ -3,6 +3,8 @@ package com.qlarr.surveyengine.model
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 
+
+
 @Serializable
 enum class ReturnType {
     BOOLEAN, STRING, INT, DOUBLE, LIST, MAP, DATE, FILE;
