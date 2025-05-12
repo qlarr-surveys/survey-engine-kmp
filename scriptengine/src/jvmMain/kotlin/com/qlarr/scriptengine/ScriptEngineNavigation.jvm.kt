@@ -3,10 +3,7 @@ package com.qlarr.scriptengine
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
 import com.qlarr.surveyengine.model.ReturnType
 import com.qlarr.surveyengine.model.jsonMapper
-import com.qlarr.surveyengine.usecase.ScriptEngineValidate
-import com.qlarr.surveyengine.usecase.ScriptValidationInput
-import com.qlarr.surveyengine.usecase.ScriptValidationOutput
-import com.qlarr.surveyengine.usecase.ValidationScriptError
+import com.qlarr.surveyengine.usecase.*
 import kotlinx.serialization.json.*
 import org.graalvm.polyglot.Context
 import org.graalvm.polyglot.HostAccess
@@ -17,9 +14,10 @@ import javax.script.CompiledScript
 import javax.script.ScriptEngine
 
 actual fun getValidate(): ScriptEngineValidate {
-    val compiledScript: CompiledScript
+
     val classLoader = object {}.javaClass.classLoader
-    val script = classLoader.getResourceAsStream("survey-engine-script/survey-engine-script.min.js")!!.reader().readText()
+    val script =
+        classLoader.getResourceAsStream("survey-engine-script/survey-engine-script.min.js")!!.reader().readText()
     val engine: ScriptEngine = GraalJSScriptEngine.create(null,
         Context.newBuilder("js")
             .allowHostAccess(HostAccess.NONE)
@@ -31,14 +29,14 @@ actual fun getValidate(): ScriptEngineValidate {
             ) // Set resource limits
             .allowIO(false)
             .option("js.ecmascript-version", "2021"))
-    compiledScript = (engine as Compilable).compile(
+    val compiledScript: CompiledScript = (engine as Compilable).compile(
         "$script;" +
                 "const EMScript = typeof globalThis !== 'undefined' ? globalThis.EMScript : this.EMScript;" +
                 "EMScript.validateCode(instructionList);"
     )
 
 
-    return object :ScriptEngineValidate{
+    return object : ScriptEngineValidate {
         override fun validate(input: List<ScriptValidationInput>): List<ScriptValidationOutput> {
             val scriptParams: Bindings = engine.createBindings()
             // Build JSON array using kotlinx.serialization
@@ -68,6 +66,31 @@ actual fun getValidate(): ScriptEngineValidate {
     }
 }
 
-actual fun getNavigate(script: String): ScriptEngineValidate {
-    TODO("Not yet implemented")
+actual fun getNavigate(script: String): ScriptEngineNavigate {
+    val engine: ScriptEngine = GraalJSScriptEngine.create(null,
+        Context.newBuilder("js")
+            .allowHostAccess(HostAccess.NONE)
+            .allowHostClassLookup { false }
+            .resourceLimits(
+                ResourceLimits.newBuilder()
+                    .statementLimit(1000000, null)
+                    .build()
+            ) // Set resource limits
+            .allowIO(false)
+            .option("js.ecmascript-version", "2021"))
+
+    val compiledScript: CompiledScript = (engine as Compilable).compile(
+        script +
+                "\nnavigate(JSON.parse(params)) "
+    )
+    return object : ScriptEngineNavigate {
+        override fun navigate(script: String): String {
+            val scriptParams: Bindings = engine.createBindings()
+            scriptParams["params"] = script
+            return compiledScript.eval(scriptParams).toString()
+        }
+
+    }
+
+
 }

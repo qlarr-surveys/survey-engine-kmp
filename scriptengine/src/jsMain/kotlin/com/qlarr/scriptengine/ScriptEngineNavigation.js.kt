@@ -2,10 +2,7 @@ package com.qlarr.scriptengine
 
 import com.qlarr.surveyengine.model.ReturnType
 import com.qlarr.surveyengine.model.jsonMapper
-import com.qlarr.surveyengine.usecase.ScriptEngineValidate
-import com.qlarr.surveyengine.usecase.ScriptValidationInput
-import com.qlarr.surveyengine.usecase.ScriptValidationOutput
-import com.qlarr.surveyengine.usecase.ValidationScriptError
+import com.qlarr.surveyengine.usecase.*
 import kotlinx.serialization.json.*
 import kotlin.reflect.typeOf
 
@@ -48,6 +45,6 @@ actual fun getValidate(): ScriptEngineValidate {
 }
 
 
-actual fun getNavigate(script: String): ScriptEngineValidate {
+actual fun getNavigate(script: String): ScriptEngineNavigate {
     TODO("Not yet implemented")
 }
