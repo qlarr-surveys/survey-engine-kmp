@@ -102,7 +102,7 @@ data class ScriptInput(
 )
 
 @Serializable
-data class NavigationJsonOutput(
+internal data class NavigationJsonOutput(
     val survey: JsonObject = buildJsonObject {},
     val state: JsonObject = buildJsonObject {},
     val navigationIndex: NavigationIndex,

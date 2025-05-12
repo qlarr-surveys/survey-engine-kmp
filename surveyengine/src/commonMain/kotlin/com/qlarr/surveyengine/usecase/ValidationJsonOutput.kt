@@ -7,7 +7,7 @@ import com.qlarr.surveyengine.model.*
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ValidationJsonOutput(
+internal data class ValidationJsonOutput(
     val survey: JsonObject = buildJsonObject {},
     val schema: List<ResponseField> = listOf(),
     val impactMap: StringImpactMap = mapOf(),
