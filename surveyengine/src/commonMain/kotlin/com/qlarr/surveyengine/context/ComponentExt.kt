@@ -1,7 +1,7 @@
 package com.qlarr.surveyengine.context
 
 import com.qlarr.surveyengine.model.ReservedCode
-import com.qlarr.surveyengine.model.ReturnType
+import com.qlarr.surveyengine.model.exposed.ReturnType
 import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.*
 

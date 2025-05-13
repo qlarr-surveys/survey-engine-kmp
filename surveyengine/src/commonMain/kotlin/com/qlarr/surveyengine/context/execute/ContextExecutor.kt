@@ -2,6 +2,7 @@ package com.qlarr.surveyengine.context.execute
 
 import com.qlarr.surveyengine.ext.jsonValueToObject
 import com.qlarr.surveyengine.model.*
+import com.qlarr.surveyengine.model.exposed.TypedValue
 import kotlinx.serialization.json.*
 
 internal class ContextExecutor {

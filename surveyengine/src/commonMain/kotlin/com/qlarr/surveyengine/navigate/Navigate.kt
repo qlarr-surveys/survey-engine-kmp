@@ -4,35 +4,39 @@ import com.qlarr.surveyengine.context.indexableCodes
 import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.ReservedCode.*
+import com.qlarr.surveyengine.model.exposed.NavigationDirection
+import com.qlarr.surveyengine.model.exposed.NavigationIndex
+import com.qlarr.surveyengine.model.exposed.NavigationMode
 
 
 fun Survey.navigate(
-    navigationInfo: NavigationInfo,
+    navigationIndex: NavigationIndex? = null,
+    navigationDirection: NavigationDirection,
     navigationMode: NavigationMode,
     navigationBindings: Map<Dependency, Any>,
     skipInvalid: Boolean = false,
     currentIndexValid: Boolean = true,
 ): NavigationIndex {
-    val navigationIndex = when (navigationInfo.navigationDirection) {
-        is NavigationDirection.Resume, is NavigationDirection.ChangeLange -> navigationInfo.navigationIndex!!
+    val newNavigationIndex = when (navigationDirection) {
+        is NavigationDirection.Resume, is NavigationDirection.ChangeLange -> navigationIndex!!
         NavigationDirection.Start -> firstRelevant(navigationMode, navigationBindings)
-        is NavigationDirection.Next -> nextRelevant(navigationInfo, navigationMode, navigationBindings)
-        is NavigationDirection.Jump -> navigationInfo.navigationDirection.navigationIndex
-        NavigationDirection.Previous -> prevRelevant(navigationInfo, navigationMode, navigationBindings)
+        is NavigationDirection.Next -> nextRelevant(navigationIndex!!, navigationMode, navigationBindings)
+        is NavigationDirection.Jump -> navigationDirection.navigationIndex
+        NavigationDirection.Previous -> prevRelevant(navigationIndex!!, navigationMode, navigationBindings)
     }
     // we can get the whole survey validity from the bindings...
     val surveyValid = navigationBindings[Dependency("Survey", Validity)] as Boolean
     val isSubmitting = navigationIndex is NavigationIndex.End
-    val isNextOrJump = navigationInfo.navigationDirection is NavigationDirection.Next
+    val isNextOrJump = navigationDirection is NavigationDirection.Next
     val shouldNotSkipValid = !skipInvalid && isNextOrJump
 
     return when {
         (isSubmitting || shouldNotSkipValid) && !currentIndexValid -> {
-            navigationInfo.navigationIndex!!.with(true)
+            navigationIndex!!.with(true)
         }
 
         isSubmitting && !surveyValid -> firstInvalid(navigationMode, navigationBindings).with(true)
-        else -> navigationIndex.with(false)
+        else -> newNavigationIndex.with(false)
     }
 }
 
@@ -203,7 +207,7 @@ private fun Survey.firstInvalid(
 }
 
 private fun Survey.nextRelevant(
-    navigationInfo: NavigationInfo,
+    navigationIndex: NavigationIndex,
     navigationMode: NavigationMode,
     orderRelevanceBindings: Map<Dependency, Any>
 ): NavigationIndex {
@@ -213,7 +217,7 @@ private fun Survey.nextRelevant(
         }
 
         NavigationMode.GROUP_BY_GROUP -> {
-            val groupId = (navigationInfo.navigationIndex as? NavigationIndex.Group)?.groupId ?: return firstRelevant(
+            val groupId = (navigationIndex as? NavigationIndex.Group)?.groupId ?: return firstRelevant(
                 navigationMode,
                 orderRelevanceBindings
             )
@@ -231,7 +235,7 @@ private fun Survey.nextRelevant(
 
         NavigationMode.QUESTION_BY_QUESTION -> {
             val questionId =
-                (navigationInfo.navigationIndex as? NavigationIndex.Question)?.questionId ?: return firstRelevant(
+                (navigationIndex as? NavigationIndex.Question)?.questionId ?: return firstRelevant(
                     navigationMode,
                     orderRelevanceBindings
                 )
@@ -264,7 +268,7 @@ fun SurveyComponent.hasRelevantChildren(orderRelevanceBindings: Map<Dependency, 
 }
 
 private fun Survey.prevRelevant(
-    navigationInfo: NavigationInfo,
+    navigationIndex: NavigationIndex,
     navigationMode: NavigationMode,
     orderRelevanceBindings: Map<Dependency, Any>
 ): NavigationIndex {
@@ -272,7 +276,7 @@ private fun Survey.prevRelevant(
         NavigationMode.ALL_IN_ONE -> allInOne()
 
         NavigationMode.GROUP_BY_GROUP -> {
-            val groupId = (navigationInfo.navigationIndex as? NavigationIndex.Group)?.groupId ?: return firstRelevant(
+            val groupId = (navigationIndex as? NavigationIndex.Group)?.groupId ?: return firstRelevant(
                 navigationMode,
                 orderRelevanceBindings
             )
@@ -282,13 +286,13 @@ private fun Survey.prevRelevant(
             }
             prevGroup?.let {
                 NavigationIndex.Group(it.code)
-            } ?: navigationInfo.navigationIndex
+            } ?: navigationIndex
 
         }
 
         NavigationMode.QUESTION_BY_QUESTION -> {
             val questionId =
-                (navigationInfo.navigationIndex as? NavigationIndex.Question)?.questionId ?: return firstRelevant(
+                (navigationIndex as? NavigationIndex.Question)?.questionId ?: return firstRelevant(
                     navigationMode,
                     orderRelevanceBindings
                 )
@@ -306,7 +310,7 @@ private fun Survey.prevRelevant(
                             orderRelevanceBindings
                         )
                     }
-                    ?: return navigationInfo.navigationIndex
+                    ?: return navigationIndex
                 NavigationIndex.Question(nextGroup.children.last { orderRelevanceBindings.isRelevant(it.code) }.code)
             }
         }

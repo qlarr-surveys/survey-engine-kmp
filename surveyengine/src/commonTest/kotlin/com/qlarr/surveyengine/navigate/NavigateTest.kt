@@ -5,8 +5,11 @@ package com.qlarr.surveyengine.navigate
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.ReservedCode.Order
 import com.qlarr.surveyengine.model.ReservedCode.Relevance
-import kotlin.test.assertEquals
+import com.qlarr.surveyengine.model.exposed.NavigationDirection
+import com.qlarr.surveyengine.model.exposed.NavigationIndex
+import com.qlarr.surveyengine.model.exposed.NavigationMode
 import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class NavigateTest {
     private val survey = Survey(
@@ -64,10 +67,8 @@ class NavigateTest {
             NavigationIndex.Groups(
                 listOf("G1", "G2", "G3", "G4", "G5")
             ), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = null,
-                    navigationDirection = NavigationDirection.Start
-                ),
+                navigationIndex = null,
+                navigationDirection = NavigationDirection.Start,
                 navigationMode = NavigationMode.ALL_IN_ONE,
                 mapOf(Dependency("Survey", ReservedCode.Validity) to true)
             )
@@ -78,11 +79,8 @@ class NavigateTest {
     fun with_start_and_group_by_group_first_relevant_group_is_picked() {
         assertEquals(
             NavigationIndex.Group("G2"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = null,
-
-                    navigationDirection = NavigationDirection.Start
-                ),
+                navigationIndex = null,
+                navigationDirection = NavigationDirection.Start,
                 navigationMode = NavigationMode.GROUP_BY_GROUP,
                 mapOf(
                     Dependency("Survey", ReservedCode.Validity) to true,
@@ -96,10 +94,8 @@ class NavigateTest {
     fun with_start_and_question_by_question_first_relevant_question_is_picked() {
         assertEquals(
             NavigationIndex.Question("Q6"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = null,
-                    navigationDirection = NavigationDirection.Start,
-                ),
+                navigationIndex = null,
+                navigationDirection = NavigationDirection.Start,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
                     Dependency("Survey", ReservedCode.Validity) to true,
@@ -114,10 +110,8 @@ class NavigateTest {
     fun with_next_and_question_by_question_first_relevant_question_is_picked() {
         assertEquals(
             NavigationIndex.Question("Q8"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = NavigationIndex.Question("Q6"),
-                    navigationDirection = NavigationDirection.Next
-                ),
+                navigationIndex = NavigationIndex.Question("Q6"),
+                navigationDirection = NavigationDirection.Next,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
                     Dependency("Q7", Relevance) to false,
@@ -131,10 +125,8 @@ class NavigateTest {
     fun with_next_and_group_by_group_first_relevant_group_is_picked() {
         assertEquals(
             NavigationIndex.Group("G4"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = NavigationIndex.Group("G2"),
-                    navigationDirection = NavigationDirection.Next
-                ),
+                navigationIndex = NavigationIndex.Group("G2"),
+                navigationDirection = NavigationDirection.Next,
                 navigationMode = NavigationMode.GROUP_BY_GROUP,
                 mapOf(
 
@@ -149,10 +141,8 @@ class NavigateTest {
     fun with_next_and_question_by_question_first_relevant_question_is_picked_skipping_questions() {
         assertEquals(
             NavigationIndex.Question("Q11"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = NavigationIndex.Question("Q6"),
-                    navigationDirection = NavigationDirection.Next
-                ),
+                navigationIndex = NavigationIndex.Question("Q6"),
+                navigationDirection = NavigationDirection.Next,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
                     Dependency("Q7", Relevance) to false,
@@ -169,10 +159,8 @@ class NavigateTest {
     fun with_next_and_questiodn_by_question_first_relevant_question_is_picked_skipping_questions() {
         assertEquals(
             NavigationIndex.Question("Q11"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = NavigationIndex.Question("Q6"),
-                    navigationDirection = NavigationDirection.Next
-                ),
+                navigationIndex = NavigationIndex.Question("Q6"),
+                navigationDirection = NavigationDirection.Next,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
                     Dependency("Q7", Relevance) to false,
@@ -189,10 +177,8 @@ class NavigateTest {
     fun with_prev_and_question_by_question_last_relevant_question_is_picked() {
         assertEquals(
             NavigationIndex.Question("Q6"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = NavigationIndex.Question("Q8"),
-                    navigationDirection = NavigationDirection.Previous
-                ),
+                navigationIndex = NavigationIndex.Question("Q8"),
+                navigationDirection = NavigationDirection.Previous,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
                     Dependency("Survey", ReservedCode.Validity) to true,
@@ -206,10 +192,8 @@ class NavigateTest {
     fun with_prev_and_group_by_group_first_relevant_group_is_picked() {
         assertEquals(
             NavigationIndex.Group("G2"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = NavigationIndex.Group("G4"),
-                    navigationDirection = NavigationDirection.Previous
-                ),
+                navigationIndex = NavigationIndex.Group("G4"),
+                navigationDirection = NavigationDirection.Previous,
                 navigationMode = NavigationMode.GROUP_BY_GROUP,
                 mapOf(
                     Dependency("Survey", ReservedCode.Validity) to true,
@@ -223,10 +207,9 @@ class NavigateTest {
     fun with_prev_and_question_by_question_first_relevant_question_is_picked_skipping_questions() {
         assertEquals(
             NavigationIndex.Question("Q6"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = NavigationIndex.Question("Q14"),
-                    navigationDirection = NavigationDirection.Previous
-                ),
+
+                navigationIndex = NavigationIndex.Question("Q14"),
+                navigationDirection = NavigationDirection.Previous,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
                     Dependency("Survey", ReservedCode.Validity) to true,
@@ -244,10 +227,8 @@ class NavigateTest {
     fun with_prev_and_question_by_question_first_relevant_question_is_dpicked_skipping_questions() {
         assertEquals(
             NavigationIndex.Question("Q6"), survey.navigate(
-                NavigationInfo(
-                    navigationIndex = NavigationIndex.Question("Q14"),
-                    navigationDirection = NavigationDirection.Previous
-                ),
+                navigationIndex = NavigationIndex.Question("Q14"),
+                navigationDirection = NavigationDirection.Previous,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
                     Dependency("Survey", ReservedCode.Validity) to true,

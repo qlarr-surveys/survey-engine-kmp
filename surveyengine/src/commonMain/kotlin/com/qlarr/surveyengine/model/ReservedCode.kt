@@ -1,5 +1,6 @@
 package com.qlarr.surveyengine.model
 
+import com.qlarr.surveyengine.model.exposed.ReturnType
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -183,6 +184,3 @@ fun String.isReservedCode(): Boolean {
 }
 
 
-enum class SurveyMode {
-    OFFLINE, ONLINE
-}

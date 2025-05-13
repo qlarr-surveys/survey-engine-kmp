@@ -1,5 +1,7 @@
 package com.qlarr.surveyengine.model
 
+import com.qlarr.surveyengine.model.exposed.ColumnName
+import com.qlarr.surveyengine.model.exposed.ResponseField
 import kotlinx.serialization.Serializable
 
 @Serializable

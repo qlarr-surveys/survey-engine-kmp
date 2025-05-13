@@ -6,6 +6,9 @@ import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.RandomOption.FLIP
 import com.qlarr.surveyengine.model.Instruction.RandomOption.RANDOM
+import com.qlarr.surveyengine.model.exposed.ColumnName
+import com.qlarr.surveyengine.model.exposed.ResponseField
+import com.qlarr.surveyengine.model.exposed.ReturnType
 
 internal fun List<ChildlessComponent>.parents(code: String): List<String> {
     val childlessComponent = first { it.code == code }

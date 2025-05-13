@@ -1,10 +1,12 @@
 package com.qlarr.scriptengine
 
 import com.oracle.truffle.js.scriptengine.GraalJSScriptEngine
-import com.qlarr.surveyengine.model.ReturnType
+import com.qlarr.surveyengine.model.exposed.ReturnType
 import com.qlarr.surveyengine.model.jsonMapper
 import com.qlarr.surveyengine.usecase.*
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.json.*
+import kotlinx.serialization.serializer
 import org.graalvm.polyglot.Context
 import org.graalvm.polyglot.HostAccess
 import org.graalvm.polyglot.ResourceLimits
@@ -37,11 +39,13 @@ actual fun getValidate(): ScriptEngineValidate {
 
 
     return object : ScriptEngineValidate {
-        override fun validate(input: List<ScriptValidationInput>): List<ScriptValidationOutput> {
+        override fun validate(input: String): String {
+            val scriptInput = jsonMapper.decodeFromString(ListSerializer(serializer<ScriptValidationInput>()), input)
+
             val scriptParams: Bindings = engine.createBindings()
             // Build JSON array using kotlinx.serialization
             val items = buildJsonArray {
-                input.forEach { validationInput ->
+                scriptInput.forEach { validationInput ->
                     addJsonObject {
                         validationInput.componentInstruction.instruction.run {
                             put("script", if (returnType == ReturnType.STRING && !isActive) "\"$text\"" else text)
@@ -59,9 +63,10 @@ actual fun getValidate(): ScriptEngineValidate {
             } catch (e: Exception) {
                 listOf()
             }
-            return input.mapIndexed { index, scriptValidationInput ->
+            val scriptOutput = scriptInput.mapIndexed { index, scriptValidationInput ->
                 ScriptValidationOutput(scriptValidationInput.componentInstruction, processed[index])
             }
+            return jsonMapper.encodeToString(ListSerializer(serializer<ScriptValidationOutput>()), scriptOutput)
         }
     }
 }

@@ -8,6 +8,7 @@ import com.qlarr.surveyengine.context.nestedComponents
 import com.qlarr.surveyengine.dependency.DependencyMapper
 import com.qlarr.surveyengine.ext.*
 import com.qlarr.surveyengine.model.*
+import com.qlarr.surveyengine.model.exposed.NavigationUseCaseInput
 import com.qlarr.surveyengine.navigate.allInOne
 import com.qlarr.surveyengine.navigate.componentsInCurrentNav
 

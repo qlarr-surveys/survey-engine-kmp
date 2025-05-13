@@ -1,6 +1,6 @@
 package com.qlarr.surveyengine.context.execute
 
-import com.qlarr.surveyengine.model.NavigationIndex
+import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.model.Dependency
 import com.qlarr.surveyengine.model.Dependent
 import com.qlarr.surveyengine.model.ReservedCode.*

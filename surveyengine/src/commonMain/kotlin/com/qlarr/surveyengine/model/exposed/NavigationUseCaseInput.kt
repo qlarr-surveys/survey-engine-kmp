@@ -1,4 +1,4 @@
-package com.qlarr.surveyengine.model
+package com.qlarr.surveyengine.model.exposed
 
 import kotlinx.serialization.*
 import kotlinx.serialization.descriptors.SerialDescriptor
@@ -7,14 +7,22 @@ import kotlinx.serialization.descriptors.buildSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 
 
+@OptIn(ExperimentalJsExport::class)
 @Serializable
+@JsExport
 data class NavigationUseCaseInput(
     val values: Map<String, @Contextual Any> = mapOf(),
+    val processedSurvey: String,
     val lang: String? = null,
     val navigationMode: NavigationMode? = null,
-    val navigationInfo: NavigationInfo = NavigationInfo()
+    val navigationIndex: NavigationIndex? = null,
+    val navigationDirection: NavigationDirection = NavigationDirection.Start,
+    val skipInvalid: Boolean,
+    val surveyMode: SurveyMode
 )
 
 object AnySerializer : KSerializer<Any> {
@@ -30,6 +38,7 @@ object AnySerializer : KSerializer<Any> {
             is Boolean -> {
                 jsonEncoder.encodeJsonElement(JsonPrimitive(value))
             }
+
             is Map<*, *> -> {
                 @Suppress("UNCHECKED_CAST")
                 val map = value as Map<String, Any>
@@ -43,6 +52,7 @@ object AnySerializer : KSerializer<Any> {
                     }
                 }))
             }
+
             is List<*> -> {
                 val list = value as List<Any?>
                 jsonEncoder.encodeJsonElement(JsonArray(list.map { item ->
@@ -56,6 +66,7 @@ object AnySerializer : KSerializer<Any> {
                     }
                 }))
             }
+
             else -> throw SerializationException("Unsupported type: ${value::class}")
         }
     }
@@ -76,9 +87,10 @@ object AnySerializer : KSerializer<Any> {
                 element.doubleOrNull != null -> element.double
                 else -> element.content // Fallback to string
             }
+
             is JsonObject -> element.mapValues { (_, v) -> deserializeJsonElement(v) }
             is JsonArray -> element.map { deserializeJsonElement(it) }
-            JsonNull -> null as Any
+            JsonNull -> Any()
         }
     }
 
@@ -91,6 +103,7 @@ object AnySerializer : KSerializer<Any> {
                 element.doubleOrNull != null -> element.double
                 else -> element.content
             }
+
             is JsonObject -> element.mapValues { (_, v) -> deserializeJsonElement(v) }
             is JsonArray -> element.map { deserializeJsonElement(it) }
             JsonNull -> null

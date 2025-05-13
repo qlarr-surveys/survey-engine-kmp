@@ -7,7 +7,7 @@ import com.qlarr.surveyengine.ext.VALID_REFERENCE_PREFIX
 import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.Instruction.*
 import com.qlarr.surveyengine.model.adapters.InstructionSerializer
-import kotlinx.serialization.SerialName
+import com.qlarr.surveyengine.model.exposed.ReturnType
 import kotlinx.serialization.Serializable
 
 
@@ -118,10 +118,10 @@ sealed class Instruction {
     
     abstract class State(
         open val text: String,
-         open val reservedCode: ReservedCode,
-         open val returnType: ReturnType = reservedCode.defaultReturnType(),
-         open val isActive: Boolean = reservedCode.defaultIsActive(),
-         override val errors: List<InstructionError> = listOf()
+        open val reservedCode: ReservedCode,
+        open val returnType: ReturnType = reservedCode.defaultReturnType(),
+        open val isActive: Boolean = reservedCode.defaultIsActive(),
+        override val errors: List<InstructionError> = listOf()
     ) : Instruction() {
         override val code: String
             get() = reservedCode.code

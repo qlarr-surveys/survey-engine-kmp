@@ -1,5 +1,6 @@
 package com.qlarr.surveyengine.model
 
+import com.qlarr.surveyengine.model.exposed.AnySerializer
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.SerializersModule
 

@@ -1,11 +1,14 @@
-package com.qlarr.surveyengine.model
+package com.qlarr.surveyengine.model.exposed
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 
 
-
+@OptIn(ExperimentalJsExport::class)
 @Serializable
+@JsExport
 enum class ReturnType {
     BOOLEAN, STRING, INT, DOUBLE, LIST, MAP, DATE, FILE;
 

@@ -2,12 +2,14 @@ package com.qlarr.surveyengine.usecase
 
 import com.qlarr.surveyengine.ext.copyReducedToJSON
 import com.qlarr.surveyengine.model.*
+import com.qlarr.surveyengine.model.exposed.*
 import kotlinx.serialization.Contextual
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 
-
+@OptIn(ExperimentalJsExport::class)
+@JsExport
 interface NavigationUseCaseWrapper {
     // Serialized NavigationJsonOutput
     fun navigate(): String
@@ -17,23 +19,21 @@ interface NavigationUseCaseWrapper {
     companion object {
         fun init(
             scriptEngine: ScriptEngineNavigate,
-            processedSurvey: String,
-            values: Map<String, Any> = mapOf(),
-            lang: String? = null,
-            navigationMode: NavigationMode? = null,
-            navigationInfo: NavigationInfo = NavigationInfo(),
-            skipInvalid: Boolean,
-            surveyMode: SurveyMode
-        ): NavigationUseCaseWrapper = NavigationUseCaseWrapperImpl(
-            scriptEngine = scriptEngine,
-            processedSurvey = processedSurvey,
-            skipInvalid = skipInvalid,
-            surveyMode = surveyMode,
-            values = values,
-            lang = lang,
-            navigationMode = navigationMode,
-            navigationInfo = navigationInfo
-        )
+            useCaseInput:String
+        ): NavigationUseCaseWrapper {
+            val input = jsonMapper.decodeFromString(NavigationUseCaseInput.serializer(), useCaseInput)
+            return NavigationUseCaseWrapperImpl(
+                scriptEngine = scriptEngine,
+                processedSurvey = input.processedSurvey,
+                skipInvalid = input.skipInvalid,
+                surveyMode = input.surveyMode,
+                values = input.values,
+                lang = input.lang,
+                navigationMode = input.navigationMode,
+                navigationIndex = input.navigationIndex,
+                navigationDirection = input.navigationDirection
+            )
+        }
     }
 }
 
@@ -43,20 +43,22 @@ internal class NavigationUseCaseWrapperImpl(
     processedSurvey: String,
     values: Map<String, @Contextual Any> = mapOf(),
     navigationMode: NavigationMode? = null,
-    navigationInfo: NavigationInfo = NavigationInfo(),
+    val navigationIndex: NavigationIndex? = null,
+    val navigationDirection: NavigationDirection = NavigationDirection.Start,
     skipInvalid: Boolean,
     surveyMode: SurveyMode
 ) : NavigationUseCaseWrapper {
 
-    private val validationJsonOutput: ValidationJsonOutput = jsonMapper.decodeFromString<ValidationJsonOutput>(processedSurvey)
+    private val validationJsonOutput: ValidationJsonOutput =
+        jsonMapper.decodeFromString<ValidationJsonOutput>(processedSurvey)
     private val validationOutput: ValidationOutput = validationJsonOutput.toValidationOutput()
 
     private val useCase = NavigationUseCaseImp(
         validationOutput,
         validationJsonOutput.survey,
         values,
-        navigationInfo,
-        navigationMode = when (navigationInfo.navigationIndex) {
+        navigationIndex, navigationDirection,
+        navigationMode = when (navigationIndex) {
             is NavigationIndex.Group -> NavigationMode.GROUP_BY_GROUP
             is NavigationIndex.Groups -> NavigationMode.ALL_IN_ONE
             is NavigationIndex.Question -> NavigationMode.QUESTION_BY_QUESTION
@@ -99,14 +101,6 @@ data class ScriptInput(
     val bindings: Map<Dependency, Any>,
     val dependencyMapBundle: DependencyMapBundle,
     val formatBindings: Map<Dependent, Any>,
-)
-
-@Serializable
-internal data class NavigationJsonOutput(
-    val survey: JsonObject = buildJsonObject {},
-    val state: JsonObject = buildJsonObject {},
-    val navigationIndex: NavigationIndex,
-    val toSave: Map<String, @Contextual Any> = mapOf()
 )
 
 private fun NavigationOutput.toScriptInput(): ScriptInput {

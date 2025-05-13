@@ -1,12 +1,12 @@
 package com.qlarr.surveyengine.model.adapters
 
 import kotlinx.serialization.*
-import kotlinx.serialization.descriptors.*
 import kotlinx.serialization.encoding.*
 import kotlinx.serialization.json.*
 import com.qlarr.surveyengine.ext.VALID_REFERENCE_INSTRUCTION_PATTERN
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.*
+import com.qlarr.surveyengine.model.exposed.ReturnType
 import kotlinx.serialization.builtins.ListSerializer
 
 @OptIn(ExperimentalSerializationApi::class)

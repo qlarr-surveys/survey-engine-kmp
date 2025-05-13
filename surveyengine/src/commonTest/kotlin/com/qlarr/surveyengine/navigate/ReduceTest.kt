@@ -1,7 +1,7 @@
 package com.qlarr.surveyengine.navigate
 
 import kotlinx.serialization.json.*
-import com.qlarr.surveyengine.model.NavigationIndex
+import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.model.SurveyLang
 import com.qlarr.surveyengine.model.jsonMapper

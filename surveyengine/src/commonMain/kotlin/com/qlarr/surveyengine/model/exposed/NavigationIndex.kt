@@ -1,11 +1,13 @@
 @file:Suppress("SERIALIZER_TYPE_INCOMPATIBLE")
 
-package com.qlarr.surveyengine.model
+package com.qlarr.surveyengine.model.exposed
 
 import kotlinx.serialization.*
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 
 fun NavigationIndex.stringIndex() = when (this) {
     is NavigationIndex.End -> "End"
@@ -14,7 +16,9 @@ fun NavigationIndex.stringIndex() = when (this) {
     is NavigationIndex.Question -> this.questionId
 }
 
+@OptIn(ExperimentalJsExport::class)
 @Serializable(with = NavigationIndexSerializer::class)
+@JsExport
 sealed class NavigationIndex {
     abstract val name: String
     @Transient
@@ -70,8 +74,6 @@ sealed class NavigationIndex {
 @OptIn(ExperimentalSerializationApi::class)
 @Serializer(forClass = NavigationIndex::class)
 object NavigationIndexSerializer : KSerializer<NavigationIndex> {
-    private val json = Json { ignoreUnknownKeys = true }
-
     override fun serialize(encoder: Encoder, value: NavigationIndex) {
         val jsonObject = buildJsonObject {
             put("name", JsonPrimitive(value.name))
@@ -135,117 +137,7 @@ object NavigationIndexSerializer : KSerializer<NavigationIndex> {
     }
 }
 
-@Serializable(with = NavigationDirectionSerializer::class)
-sealed class NavigationDirection {
-    abstract val name: String
-
-    @Serializable(with = NavigationDirectionSerializer::class)
-    data object Start : NavigationDirection() {
-        override val name: String = "START"
-    }
-
-
-    @Serializable(with = NavigationDirectionSerializer::class)
-    data object Previous : NavigationDirection() {
-        override val name: String = "PREV"
-    }
-
-
-    @Serializable(with = NavigationDirectionSerializer::class)
-    data class Jump(
-        val navigationIndex: NavigationIndex,
-        override val name: String = "JUMP"
-    ) : NavigationDirection()
-
-
-    @Serializable(with = NavigationDirectionSerializer::class)
-    object Next : NavigationDirection() {
-        override val name: String = "NEXT"
-    }
 
 
 
-    @Serializable(with = NavigationDirectionSerializer::class)
-    object Resume : NavigationDirection() {
-        override val name: String = "RESUME"
-    }
 
-
-    @Serializable(with = NavigationDirectionSerializer::class)
-    object ChangeLange : NavigationDirection() {
-        override val name: String = "CHANGE_LANGE"
-    }
-}
-
-// Note: The custom serializer/deserializer logic is now handled by kotlinx.serialization
-// through the  and @SerialName annotations
-
-
-enum class NavigationMode {
-    ALL_IN_ONE,
-    GROUP_BY_GROUP,
-    QUESTION_BY_QUESTION;
-
-    companion object {
-        fun fromString(string: String?) = when (string?.lowercase()) {
-            ALL_IN_ONE.name.lowercase() -> ALL_IN_ONE
-            QUESTION_BY_QUESTION.name.lowercase() -> QUESTION_BY_QUESTION
-            else -> GROUP_BY_GROUP
-        }
-    }
-}
-
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = NavigationDirection::class)
-object NavigationDirectionSerializer : KSerializer<NavigationDirection> {
-    private val json = Json { ignoreUnknownKeys = true }
-
-    override fun serialize(encoder: Encoder, value: NavigationDirection) {
-        // Convert to JsonElement for flexibility
-        val jsonObject = buildJsonObject {
-            put("name", JsonPrimitive(value.name))
-
-            when (value) {
-                is NavigationDirection.Jump -> {
-                    put("navigationIndex", json.encodeToJsonElement(value.navigationIndex))
-                }
-                // Other cases don't need additional fields
-                else -> { /* No additional fields needed */ }
-            }
-        }
-        (encoder as JsonEncoder).encodeJsonElement(jsonObject)
-    }
-
-    override fun deserialize(decoder: Decoder): NavigationDirection {
-        // Use JsonDecoder for flexibility
-        val jsonElement = when (decoder) {
-            is JsonDecoder -> decoder.decodeJsonElement()
-            else -> {
-                // Fallback for non-JSON decoders
-                val jsonDecoder = Json.parseToJsonElement(decoder.decodeString())
-                if (jsonDecoder is JsonObject) jsonDecoder else throw SerializationException("Expected JsonObject")
-            }
-        }
-
-        if (jsonElement !is JsonObject) throw SerializationException("Expected JsonObject")
-
-        val name = jsonElement["name"]?.jsonPrimitive?.contentOrNull
-            ?: throw SerializationException("Navigation direction missing 'name' field")
-
-        return when (name) {
-            "START" -> NavigationDirection.Start
-            "PREV" -> NavigationDirection.Previous
-            "NEXT" -> NavigationDirection.Next
-            "RESUME" -> NavigationDirection.Resume
-            "CHANGE_LANGE" -> NavigationDirection.ChangeLange
-            "JUMP" -> {
-                val navigationIndex = jsonElement["navigationIndex"]?.let {
-                    json.decodeFromJsonElement<NavigationIndex>(it)
-                } ?: throw SerializationException("Jump direction missing 'navigationIndex' field")
-
-                NavigationDirection.Jump(navigationIndex)
-            }
-            else -> throw SerializationException("Unknown navigation direction: $name")
-        }
-    }
-}

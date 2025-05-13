@@ -1,6 +1,6 @@
 package com.qlarr.surveyengine.navigate
 
-import com.qlarr.surveyengine.model.NavigationIndex
+import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.context.nestedComponents
 import com.qlarr.surveyengine.model.Survey
 

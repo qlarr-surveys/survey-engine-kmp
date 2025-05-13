@@ -4,7 +4,11 @@ import com.qlarr.surveyengine.ext.copyErrorsToJSON
 import com.qlarr.surveyengine.model.Survey
 import com.qlarr.surveyengine.model.jsonMapper
 import kotlinx.serialization.json.jsonObject
+import kotlin.js.ExperimentalJsExport
+import kotlin.js.JsExport
 
+@OptIn(ExperimentalJsExport::class)
+@JsExport
 interface ValidationUseCaseWrapper {
     // Serialized ValidationJsonOutput
     fun validate(): String

@@ -1,6 +1,5 @@
 package com.qlarr.surveyengine.usecase
 
-import kotlinx.serialization.json.JsonObject
 import com.qlarr.surveyengine.context.execute.*
 import com.qlarr.surveyengine.context.instructionsMap
 import com.qlarr.surveyengine.context.nestedComponents
@@ -10,7 +9,9 @@ import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.RandomOption
 import com.qlarr.surveyengine.model.ReservedCode.Order
 import com.qlarr.surveyengine.model.ReservedCode.Priority
+import com.qlarr.surveyengine.model.exposed.*
 import com.qlarr.surveyengine.navigate.*
+import kotlinx.serialization.json.JsonObject
 import kotlin.collections.flatten
 
 interface NavigationUseCase {
@@ -23,7 +24,8 @@ class NavigationUseCaseImp(
     private val validationOutput: ValidationOutput,
     private val surveyJson: JsonObject,
     stringValues: Map<String, Any> = mapOf(),
-    private val navigationInfo: NavigationInfo = NavigationInfo(),
+    private val navigationIndex: NavigationIndex? = null,
+    private val navigationDirection: NavigationDirection,
     private val navigationMode: NavigationMode,
     private val lang: String,
     private val skipInvalid: Boolean,
@@ -48,7 +50,7 @@ class NavigationUseCaseImp(
     @Suppress("UNCHECKED_CAST")
     override fun getNavigationScript(): String {
         val alphaSorted = mutableMapOf<Dependency, Int>()
-        if (navigationInfo.navigationDirection == NavigationDirection.Start) {
+        if (navigationDirection == NavigationDirection.Start) {
             startupRandomValues.putAll(survey.randomize(RandomOption.entries) { getLabel(it) })
             startupRandomValues.putAll(survey.setPriorities())
         } else {
@@ -106,13 +108,20 @@ class NavigationUseCaseImp(
         )
         val currentIndexValidity: Boolean = runtimeContextBuilder.addValidityInstruction(
             survey,
-            navigationInfo.navigationIndex ?: survey.allInOne()
+            navigationIndex ?: survey.allInOne()
         )[Dependency(
             "Survey",
             ReservedCode.Validity
         )] as Boolean
         val newNavIndex =
-            survey.navigate(navigationInfo, navigationMode, navigationBindings, skipInvalid, currentIndexValidity)
+            survey.navigate(
+                navigationIndex,
+                navigationDirection,
+                navigationMode,
+                navigationBindings,
+                skipInvalid,
+                currentIndexValidity
+            )
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
         extraBindings.putAll(runtimeContextBuilder.addValidityInstruction(survey, newNavIndex))
@@ -123,7 +132,7 @@ class NavigationUseCaseImp(
             putAll(extraBindings)
         }
         val dependenciesToSave = validationOutput.schema.filter {
-            if (navigationInfo.navigationDirection == NavigationDirection.Start)
+            if (navigationDirection == NavigationDirection.Start)
                 it.columnName == ColumnName.ORDER || it.columnName == ColumnName.PRIORITY || values.keys.contains(
                     it.toDependency()
                 )

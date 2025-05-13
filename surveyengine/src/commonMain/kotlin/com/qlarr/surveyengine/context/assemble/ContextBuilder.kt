@@ -8,6 +8,8 @@ import com.qlarr.surveyengine.usecase.ScriptEngineValidate
 import com.qlarr.surveyengine.usecase.ScriptValidationInput
 import com.qlarr.surveyengine.usecase.ScriptValidationOutput
 import com.qlarr.surveyengine.validation.*
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.serializer
 
 internal class ContextBuilder(
     val components: MutableList<SurveyComponent> = mutableListOf(),
@@ -29,8 +31,13 @@ internal class ContextBuilder(
 
     fun validate(validateSpecialTypeGroups: Boolean = false) {
         val script = getValidationScript(validateSpecialTypeGroups)
-        val result = scriptEngine.validate(script)
-        processScriptResult(result)
+        val result = scriptEngine.validate(
+            jsonMapper.encodeToString(
+                ListSerializer(serializer<ScriptValidationInput>()),
+                script
+            )
+        )
+        processScriptResult(jsonMapper.decodeFromString(ListSerializer(serializer<ScriptValidationOutput>()), result))
     }
 
     private fun getValidationScript(validateSpecialTypeGroups: Boolean = false): List<ScriptValidationInput> {

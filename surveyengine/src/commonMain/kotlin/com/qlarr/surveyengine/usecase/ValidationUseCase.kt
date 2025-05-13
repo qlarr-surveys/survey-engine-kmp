@@ -3,7 +3,7 @@ package com.qlarr.surveyengine.usecase
 import com.qlarr.surveyengine.context.assemble.*
 import com.qlarr.surveyengine.context.assemble.ContextBuilder
 import com.qlarr.surveyengine.context.assemble.getSchema
-import com.qlarr.surveyengine.model.ResponseField
+import com.qlarr.surveyengine.model.exposed.ResponseField
 import com.qlarr.surveyengine.dependency.DependencyMapper
 import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.ComponentIndex

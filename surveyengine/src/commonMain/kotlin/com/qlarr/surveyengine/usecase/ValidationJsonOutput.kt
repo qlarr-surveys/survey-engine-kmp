@@ -4,6 +4,8 @@ import kotlinx.serialization.json.*
 import com.qlarr.surveyengine.context.assemble.NotSkippedInstructionManifesto
 import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.*
+import com.qlarr.surveyengine.model.exposed.NavigationMode
+import com.qlarr.surveyengine.model.exposed.ResponseField
 import kotlinx.serialization.Serializable
 
 @Serializable
