@@ -24,7 +24,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(project(path = ":surveyengine"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
             }
         }
 
@@ -60,19 +60,6 @@ kotlin {
                 implementation(kotlin("test-js"))
                 // Any testing libraries specific to JS
             }
-        }
-    }
-    publishing {
-        publications.withType<MavenPublication> {
-            // Set the artifact ID for all publications
-            artifactId = "scriptengine"
-
-            // Alternatively, you can set different names for different targets
-            // when (name) {
-            //     "jvm" -> artifactId = "my-artifact-jvm"
-            //     "js" -> artifactId = "my-artifact-js"
-            //     else -> artifactId = "my-artifact-$name"
-            // }
         }
     }
 }
