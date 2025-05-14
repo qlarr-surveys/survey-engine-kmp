@@ -7,6 +7,9 @@ import kotlinx.serialization.json.*
 class JsonExt {
 
     companion object {
+        fun flatObject(surveyJson: String): String =
+            jsonMapper.encodeToJsonElement(surveyJson).jsonObject.flatten().toString()
+
         fun addChildren(surveyJson: String, code: String, state: String): String =
             jsonMapper.encodeToJsonElement(surveyJson).jsonObject.addChildren(
                 code,
