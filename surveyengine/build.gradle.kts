@@ -61,6 +61,13 @@ kotlin {
 group = "com.qlarr.survey-engine"
 version = "0.1.6"
 publishing {
+    publications {
+        // This creates a publication for each target
+        withType<MavenPublication> {
+            // Set the artifactId for all publications
+            artifactId = "surveyengine"
+        }
+    }
     repositories {
         maven {
             url = uri("https://maven.pkg.github.com/qlarr-surveys/survey-engine")
