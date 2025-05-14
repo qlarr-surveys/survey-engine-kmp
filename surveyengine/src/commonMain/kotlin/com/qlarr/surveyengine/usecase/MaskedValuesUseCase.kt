@@ -8,7 +8,6 @@ import com.qlarr.surveyengine.context.nestedComponents
 import com.qlarr.surveyengine.dependency.DependencyMapper
 import com.qlarr.surveyengine.ext.*
 import com.qlarr.surveyengine.model.*
-import com.qlarr.surveyengine.model.exposed.NavigationUseCaseInput
 import com.qlarr.surveyengine.navigate.allInOne
 import com.qlarr.surveyengine.navigate.componentsInCurrentNav
 
@@ -16,11 +15,11 @@ import com.qlarr.surveyengine.navigate.componentsInCurrentNav
 @Suppress("unused")
 class MaskedValuesUseCase(
     private val scriptEngine: ScriptEngineNavigate,
-    private val useCaseInput: NavigationUseCaseInput
-
+    processedSurvey: String,
+    private val values: Map<String, Any> = mapOf(),
 ) {
     private val validationJsonOutput: ValidationJsonOutput =
-        jsonMapper.decodeFromString<ValidationJsonOutput>(useCaseInput.processedSurvey)
+        jsonMapper.decodeFromString<ValidationJsonOutput>(processedSurvey)
     private val validationOutput: ValidationOutput = validationJsonOutput.toValidationOutput()
     private val defaultLang = validationJsonOutput.survey.defaultLang()
     val lang = defaultLang
@@ -36,7 +35,7 @@ class MaskedValuesUseCase(
     }
 
     fun getNavigationScript(): String {
-        val values = useCaseInput.values.withDependencyKeys()
+        val values = values.withDependencyKeys()
         val startupRandomValues = mutableMapOf<Dependency, Int>()
         val dependencyMapper = DependencyMapper(validationOutput.impactMap)
         val alphaSorted = mutableMapOf<Dependency, Int>()
