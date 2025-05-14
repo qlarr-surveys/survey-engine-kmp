@@ -73,7 +73,7 @@ interface ValidationUseCaseWrapper {
                 put("allowIncomplete", true)
                 put("allowJump", true)
             }
-            return jsonMapper.encodeToString(ValidationJsonOutput.serializer(), ValidationJsonOutput(survey = survey))
+            return survey.toString()
         }
 
     }

@@ -7,7 +7,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 
 @Serializable
-data class NavigationJsonOutput(
+internal data class NavigationJsonOutput(
     val survey: JsonObject = buildJsonObject {},
     val state: JsonObject = buildJsonObject {},
     val navigationIndex: NavigationIndex,
