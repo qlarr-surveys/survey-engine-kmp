@@ -7,13 +7,22 @@ import kotlinx.serialization.json.*
 class JsonExt {
 
     companion object {
-        fun addChildren(objectNode: JsonObject, code: String, state: JsonObject): JsonObject =
-            objectNode.addChildren(code, state)
+        fun addChildren(surveyJson: String, code: String, state: String): String =
+            jsonMapper.encodeToJsonElement(surveyJson).jsonObject.addChildren(
+                code,
+                jsonMapper.encodeToJsonElement(state).jsonObject
+            ).toString()
+
+        fun resources(surveyJson: String): List<String> =
+            jsonMapper.encodeToJsonElement(surveyJson).jsonObject.resources()
+
+        fun labels(surveyJson: String, parentCode: String = "", lang: String): Map<String, String> =
+            jsonMapper.encodeToJsonElement(surveyJson).jsonObject.labels(parentCode, lang)
     }
 }
 
 
-fun JsonObject.copyToJSON(
+internal fun JsonObject.copyToJSON(
     inCurrentNavigation: Boolean,
     lang: String? = null,
     defaultLang: String
@@ -30,7 +39,7 @@ fun JsonObject.copyToJSON(
                 if (it !in listOf(
                         "answers",
                         "groups",
-                        "questions", 
+                        "questions",
                         "instructionList",
                         "errors",
                         "content"
@@ -46,7 +55,7 @@ fun JsonObject.copyToJSON(
             put("content", this@copyToJSON["content"]!!)
         }
     }
-    
+
     if (returnObj.containsKey("content")) {
         returnObj.reduceContent(lang, defaultLang)
     }
@@ -54,7 +63,7 @@ fun JsonObject.copyToJSON(
     return returnObj
 }
 
-fun JsonObject.copyReducedToJSON(
+internal fun JsonObject.copyReducedToJSON(
     sortedSurveyComponent: SurveyComponent,
     reducedSurveyComponent: SurveyComponent?,
     lang: String? = null,
@@ -70,7 +79,7 @@ fun JsonObject.copyReducedToJSON(
             .mapNotNull { childKey ->
                 this@copyReducedToJSON[childKey]?.jsonArray
             }
-            
+
         if (children.size > 1) {
             throw IllegalStateException("More than once Child!!!")
         } else if (children.isEmpty()) {
@@ -85,7 +94,7 @@ fun JsonObject.copyReducedToJSON(
             val childNode = jsonChildren.first {
                 it.jsonObject["code"]?.jsonPrimitive?.content == orderedComponent.code
             }.jsonObject
-            
+
             add(
                 childNode.copyReducedToJSON(
                     orderedComponent,
@@ -96,7 +105,7 @@ fun JsonObject.copyReducedToJSON(
             )
         }
     }
-    
+
     if (returnChildren.size > 0) {
         return JsonObject(returnObj + (this["code"]!!.jsonPrimitive.content.childrenName() to returnChildren))
     }
@@ -117,56 +126,56 @@ fun JsonObject.addChildren(code: String, state: JsonObject): JsonObject {
             }
             put(code.childrenName(), children)
         }
-        
+
         put("code", JsonPrimitive(code))
-        
+
         this@addChildren.keys.forEach { fieldName ->
             if (fieldName != "children") {
                 put(fieldName, this@addChildren[fieldName]!!)
             }
         }
     }
-    
+
     return returnObj
 }
 
-fun JsonObject.flatten(
+internal fun JsonObject.flatten(
     parentCode: String = "",
     returnObj: JsonObject = buildJsonObject {}
 ): JsonObject {
     val code = this["code"]!!.jsonPrimitive.content
     val qualifiedCode = if (code.isUniqueCode()) code else parentCode + code
-    
+
     val children = listOf("answers", "groups", "questions")
         .mapNotNull { childKey ->
             this[childKey]?.jsonArray
         }
-        
+
     if (children.size > 1) {
         throw IllegalStateException("More than once Child!!!")
     }
-    
+
     val childrenNames = buildJsonArray {
         children.firstOrNull()?.forEach { child ->
             val childObj = child.jsonObject
             val childCode = childObj["code"]!!.jsonPrimitive.content
             val childQualifiedCode =
                 if (childCode.isUniqueCode()) childCode else qualifiedCode + childCode
-                
+
             val childName = buildJsonObject {
                 put("code", childObj["code"]!!)
-                
+
                 if (childObj.containsKey("type")) {
                     put("type", childObj["type"]!!)
                 }
-                
+
                 if (childObj.containsKey("groupType")) {
                     put("groupType", childObj["groupType"]!!)
                 }
-                
+
                 put("qualifiedCode", JsonPrimitive(childQualifiedCode))
             }
-            
+
             add(childName)
             childObj.flatten(qualifiedCode, returnObj)
         }
@@ -176,27 +185,26 @@ fun JsonObject.flatten(
         if (childrenNames.size > 0) {
             put("children", childrenNames)
         }
-        
+
         this@flatten.keys.forEach {
             if (it !in listOf("answers", "groups", "questions", "code", "qualifiedCode")) {
                 put(it, this@flatten[it]!!)
             }
         }
     }
-    
+
     return JsonObject(returnObj + (qualifiedCode to objectWithoutChildren))
 }
-
 
 
 // only public for testing
 internal fun JsonObject.reduceContent(lang: String? = null, defaultLang: String): JsonObject {
     val updatedObj = this.toMutableMap()
-    
+
     (this["content"] as? JsonObject)?.let { content ->
         val mergedNode = content[defaultLang] as? JsonObject ?: buildJsonObject {}
         val mergedMap = mergedNode.toMutableMap()
-        
+
         lang?.let {
             (content[lang] as? JsonObject)?.let { localisedNode ->
                 localisedNode.entries.forEach { (key, value) ->
@@ -204,22 +212,22 @@ internal fun JsonObject.reduceContent(lang: String? = null, defaultLang: String)
                 }
             }
         }
-        
+
         updatedObj["content"] = JsonObject(mergedMap)
     }
-    
+
     (this["validation"] as? JsonObject)?.let { validation ->
         val validationMap = validation.toMutableMap()
-        
+
         validation.entries.forEach { (validationField, fieldValue) ->
             (fieldValue as? JsonObject)?.let { validationItem ->
                 val validationItemMap = validationItem.toMutableMap()
-                
+
                 validationItem["content"]?.let { contentToBeLocalised ->
                     if (contentToBeLocalised is JsonObject && contentToBeLocalised.isNotEmpty()) {
                         val node = lang?.let { contentToBeLocalised[it] }
                             ?: contentToBeLocalised[defaultLang]
-                        
+
                         if (node != null) {
                             validationItemMap["content"] = node
                             validationMap[validationField] = JsonObject(validationItemMap)
@@ -228,18 +236,18 @@ internal fun JsonObject.reduceContent(lang: String? = null, defaultLang: String)
                 }
             }
         }
-        
+
         updatedObj["validation"] = JsonObject(validationMap)
     }
-    
+
     return JsonObject(updatedObj)
 }
 
-fun JsonObject.resources(): List<String> {
+internal fun JsonObject.resources(): List<String> {
     val returnList = mutableListOf<String>()
-    
+
     (this["resources"] as? JsonObject)?.let { resources ->
-        resources.entries.forEach { (fieldName, value) ->
+        resources.entries.forEach { (_, value) ->
             if (value is JsonPrimitive && value.isString) {
                 val strValue = value.content
                 if (strValue.isNotBlank()) {
@@ -248,30 +256,30 @@ fun JsonObject.resources(): List<String> {
             }
         }
     }
-    
+
     val code = this["code"]!!.jsonPrimitive.content
     (this[code.childrenName()] as? JsonArray)?.let { childrenNodes ->
         childrenNodes.forEach { child ->
             returnList.addAll(child.jsonObject.resources())
         }
     }
-    
+
     return returnList
 }
 
-fun JsonObject.labels(parentCode: String = "", lang: String): Map<String, String> {
+internal fun JsonObject.labels(parentCode: String = "", lang: String): Map<String, String> {
     val returnMap = mutableMapOf<String, String>()
     val code = this["code"]!!.jsonPrimitive.content
     val qualifiedCode = if (code.isUniqueCode()) code else parentCode + code
     val label = getLabel(lang, lang)
     returnMap[qualifiedCode] = label
-    
+
     (this[code.childrenName()] as? JsonArray)?.let { childrenNodes ->
         childrenNodes.forEach { child ->
             returnMap.putAll(child.jsonObject.labels(qualifiedCode, lang))
         }
     }
-    
+
     return returnMap
 }
 
@@ -285,41 +293,41 @@ private fun JsonArray.getByCode(code: String): JsonObject {
     throw IllegalStateException("Child with corresponding code not found")
 }
 
-fun SurveyComponent.copyErrorsToJSON(surveyDef: JsonObject, parentCode: String = ""): JsonObject {
+internal fun SurveyComponent.copyErrorsToJSON(surveyDef: JsonObject, parentCode: String = ""): JsonObject {
     if (!surveyDef.containsKey("code") || code != surveyDef["code"]?.jsonPrimitive?.content) {
         throw IllegalStateException("copyErrorsToJSON: copying into a JsonObject with different code: $code")
     }
-    
+
     val qualifiedCode = uniqueCode(parentCode)
     val returnObjectMap = surveyDef.toMutableMap()
-    
+
     returnObjectMap["qualifiedCode"] = JsonPrimitive(qualifiedCode)
-    
+
     if (instructionList.isNotEmpty()) {
         returnObjectMap["instructionList"] = jsonMapper.encodeToJsonElement(instructionList)
     } else {
         returnObjectMap.remove("instructionList")
     }
-    
+
     if (errors.isNotEmpty()) {
         returnObjectMap["errors"] = jsonMapper.encodeToJsonElement(errors)
     } else {
         returnObjectMap.remove("errors")
     }
-    
+
     val childType = elementType.childType()
-    
+
     if (children.isNotEmpty()) {
         val childrenListName = childType.nameAsChildList()
         val jsonChildren = surveyDef[childrenListName]?.jsonArray ?: buildJsonArray {}
-        
+
         val newChildren = buildJsonArray {
             children.filter { it.elementType == childType }.forEachIndexed { index, surveyComponent ->
                 val jsonChild = jsonChildren.getOrNull(index)?.jsonObject ?: buildJsonObject {}
                 add(surveyComponent.copyErrorsToJSON(jsonChild, qualifiedCode))
             }
         }
-        
+
         returnObjectMap[childrenListName] = newChildren
     }
 
@@ -330,7 +338,7 @@ internal fun JsonObject.getLabel(lang: String, defaultLang: String): String {
     return (this["content"] as? JsonObject)?.let { content ->
         val langContent = content[lang] as? JsonObject
         val defaultLangContent = content[defaultLang] as? JsonObject
-        
+
         langContent?.get("label")?.jsonPrimitive?.contentOrNull
             ?: defaultLangContent?.get("label")?.jsonPrimitive?.contentOrNull
     } ?: ""
@@ -339,16 +347,16 @@ internal fun JsonObject.getLabel(lang: String, defaultLang: String): String {
 internal fun JsonObject.getChild(codes: List<String>): JsonObject {
     if (codes.isEmpty())
         return this
-    
+
     val childrenName = this["code"]!!.jsonPrimitive.content.childrenName()
     val child = (this[childrenName] as? JsonArray)?.first { jsonNode ->
         jsonNode.jsonObject["code"]?.jsonPrimitive?.content == codes.first()
     }?.jsonObject ?: throw IllegalStateException("Child not found")
-    
+
     return child.getChild(codes.drop(1))
 }
 
-fun SurveyComponent.getLabels(
+internal fun SurveyComponent.getLabels(
     componentJson: JsonObject,
     parentCode: String,
     lang: String,
@@ -356,11 +364,11 @@ fun SurveyComponent.getLabels(
     impactMap: ImpactMap
 ): Map<Dependency, String> {
     val returnMap = mutableMapOf<Dependency, String>()
-    
+
     if (!componentJson.containsKey("code") || code != componentJson["code"]?.jsonPrimitive?.content) {
         throw IllegalStateException("getLabels: copying into a JsonObject with different code: $code")
     }
-    
+
     val qualifiedCode = uniqueCode(parentCode)
     if (impactMap.keys.contains(Dependency(qualifiedCode, ReservedCode.Label))) {
         returnMap[Dependency(qualifiedCode, ReservedCode.Label)] =
@@ -370,7 +378,7 @@ fun SurveyComponent.getLabels(
     if (children.isNotEmpty()) {
         val childType = elementType.childType()
         val jsonChildren = componentJson[childType.nameAsChildList()]?.jsonArray ?: buildJsonArray {}
-        
+
         children.forEach { child ->
             val jsonObject = jsonChildren.getByCode(child.code)
             returnMap.putAll(
@@ -384,17 +392,8 @@ fun SurveyComponent.getLabels(
             )
         }
     }
-    
-    return returnMap
-}
 
-fun jsonElementToMap(jsonElement: JsonElement): Map<String, Any> {
-    return when (jsonElement) {
-        is JsonObject -> jsonObjectToMap(jsonElement)
-        is JsonArray -> mapOf("array" to jsonArrayToList(jsonElement))
-        is JsonPrimitive -> mapOf("value" to jsonPrimitiveToAny(jsonElement))
-        else -> mapOf()
-    }
+    return returnMap
 }
 
 fun jsonObjectToMap(jsonObject: JsonObject): Map<String, Any> {
@@ -424,54 +423,62 @@ fun jsonPrimitiveToAny(jsonPrimitive: JsonPrimitive): Any {
     }
 }
 
-fun jsonValueToObject(jsonValue: JsonElement): Any {
+internal fun jsonValueToObject(jsonValue: JsonElement): Any {
     return when (jsonValue) {
         is JsonObject -> {
             jsonObjectToMap(jsonValue)
         }
+
         is JsonArray -> {
             jsonArrayToList(jsonValue)
         }
+
         is JsonPrimitive -> {
             jsonPrimitiveToAny(jsonValue)
         }
+
         else -> {
             jsonValue.toString()
         }
     }
 }
 
-fun valueToJson(value: Any): JsonElement {
+internal fun valueToJson(value: Any): JsonElement {
     return when (value) {
         is Map<*, *> -> {
             mapToJsonObject(value)
         }
+
         is List<*> -> {
             listToJsonArray(value)
         }
+
         is String -> {
             JsonPrimitive(value)
         }
+
         is Number -> {
             JsonPrimitive(value)
         }
+
         is Boolean -> {
             JsonPrimitive(value)
         }
+
         else -> {
             JsonPrimitive(value.toString())
         }
     }
 }
 
-fun mapToJsonObject(map: Map<*, *>): JsonObject {
-    val entries = map.entries.associate { 
-        it.key.toString() to valueToJson(it.value!!) 
+internal fun mapToJsonObject(map: Map<*, *>): JsonObject {
+    val entries = map.entries.associate {
+        it.key.toString() to valueToJson(it.value!!)
     }
     return JsonObject(entries)
 }
 
-fun listToJsonArray(list: List<*>): JsonArray {
+internal fun listToJsonArray(list: List<*>): JsonArray {
     return buildJsonArray {
         list.forEach {
             if (it != null) {
