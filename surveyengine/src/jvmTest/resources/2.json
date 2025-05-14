@@ -1,0 +1,5090 @@
+{
+  "code": "Survey",
+  "groups": [
+    {
+      "questions": [
+        {
+          "answers": [
+            {
+              "code": "A1",
+              "content": {
+                "en": {
+                  "label": "Yes"
+                }
+              },
+              "qualifiedCode": "QconsentA1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A2",
+              "content": {
+                "en": {
+                  "label": "No"
+                }
+              },
+              "qualifiedCode": "QconsentA2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            }
+          ],
+          "code": "Qconsent",
+          "type": "scq",
+          "skip_logic": {
+            "A2": {
+              "skipTo": "Gend"
+            }
+          },
+          "content": {
+            "en": {
+              "label": "Do you consent to participate in this survey?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "skip_to_on_A2",
+              "text": "Qconsent.value == \"A2\"",
+              "returnType": "boolean",
+              "isActive": true,
+              "skipToComponent": "Gend",
+              "condition": "Qconsent.value == \"A2\"",
+              "toEnd": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qconsent.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "masked_value",
+              "text": "Qconsent.value ? QlarrScripts.safeAccess({\"A1\": QconsentA1.label,\"A2\": QconsentA2.label},Qconsent.value) : ''",
+              "returnType": "string",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "validity",
+              "text": "!Qconsent.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qconsent"
+        }
+      ],
+      "code": "Gintro",
+      "groupType": "GROUP",
+      "content": {
+        "en": {
+          "label": "Introduction"
+        }
+      },
+      "qualifiedCode": "Gintro",
+      "instructionList": [
+        {
+          "code": "label",
+          "text": "",
+          "returnType": "string",
+          "isActive": false
+        },
+        {
+          "code": "relevance",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "validity",
+          "text": "(!Qconsent.in_current_navigation || !Qconsent.relevance || Qconsent.validity)",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "in_current_navigation",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "order",
+          "text": "0",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "priority",
+          "text": "0",
+          "returnType": "int",
+          "isActive": false
+        }
+      ]
+    },
+    {
+      "questions": [
+        {
+          "answers": [
+            {
+              "code": "A1",
+              "content": {
+                "en": {
+                  "label": "Yes"
+                }
+              },
+              "qualifiedCode": "QdinedA1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qdined.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A2",
+              "content": {
+                "en": {
+                  "label": "No"
+                }
+              },
+              "qualifiedCode": "QdinedA2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qdined.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            }
+          ],
+          "code": "Qdined",
+          "type": "scq",
+          "skip_logic": {
+            "A2": {
+              "skipTo": "Gend"
+            }
+          },
+          "content": {
+            "en": {
+              "label": "Have you dined at [Restaurant Name] Barbecue in the past 3 months?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "skip_to_on_A2",
+              "text": "Qdined.value == \"A2\"",
+              "returnType": "boolean",
+              "isActive": true,
+              "skipToComponent": "Gend",
+              "condition": "Qdined.value == \"A2\"",
+              "toEnd": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qdined.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "masked_value",
+              "text": "Qdined.value ? QlarrScripts.safeAccess({\"A1\": QdinedA1.label,\"A2\": QdinedA2.label},Qdined.value) : ''",
+              "returnType": "string",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gprofile.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qdined.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qdined"
+        },
+        {
+          "answers": [
+            {
+              "code": "A1",
+              "content": {
+                "en": {
+                  "label": "18-24"
+                }
+              },
+              "qualifiedCode": "QageA1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qage.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A2",
+              "content": {
+                "en": {
+                  "label": "25-34"
+                }
+              },
+              "qualifiedCode": "QageA2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qage.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A3",
+              "content": {
+                "en": {
+                  "label": "35-44"
+                }
+              },
+              "qualifiedCode": "QageA3",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qage.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A4",
+              "content": {
+                "en": {
+                  "label": "45-54"
+                }
+              },
+              "qualifiedCode": "QageA4",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qage.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A5",
+              "content": {
+                "en": {
+                  "label": "55-64"
+                }
+              },
+              "qualifiedCode": "QageA5",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qage.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A6",
+              "content": {
+                "en": {
+                  "label": "65+"
+                }
+              },
+              "qualifiedCode": "QageA6",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qage.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            }
+          ],
+          "code": "Qage",
+          "type": "scq",
+          "content": {
+            "en": {
+              "label": "What is your age range?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qage.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "masked_value",
+              "text": "Qage.value ? QlarrScripts.safeAccess({\"A1\": QageA1.label,\"A2\": QageA2.label,\"A3\": QageA3.label,\"A4\": QageA4.label,\"A5\": QageA5.label,\"A6\": QageA6.label},Qage.value) : ''",
+              "returnType": "string",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gprofile.relevance && Qage.not_skipped",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qage.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "1",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "1",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "not_skipped",
+              "text": "(!Qdined.skip_to_on_A2 || !Qdined.relevance)",
+              "returnType": "boolean",
+              "isActive": true
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qage"
+        }
+      ],
+      "code": "Gprofile",
+      "groupType": "GROUP",
+      "content": {
+        "en": {
+          "label": "Participant Profiling"
+        }
+      },
+      "qualifiedCode": "Gprofile",
+      "instructionList": [
+        {
+          "code": "label",
+          "text": "",
+          "returnType": "string",
+          "isActive": false
+        },
+        {
+          "code": "relevance",
+          "text": "Gprofile.not_skipped",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "validity",
+          "text": "(!Qdined.in_current_navigation || !Qdined.relevance || Qdined.validity) && (!Qage.in_current_navigation || !Qage.relevance || Qage.validity)",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "in_current_navigation",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "order",
+          "text": "1",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "priority",
+          "text": "1",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "not_skipped",
+          "text": "(!Qconsent.skip_to_on_A2 || !Qconsent.relevance)",
+          "returnType": "boolean",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "questions": [
+        {
+          "answers": [
+            {
+              "code": "A1",
+              "content": {
+                "en": {
+                  "label": "Very Satisfied"
+                }
+              },
+              "qualifiedCode": "QsatisfactionA1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qsatisfaction.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A2",
+              "content": {
+                "en": {
+                  "label": "Satisfied"
+                }
+              },
+              "qualifiedCode": "QsatisfactionA2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qsatisfaction.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A3",
+              "content": {
+                "en": {
+                  "label": "Neutral"
+                }
+              },
+              "qualifiedCode": "QsatisfactionA3",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qsatisfaction.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A4",
+              "content": {
+                "en": {
+                  "label": "Dissatisfied"
+                }
+              },
+              "qualifiedCode": "QsatisfactionA4",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qsatisfaction.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A5",
+              "content": {
+                "en": {
+                  "label": "Very Dissatisfied"
+                }
+              },
+              "qualifiedCode": "QsatisfactionA5",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qsatisfaction.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            }
+          ],
+          "code": "Qsatisfaction",
+          "type": "scq",
+          "content": {
+            "en": {
+              "label": "How would you rate your overall satisfaction with your most recent dining experience at [Restaurant Name] Barbecue?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qsatisfaction.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "masked_value",
+              "text": "Qsatisfaction.value ? QlarrScripts.safeAccess({\"A1\": QsatisfactionA1.label,\"A2\": QsatisfactionA2.label,\"A3\": QsatisfactionA3.label,\"A4\": QsatisfactionA4.label,\"A5\": QsatisfactionA5.label},Qsatisfaction.value) : ''",
+              "returnType": "string",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Goverall.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qsatisfaction.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qsatisfaction"
+        },
+        {
+          "code": "Qsatisfaction_reason",
+          "type": "paragraph",
+          "content": {
+            "en": {
+              "label": "Why did you choose this rating? Please explain."
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "conditional_relevance",
+              "text": "[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\"].indexOf(Qsatisfaction.value) !== -1",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Goverall.relevance && Qsatisfaction_reason.conditional_relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "1",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "1",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "relevance": {
+            "rule": "show_if",
+            "logic": {
+              "and": [
+                {
+                  "in": [
+                    {
+                      "var": "Qsatisfaction"
+                    },
+                    [
+                      "A1",
+                      "A2",
+                      "A3",
+                      "A4",
+                      "A5"
+                    ]
+                  ]
+                }
+              ]
+            }
+          },
+          "qualifiedCode": "Qsatisfaction_reason"
+        },
+        {
+          "code": "Qrecommend",
+          "type": "nps",
+          "lower_bound_hint": "Not at all likely",
+          "higher_bound_hint": "Extremely likely",
+          "content": {
+            "en": {
+              "label": "How likely are you to recommend [Restaurant Name] Barbecue to a friend or colleague?",
+              "description": "(0-10 scale, 0 being Not at all likely, 10 being Extremely likely)"
+            }
+          },
+          "showDescription": true,
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qrecommend.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Goverall.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qrecommend.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "2",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "2",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qrecommend"
+        },
+        {
+          "code": "Qrecommend_reason",
+          "type": "paragraph",
+          "content": {
+            "en": {
+              "label": "Please tell us why you gave that score."
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "conditional_relevance",
+              "text": "[0,1,2,3,4,5,6,7,8,9,10].indexOf(Qrecommend.value) !== -1",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Goverall.relevance && Qrecommend_reason.conditional_relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "3",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "3",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "relevance": {
+            "rule": "show_if",
+            "logic": {
+              "and": [
+                {
+                  "in": [
+                    {
+                      "var": "Qrecommend"
+                    },
+                    [
+                      "0",
+                      "1",
+                      "2",
+                      "3",
+                      "4",
+                      "5",
+                      "6",
+                      "7",
+                      "8",
+                      "9",
+                      "10"
+                    ]
+                  ]
+                }
+              ]
+            }
+          },
+          "qualifiedCode": "Qrecommend_reason"
+        },
+        {
+          "answers": [
+            {
+              "code": "A1",
+              "content": {
+                "en": {
+                  "label": "Lunch"
+                }
+              },
+              "qualifiedCode": "QoccasionA1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qoccasion.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A2",
+              "content": {
+                "en": {
+                  "label": "Dinner"
+                }
+              },
+              "qualifiedCode": "QoccasionA2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qoccasion.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A3",
+              "content": {
+                "en": {
+                  "label": "Takeout"
+                }
+              },
+              "qualifiedCode": "QoccasionA3",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qoccasion.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A4",
+              "content": {
+                "en": {
+                  "label": "Delivery"
+                }
+              },
+              "qualifiedCode": "QoccasionA4",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qoccasion.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A5",
+              "content": {
+                "en": {
+                  "label": "Catering"
+                }
+              },
+              "qualifiedCode": "QoccasionA5",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qoccasion.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "answers": [
+                {
+                  "code": "Atext",
+                  "type": "other_text",
+                  "validation": {
+                    "validation_required": {
+                      "isActive": true
+                    }
+                  },
+                  "instructionList": [
+                    {
+                      "code": "validation_required",
+                      "text": "QlarrScripts.isVoid(QoccasionAotherAtext.value)",
+                      "returnType": "boolean",
+                      "isActive": true
+                    },
+                    {
+                      "code": "value",
+                      "text": "",
+                      "returnType": "string",
+                      "isActive": false
+                    },
+                    {
+                      "code": "conditional_relevance",
+                      "text": "Qoccasion.value === 'Aother'",
+                      "returnType": "boolean",
+                      "isActive": true
+                    },
+                    {
+                      "code": "label",
+                      "text": "",
+                      "returnType": "string",
+                      "isActive": false
+                    },
+                    {
+                      "code": "relevance",
+                      "text": "QoccasionAother.relevance && QoccasionAotherAtext.conditional_relevance",
+                      "returnType": "boolean",
+                      "isActive": true
+                    },
+                    {
+                      "code": "validity",
+                      "text": "!QoccasionAotherAtext.validation_required",
+                      "returnType": "boolean",
+                      "isActive": true
+                    },
+                    {
+                      "code": "in_current_navigation",
+                      "text": "true",
+                      "returnType": "boolean",
+                      "isActive": false
+                    },
+                    {
+                      "code": "order",
+                      "text": "0",
+                      "returnType": "int",
+                      "isActive": false
+                    },
+                    {
+                      "code": "priority",
+                      "text": "0",
+                      "returnType": "int",
+                      "isActive": false
+                    }
+                  ],
+                  "qualifiedCode": "QoccasionAotherAtext"
+                }
+              ],
+              "code": "Aother",
+              "type": "other",
+              "content": {
+                "en": {
+                  "label": "Other: please specify"
+                }
+              },
+              "qualifiedCode": "QoccasionAother",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qoccasion.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "(!QoccasionAotherAtext.relevance || QoccasionAotherAtext.validity)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            }
+          ],
+          "code": "Qoccasion",
+          "type": "scq",
+          "content": {
+            "en": {
+              "label": "Which of the following best describes your dining occasion?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qoccasion.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "masked_value",
+              "text": "Qoccasion.value ? QlarrScripts.safeAccess({\"A1\": QoccasionA1.label,\"A2\": QoccasionA2.label,\"A3\": QoccasionA3.label,\"A4\": QoccasionA4.label,\"A5\": QoccasionA5.label,\"Aother\": QoccasionAotherAtext.value},Qoccasion.value) : ''",
+              "returnType": "string",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Goverall.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qoccasion.validation_required && (!QoccasionAother.relevance || QoccasionAother.validity)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "4",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "4",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qoccasion"
+        },
+        {
+          "code": "Qoccasion_other",
+          "type": "text",
+          "content": {
+            "en": {
+              "label": "Please specify your dining occasion."
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "conditional_relevance",
+              "text": "[\"Aother\"].indexOf(Qoccasion.value) !== -1",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qoccasion_other.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Goverall.relevance && Qoccasion_other.conditional_relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qoccasion_other.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "5",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "5",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "relevance": {
+            "rule": "show_if",
+            "logic": {
+              "and": [
+                {
+                  "in": [
+                    {
+                      "var": "Qoccasion"
+                    },
+                    [
+                      "Aother"
+                    ]
+                  ]
+                }
+              ]
+            }
+          },
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qoccasion_other"
+        },
+        {
+          "answers": [
+            {
+              "code": "Ac1",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Excellent"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAc1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac2",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Good"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAc2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac3",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Average"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAc3",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac4",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Poor"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAc4",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac5",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Very Poor"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAc5",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ar1",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qexperience_matrixAr1.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qexperience_matrixAr1.value ? QlarrScripts.safeAccess({\"Ac1\": Qexperience_matrixAc1.label,\"Ac2\": Qexperience_matrixAc2.label,\"Ac3\": Qexperience_matrixAc3.label,\"Ac4\": Qexperience_matrixAc4.label,\"Ac5\": Qexperience_matrixAc5.label},Qexperience_matrixAr1.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qexperience_matrixAr1.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Food Quality"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAr1"
+            },
+            {
+              "code": "Ar2",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qexperience_matrixAr2.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qexperience_matrixAr2.value ? QlarrScripts.safeAccess({\"Ac1\": Qexperience_matrixAc1.label,\"Ac2\": Qexperience_matrixAc2.label,\"Ac3\": Qexperience_matrixAc3.label,\"Ac4\": Qexperience_matrixAc4.label,\"Ac5\": Qexperience_matrixAc5.label},Qexperience_matrixAr2.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qexperience_matrixAr2.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "6",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "6",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Service Speed"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAr2"
+            },
+            {
+              "code": "Ar3",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qexperience_matrixAr3.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qexperience_matrixAr3.value ? QlarrScripts.safeAccess({\"Ac1\": Qexperience_matrixAc1.label,\"Ac2\": Qexperience_matrixAc2.label,\"Ac3\": Qexperience_matrixAc3.label,\"Ac4\": Qexperience_matrixAc4.label,\"Ac5\": Qexperience_matrixAc5.label},Qexperience_matrixAr3.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qexperience_matrixAr3.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "7",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "7",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Atmosphere"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAr3"
+            },
+            {
+              "code": "Ar4",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qexperience_matrixAr4.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qexperience_matrixAr4.value ? QlarrScripts.safeAccess({\"Ac1\": Qexperience_matrixAc1.label,\"Ac2\": Qexperience_matrixAc2.label,\"Ac3\": Qexperience_matrixAc3.label,\"Ac4\": Qexperience_matrixAc4.label,\"Ac5\": Qexperience_matrixAc5.label},Qexperience_matrixAr4.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qexperience_matrixAr4.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "8",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "8",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Cleanliness"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAr4"
+            },
+            {
+              "code": "Ar5",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qexperience_matrixAr5.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qexperience_matrixAr5.value ? QlarrScripts.safeAccess({\"Ac1\": Qexperience_matrixAc1.label,\"Ac2\": Qexperience_matrixAc2.label,\"Ac3\": Qexperience_matrixAc3.label,\"Ac4\": Qexperience_matrixAc4.label,\"Ac5\": Qexperience_matrixAc5.label},Qexperience_matrixAr5.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qexperience_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qexperience_matrixAr5.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "9",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "9",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Value for Money"
+                }
+              },
+              "qualifiedCode": "Qexperience_matrixAr5"
+            }
+          ],
+          "code": "Qexperience_matrix",
+          "type": "scq_array",
+          "content": {
+            "en": {
+              "label": "Please rate the following aspects of your overall experience:"
+            }
+          },
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "randomize_rows": "RANDOM",
+          "randomize_columns": "ALPHA",
+          "instructionList": [
+            {
+              "code": "random_group",
+              "groups": [
+                {
+                  "codes": [
+                    "Ar1",
+                    "Ar2",
+                    "Ar3",
+                    "Ar4",
+                    "Ar5"
+                  ],
+                  "randomOption": "RANDOM"
+                },
+                {
+                  "codes": [
+                    "Ac1",
+                    "Ac2",
+                    "Ac3",
+                    "Ac4",
+                    "Ac5"
+                  ],
+                  "randomOption": "ALPHA"
+                }
+              ]
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Goverall.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "(!Qexperience_matrixAr1.relevance || Qexperience_matrixAr1.validity) && (!Qexperience_matrixAr2.relevance || Qexperience_matrixAr2.validity) && (!Qexperience_matrixAr3.relevance || Qexperience_matrixAr3.validity) && (!Qexperience_matrixAr4.relevance || Qexperience_matrixAr4.validity) && (!Qexperience_matrixAr5.relevance || Qexperience_matrixAr5.validity)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "6",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "6",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "qualifiedCode": "Qexperience_matrix"
+        }
+      ],
+      "code": "Goverall",
+      "groupType": "GROUP",
+      "content": {
+        "en": {
+          "label": "Overall Experience"
+        }
+      },
+      "qualifiedCode": "Goverall",
+      "instructionList": [
+        {
+          "code": "label",
+          "text": "",
+          "returnType": "string",
+          "isActive": false
+        },
+        {
+          "code": "relevance",
+          "text": "Goverall.not_skipped",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "validity",
+          "text": "(!Qsatisfaction.in_current_navigation || !Qsatisfaction.relevance || Qsatisfaction.validity) && (!Qsatisfaction_reason.in_current_navigation || !Qsatisfaction_reason.relevance || Qsatisfaction_reason.validity) && (!Qrecommend.in_current_navigation || !Qrecommend.relevance || Qrecommend.validity) && (!Qrecommend_reason.in_current_navigation || !Qrecommend_reason.relevance || Qrecommend_reason.validity) && (!Qoccasion.in_current_navigation || !Qoccasion.relevance || Qoccasion.validity) && (!Qoccasion_other.in_current_navigation || !Qoccasion_other.relevance || Qoccasion_other.validity) && (!Qexperience_matrix.in_current_navigation || !Qexperience_matrix.relevance || Qexperience_matrix.validity)",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "in_current_navigation",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "order",
+          "text": "2",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "priority",
+          "text": "2",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "not_skipped",
+          "text": "(!Qconsent.skip_to_on_A2 || !Qconsent.relevance) && (!Qdined.skip_to_on_A2 || !Qdined.relevance)",
+          "returnType": "boolean",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "questions": [
+        {
+          "answers": [
+            {
+              "code": "A1",
+              "content": {
+                "en": {
+                  "label": "To try something new"
+                }
+              },
+              "qualifiedCode": "Qfood_selectionA1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_selection.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A2",
+              "content": {
+                "en": {
+                  "label": "A particular craving"
+                }
+              },
+              "qualifiedCode": "Qfood_selectionA2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_selection.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A3",
+              "content": {
+                "en": {
+                  "label": "Recommendation from others"
+                }
+              },
+              "qualifiedCode": "Qfood_selectionA3",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_selection.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A4",
+              "content": {
+                "en": {
+                  "label": "Price"
+                }
+              },
+              "qualifiedCode": "Qfood_selectionA4",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_selection.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "answers": [
+                {
+                  "code": "Atext",
+                  "type": "other_text",
+                  "validation": {
+                    "validation_required": {
+                      "isActive": true
+                    }
+                  },
+                  "instructionList": [
+                    {
+                      "code": "validation_required",
+                      "text": "QlarrScripts.isVoid(Qfood_selectionAotherAtext.value)",
+                      "returnType": "boolean",
+                      "isActive": true
+                    },
+                    {
+                      "code": "value",
+                      "text": "",
+                      "returnType": "string",
+                      "isActive": false
+                    },
+                    {
+                      "code": "conditional_relevance",
+                      "text": "Qfood_selection.value === 'Aother'",
+                      "returnType": "boolean",
+                      "isActive": true
+                    },
+                    {
+                      "code": "label",
+                      "text": "",
+                      "returnType": "string",
+                      "isActive": false
+                    },
+                    {
+                      "code": "relevance",
+                      "text": "Qfood_selectionAother.relevance && Qfood_selectionAotherAtext.conditional_relevance",
+                      "returnType": "boolean",
+                      "isActive": true
+                    },
+                    {
+                      "code": "validity",
+                      "text": "!Qfood_selectionAotherAtext.validation_required",
+                      "returnType": "boolean",
+                      "isActive": true
+                    },
+                    {
+                      "code": "in_current_navigation",
+                      "text": "true",
+                      "returnType": "boolean",
+                      "isActive": false
+                    },
+                    {
+                      "code": "order",
+                      "text": "0",
+                      "returnType": "int",
+                      "isActive": false
+                    },
+                    {
+                      "code": "priority",
+                      "text": "0",
+                      "returnType": "int",
+                      "isActive": false
+                    }
+                  ],
+                  "qualifiedCode": "Qfood_selectionAotherAtext"
+                }
+              ],
+              "code": "Aother",
+              "type": "other",
+              "content": {
+                "en": {
+                  "label": "Other: please specify"
+                }
+              },
+              "qualifiedCode": "Qfood_selectionAother",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_selection.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "(!Qfood_selectionAotherAtext.relevance || Qfood_selectionAotherAtext.validity)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            }
+          ],
+          "code": "Qfood_selection",
+          "type": "scq",
+          "content": {
+            "en": {
+              "label": "What was the primary reason for your food selection during your last visit?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qfood_selection.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "masked_value",
+              "text": "Qfood_selection.value ? QlarrScripts.safeAccess({\"A1\": Qfood_selectionA1.label,\"A2\": Qfood_selectionA2.label,\"A3\": Qfood_selectionA3.label,\"A4\": Qfood_selectionA4.label,\"Aother\": Qfood_selectionAotherAtext.value},Qfood_selection.value) : ''",
+              "returnType": "string",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gfood.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qfood_selection.validation_required && (!Qfood_selectionAother.relevance || Qfood_selectionAother.validity)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qfood_selection"
+        },
+        {
+          "code": "Qfood_selection_other",
+          "type": "text",
+          "content": {
+            "en": {
+              "label": "Please specify the reason for your food selection."
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "conditional_relevance",
+              "text": "[\"Aother\"].indexOf(Qfood_selection.value) !== -1",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qfood_selection_other.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gfood.relevance && Qfood_selection_other.conditional_relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qfood_selection_other.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "1",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "1",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "relevance": {
+            "rule": "show_if",
+            "logic": {
+              "and": [
+                {
+                  "in": [
+                    {
+                      "var": "Qfood_selection"
+                    },
+                    [
+                      "Aother"
+                    ]
+                  ]
+                }
+              ]
+            }
+          },
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qfood_selection_other"
+        },
+        {
+          "code": "Qfavorite_item",
+          "type": "text",
+          "content": {
+            "en": {
+              "label": "What is your favorite item on the menu at [Restaurant Name] Barbecue?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qfavorite_item.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gfood.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qfavorite_item.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "2",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "2",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qfavorite_item"
+        },
+        {
+          "answers": [
+            {
+              "code": "Ac1",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Excellent"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAc1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac2",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Good"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAc2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac3",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Average"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAc3",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac4",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Poor"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAc4",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac5",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Very Poor"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAc5",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ar1",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qfood_rating_matrixAr1.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qfood_rating_matrixAr1.value ? QlarrScripts.safeAccess({\"Ac1\": Qfood_rating_matrixAc1.label,\"Ac2\": Qfood_rating_matrixAc2.label,\"Ac3\": Qfood_rating_matrixAc3.label,\"Ac4\": Qfood_rating_matrixAc4.label,\"Ac5\": Qfood_rating_matrixAc5.label},Qfood_rating_matrixAr1.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qfood_rating_matrixAr1.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Taste"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAr1"
+            },
+            {
+              "code": "Ar2",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qfood_rating_matrixAr2.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qfood_rating_matrixAr2.value ? QlarrScripts.safeAccess({\"Ac1\": Qfood_rating_matrixAc1.label,\"Ac2\": Qfood_rating_matrixAc2.label,\"Ac3\": Qfood_rating_matrixAc3.label,\"Ac4\": Qfood_rating_matrixAc4.label,\"Ac5\": Qfood_rating_matrixAc5.label},Qfood_rating_matrixAr2.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qfood_rating_matrixAr2.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "6",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "6",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Portion Size"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAr2"
+            },
+            {
+              "code": "Ar3",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qfood_rating_matrixAr3.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qfood_rating_matrixAr3.value ? QlarrScripts.safeAccess({\"Ac1\": Qfood_rating_matrixAc1.label,\"Ac2\": Qfood_rating_matrixAc2.label,\"Ac3\": Qfood_rating_matrixAc3.label,\"Ac4\": Qfood_rating_matrixAc4.label,\"Ac5\": Qfood_rating_matrixAc5.label},Qfood_rating_matrixAr3.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qfood_rating_matrixAr3.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "7",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "7",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Presentation"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAr3"
+            },
+            {
+              "code": "Ar4",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qfood_rating_matrixAr4.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qfood_rating_matrixAr4.value ? QlarrScripts.safeAccess({\"Ac1\": Qfood_rating_matrixAc1.label,\"Ac2\": Qfood_rating_matrixAc2.label,\"Ac3\": Qfood_rating_matrixAc3.label,\"Ac4\": Qfood_rating_matrixAc4.label,\"Ac5\": Qfood_rating_matrixAc5.label},Qfood_rating_matrixAr4.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qfood_rating_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qfood_rating_matrixAr4.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "8",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "8",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Freshness"
+                }
+              },
+              "qualifiedCode": "Qfood_rating_matrixAr4"
+            }
+          ],
+          "code": "Qfood_rating_matrix",
+          "type": "scq_array",
+          "content": {
+            "en": {
+              "label": "Please rate the following aspects of the food you ordered:"
+            }
+          },
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "randomize_rows": "RANDOM",
+          "randomize_columns": "ALPHA",
+          "instructionList": [
+            {
+              "code": "random_group",
+              "groups": [
+                {
+                  "codes": [
+                    "Ar1",
+                    "Ar2",
+                    "Ar3",
+                    "Ar4"
+                  ],
+                  "randomOption": "RANDOM"
+                },
+                {
+                  "codes": [
+                    "Ac1",
+                    "Ac2",
+                    "Ac3",
+                    "Ac4",
+                    "Ac5"
+                  ],
+                  "randomOption": "ALPHA"
+                }
+              ]
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gfood.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "(!Qfood_rating_matrixAr1.relevance || Qfood_rating_matrixAr1.validity) && (!Qfood_rating_matrixAr2.relevance || Qfood_rating_matrixAr2.validity) && (!Qfood_rating_matrixAr3.relevance || Qfood_rating_matrixAr3.validity) && (!Qfood_rating_matrixAr4.relevance || Qfood_rating_matrixAr4.validity)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "3",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "3",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "qualifiedCode": "Qfood_rating_matrix"
+        },
+        {
+          "code": "Qfood_improve",
+          "type": "paragraph",
+          "content": {
+            "en": {
+              "label": "What could we do to improve the food quality? Please be specific."
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gfood.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "4",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "4",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "qualifiedCode": "Qfood_improve"
+        }
+      ],
+      "code": "Gfood",
+      "groupType": "GROUP",
+      "content": {
+        "en": {
+          "label": "Food Quality & Menu"
+        }
+      },
+      "qualifiedCode": "Gfood",
+      "instructionList": [
+        {
+          "code": "label",
+          "text": "",
+          "returnType": "string",
+          "isActive": false
+        },
+        {
+          "code": "relevance",
+          "text": "Gfood.not_skipped",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "validity",
+          "text": "(!Qfood_selection.in_current_navigation || !Qfood_selection.relevance || Qfood_selection.validity) && (!Qfood_selection_other.in_current_navigation || !Qfood_selection_other.relevance || Qfood_selection_other.validity) && (!Qfavorite_item.in_current_navigation || !Qfavorite_item.relevance || Qfavorite_item.validity) && (!Qfood_rating_matrix.in_current_navigation || !Qfood_rating_matrix.relevance || Qfood_rating_matrix.validity) && (!Qfood_improve.in_current_navigation || !Qfood_improve.relevance || Qfood_improve.validity)",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "in_current_navigation",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "order",
+          "text": "3",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "priority",
+          "text": "3",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "not_skipped",
+          "text": "(!Qconsent.skip_to_on_A2 || !Qconsent.relevance) && (!Qdined.skip_to_on_A2 || !Qdined.relevance)",
+          "returnType": "boolean",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "questions": [
+        {
+          "answers": [
+            {
+              "code": "A1",
+              "content": {
+                "en": {
+                  "label": "Very Friendly"
+                }
+              },
+              "qualifiedCode": "Qstaff_friendlinessA1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qstaff_friendliness.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A2",
+              "content": {
+                "en": {
+                  "label": "Friendly"
+                }
+              },
+              "qualifiedCode": "Qstaff_friendlinessA2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qstaff_friendliness.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A3",
+              "content": {
+                "en": {
+                  "label": "Neutral"
+                }
+              },
+              "qualifiedCode": "Qstaff_friendlinessA3",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qstaff_friendliness.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A4",
+              "content": {
+                "en": {
+                  "label": "Unfriendly"
+                }
+              },
+              "qualifiedCode": "Qstaff_friendlinessA4",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qstaff_friendliness.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "A5",
+              "content": {
+                "en": {
+                  "label": "Very Unfriendly"
+                }
+              },
+              "qualifiedCode": "Qstaff_friendlinessA5",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qstaff_friendliness.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            }
+          ],
+          "code": "Qstaff_friendliness",
+          "type": "scq",
+          "content": {
+            "en": {
+              "label": "How would you describe the friendliness of the staff?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "validation_required",
+              "text": "QlarrScripts.isVoid(Qstaff_friendliness.value)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "masked_value",
+              "text": "Qstaff_friendliness.value ? QlarrScripts.safeAccess({\"A1\": Qstaff_friendlinessA1.label,\"A2\": Qstaff_friendlinessA2.label,\"A3\": Qstaff_friendlinessA3.label,\"A4\": Qstaff_friendlinessA4.label,\"A5\": Qstaff_friendlinessA5.label},Qstaff_friendliness.value) : ''",
+              "returnType": "string",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gservice.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "!Qstaff_friendliness.validation_required",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "qualifiedCode": "Qstaff_friendliness"
+        },
+        {
+          "code": "Qstaff_friendliness_reason",
+          "type": "paragraph",
+          "content": {
+            "en": {
+              "label": "Please explain why you selected the above answer."
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "conditional_relevance",
+              "text": "[\"A1\",\"A2\",\"A3\",\"A4\",\"A5\"].indexOf(Qstaff_friendliness.value) !== -1",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gservice.relevance && Qstaff_friendliness_reason.conditional_relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "1",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "1",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "relevance": {
+            "rule": "show_if",
+            "logic": {
+              "and": [
+                {
+                  "in": [
+                    {
+                      "var": "Qstaff_friendliness"
+                    },
+                    [
+                      "A1",
+                      "A2",
+                      "A3",
+                      "A4",
+                      "A5"
+                    ]
+                  ]
+                }
+              ]
+            }
+          },
+          "qualifiedCode": "Qstaff_friendliness_reason"
+        },
+        {
+          "answers": [
+            {
+              "code": "Ac1",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Excellent"
+                }
+              },
+              "qualifiedCode": "Qatmosphere_matrixAc1",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qatmosphere_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "0",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac2",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Good"
+                }
+              },
+              "qualifiedCode": "Qatmosphere_matrixAc2",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qatmosphere_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "1",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac3",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Average"
+                }
+              },
+              "qualifiedCode": "Qatmosphere_matrixAc3",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qatmosphere_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "2",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac4",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Poor"
+                }
+              },
+              "qualifiedCode": "Qatmosphere_matrixAc4",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qatmosphere_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "3",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ac5",
+              "type": "column",
+              "content": {
+                "en": {
+                  "label": "Very Poor"
+                }
+              },
+              "qualifiedCode": "Qatmosphere_matrixAc5",
+              "instructionList": [
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qatmosphere_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "4",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ]
+            },
+            {
+              "code": "Ar1",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qatmosphere_matrixAr1.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qatmosphere_matrixAr1.value ? QlarrScripts.safeAccess({\"Ac1\": Qatmosphere_matrixAc1.label,\"Ac2\": Qatmosphere_matrixAc2.label,\"Ac3\": Qatmosphere_matrixAc3.label,\"Ac4\": Qatmosphere_matrixAc4.label,\"Ac5\": Qatmosphere_matrixAc5.label},Qatmosphere_matrixAr1.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qatmosphere_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qatmosphere_matrixAr1.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "5",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Music Volume"
+                }
+              },
+              "qualifiedCode": "Qatmosphere_matrixAr1"
+            },
+            {
+              "code": "Ar2",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qatmosphere_matrixAr2.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qatmosphere_matrixAr2.value ? QlarrScripts.safeAccess({\"Ac1\": Qatmosphere_matrixAc1.label,\"Ac2\": Qatmosphere_matrixAc2.label,\"Ac3\": Qatmosphere_matrixAc3.label,\"Ac4\": Qatmosphere_matrixAc4.label,\"Ac5\": Qatmosphere_matrixAc5.label},Qatmosphere_matrixAr2.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qatmosphere_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qatmosphere_matrixAr2.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "6",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "6",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Seating Comfort"
+                }
+              },
+              "qualifiedCode": "Qatmosphere_matrixAr2"
+            },
+            {
+              "code": "Ar3",
+              "type": "row",
+              "validation": {
+                "validation_required": {
+                  "isActive": true
+                }
+              },
+              "instructionList": [
+                {
+                  "code": "validation_required",
+                  "text": "QlarrScripts.isVoid(Qatmosphere_matrixAr3.value)",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "masked_value",
+                  "text": "Qatmosphere_matrixAr3.value ? QlarrScripts.safeAccess({\"Ac1\": Qatmosphere_matrixAc1.label,\"Ac2\": Qatmosphere_matrixAc2.label,\"Ac3\": Qatmosphere_matrixAc3.label,\"Ac4\": Qatmosphere_matrixAc4.label,\"Ac5\": Qatmosphere_matrixAc5.label},Qatmosphere_matrixAr3.value) : ''",
+                  "returnType": "string",
+                  "isActive": true
+                },
+                {
+                  "code": "value",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "label",
+                  "text": "",
+                  "returnType": "string",
+                  "isActive": false
+                },
+                {
+                  "code": "relevance",
+                  "text": "Qatmosphere_matrix.relevance",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "validity",
+                  "text": "!Qatmosphere_matrixAr3.validation_required",
+                  "returnType": "boolean",
+                  "isActive": true
+                },
+                {
+                  "code": "in_current_navigation",
+                  "text": "true",
+                  "returnType": "boolean",
+                  "isActive": false
+                },
+                {
+                  "code": "order",
+                  "text": "7",
+                  "returnType": "int",
+                  "isActive": false
+                },
+                {
+                  "code": "priority",
+                  "text": "7",
+                  "returnType": "int",
+                  "isActive": false
+                }
+              ],
+              "content": {
+                "en": {
+                  "label": "Overall Ambiance"
+                }
+              },
+              "qualifiedCode": "Qatmosphere_matrixAr3"
+            }
+          ],
+          "code": "Qatmosphere_matrix",
+          "type": "scq_array",
+          "content": {
+            "en": {
+              "label": "Please rate the following aspects of the restaurant's atmosphere:"
+            }
+          },
+          "validation": {
+            "validation_required": {
+              "isActive": true
+            }
+          },
+          "randomize_rows": "RANDOM",
+          "randomize_columns": "ALPHA",
+          "instructionList": [
+            {
+              "code": "random_group",
+              "groups": [
+                {
+                  "codes": [
+                    "Ar1",
+                    "Ar2",
+                    "Ar3"
+                  ],
+                  "randomOption": "RANDOM"
+                },
+                {
+                  "codes": [
+                    "Ac1",
+                    "Ac2",
+                    "Ac3",
+                    "Ac4",
+                    "Ac5"
+                  ],
+                  "randomOption": "ALPHA"
+                }
+              ]
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gservice.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "(!Qatmosphere_matrixAr1.relevance || Qatmosphere_matrixAr1.validity) && (!Qatmosphere_matrixAr2.relevance || Qatmosphere_matrixAr2.validity) && (!Qatmosphere_matrixAr3.relevance || Qatmosphere_matrixAr3.validity)",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "2",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "2",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "qualifiedCode": "Qatmosphere_matrix"
+        },
+        {
+          "code": "Qadditional_comments",
+          "type": "paragraph",
+          "content": {
+            "en": {
+              "label": "Would you like to share any additional comments about your experience at [Restaurant Name] Barbecue?"
+            }
+          },
+          "instructionList": [
+            {
+              "code": "value",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "Gservice.relevance",
+              "returnType": "boolean",
+              "isActive": true
+            },
+            {
+              "code": "validity",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "3",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "3",
+              "returnType": "int",
+              "isActive": false
+            }
+          ],
+          "qualifiedCode": "Qadditional_comments"
+        }
+      ],
+      "code": "Gservice",
+      "groupType": "GROUP",
+      "content": {
+        "en": {
+          "label": "Service & Atmosphere"
+        }
+      },
+      "qualifiedCode": "Gservice",
+      "instructionList": [
+        {
+          "code": "label",
+          "text": "",
+          "returnType": "string",
+          "isActive": false
+        },
+        {
+          "code": "relevance",
+          "text": "Gservice.not_skipped",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "validity",
+          "text": "(!Qstaff_friendliness.in_current_navigation || !Qstaff_friendliness.relevance || Qstaff_friendliness.validity) && (!Qstaff_friendliness_reason.in_current_navigation || !Qstaff_friendliness_reason.relevance || Qstaff_friendliness_reason.validity) && (!Qatmosphere_matrix.in_current_navigation || !Qatmosphere_matrix.relevance || Qatmosphere_matrix.validity) && (!Qadditional_comments.in_current_navigation || !Qadditional_comments.relevance || Qadditional_comments.validity)",
+          "returnType": "boolean",
+          "isActive": true
+        },
+        {
+          "code": "in_current_navigation",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "order",
+          "text": "4",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "priority",
+          "text": "4",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "not_skipped",
+          "text": "(!Qconsent.skip_to_on_A2 || !Qconsent.relevance) && (!Qdined.skip_to_on_A2 || !Qdined.relevance)",
+          "returnType": "boolean",
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "questions": [
+        {
+          "code": "Qthank_you",
+          "type": "text_display",
+          "content": {
+            "en": {
+              "label": "Thank you for your valuable feedback! We appreciate you taking the time to complete this survey. Your responses will help us to improve our services and provide an even better experience for our customers."
+            }
+          },
+          "qualifiedCode": "Qthank_you",
+          "instructionList": [
+            {
+              "code": "label",
+              "text": "",
+              "returnType": "string",
+              "isActive": false
+            },
+            {
+              "code": "relevance",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "validity",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "in_current_navigation",
+              "text": "true",
+              "returnType": "boolean",
+              "isActive": false
+            },
+            {
+              "code": "order",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            },
+            {
+              "code": "priority",
+              "text": "0",
+              "returnType": "int",
+              "isActive": false
+            }
+          ]
+        }
+      ],
+      "code": "Gend",
+      "groupType": "END",
+      "content": {
+        "en": {
+          "label": "Conclusion"
+        }
+      },
+      "qualifiedCode": "Gend",
+      "instructionList": [
+        {
+          "code": "label",
+          "text": "",
+          "returnType": "string",
+          "isActive": false
+        },
+        {
+          "code": "relevance",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "validity",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "in_current_navigation",
+          "text": "true",
+          "returnType": "boolean",
+          "isActive": false
+        },
+        {
+          "code": "order",
+          "text": "5",
+          "returnType": "int",
+          "isActive": false
+        },
+        {
+          "code": "priority",
+          "text": "5",
+          "returnType": "int",
+          "isActive": false
+        }
+      ]
+    }
+  ],
+  "title": "Customer Satisfaction Survey: [Restaurant Name] Barbecue",
+  "description": "Thank you for taking the time to share your feedback about your recent dining experience at [Restaurant Name] Barbecue. This survey should take approximately 5-7 minutes to complete.",
+  "theme": {
+    "textStyles": {
+      "group": {
+        "font": "Rubik",
+        "size": 26,
+        "color": "#091133"
+      },
+      "question": {
+        "font": "Open Sans",
+        "size": 18,
+        "color": "#333333"
+      },
+      "text": {
+        "font": "Roboto",
+        "size": 14,
+        "color": "#666666"
+      }
+    },
+    "paperColor": "#FFFFFF",
+    "bgColor": "#F0F0F0",
+    "primaryColor": "#007BFF"
+  },
+  "allowPrevious": true,
+  "skipInvalid": false,
+  "allowIncomplete": true,
+  "allowJump": true,
+  "navigationMode": "group_by_group",
+  "defaultLang": {
+    "code": "en",
+    "name": "English"
+  },
+  "additionalLang": [],
+  "qualifiedCode": "Survey",
+  "instructionList": [
+    {
+      "code": "lang",
+      "text": "en",
+      "returnType": "string",
+      "isActive": false
+    },
+    {
+      "code": "mode",
+      "text": "mixed",
+      "returnType": "string",
+      "isActive": false
+    },
+    {
+      "code": "relevance_map",
+      "text": "{Gintro: Gintro.relevance,Qconsent: Qconsent.relevance,Gprofile: Gprofile.relevance,Qdined: Qdined.relevance,Qage: Qage.relevance,Goverall: Goverall.relevance,Qsatisfaction: Qsatisfaction.relevance,Qsatisfaction_reason: Qsatisfaction_reason.relevance,Qrecommend: Qrecommend.relevance,Qrecommend_reason: Qrecommend_reason.relevance,Qoccasion: Qoccasion.relevance,Qoccasion_other: Qoccasion_other.relevance,Qexperience_matrix: Qexperience_matrix.relevance,Gfood: Gfood.relevance,Qfood_selection: Qfood_selection.relevance,Qfood_selection_other: Qfood_selection_other.relevance,Qfavorite_item: Qfavorite_item.relevance,Qfood_rating_matrix: Qfood_rating_matrix.relevance,Qfood_improve: Qfood_improve.relevance,Gservice: Gservice.relevance,Qstaff_friendliness: Qstaff_friendliness.relevance,Qstaff_friendliness_reason: Qstaff_friendliness_reason.relevance,Qatmosphere_matrix: Qatmosphere_matrix.relevance,Qadditional_comments: Qadditional_comments.relevance,Gend: Gend.relevance,Qthank_you: Qthank_you.relevance}",
+      "returnType": "map",
+      "isActive": true
+    },
+    {
+      "code": "validity_map",
+      "text": "{Gintro: Gintro.validity,Qconsent: Qconsent.validity,Gprofile: Gprofile.validity,Qdined: Qdined.validity,Qage: Qage.validity,Goverall: Goverall.validity,Qsatisfaction: Qsatisfaction.validity,Qsatisfaction_reason: Qsatisfaction_reason.validity,Qrecommend: Qrecommend.validity,Qrecommend_reason: Qrecommend_reason.validity,Qoccasion: Qoccasion.validity,Qoccasion_other: Qoccasion_other.validity,Qexperience_matrix: Qexperience_matrix.validity,Gfood: Gfood.validity,Qfood_selection: Qfood_selection.validity,Qfood_selection_other: Qfood_selection_other.validity,Qfavorite_item: Qfavorite_item.validity,Qfood_rating_matrix: Qfood_rating_matrix.validity,Qfood_improve: Qfood_improve.validity,Gservice: Gservice.validity,Qstaff_friendliness: Qstaff_friendliness.validity,Qstaff_friendliness_reason: Qstaff_friendliness_reason.validity,Qatmosphere_matrix: Qatmosphere_matrix.validity,Qadditional_comments: Qadditional_comments.validity,Gend: Gend.validity,Qthank_you: Qthank_you.validity}",
+      "returnType": "map",
+      "isActive": true
+    },
+    {
+      "code": "before_navigation",
+      "text": "[]",
+      "returnType": "list",
+      "isActive": false
+    },
+    {
+      "code": "after_navigation",
+      "text": "[]",
+      "returnType": "list",
+      "isActive": false
+    },
+    {
+      "code": "has_previous",
+      "text": "(function(){if(!Survey.before_navigation||!Survey.relevance_map){return false;}for(var i=0;i<Survey.before_navigation.length;i++){if(Survey.relevance_map[Survey.before_navigation[i]]){return true}}return false;})()",
+      "returnType": "boolean",
+      "isActive": true
+    },
+    {
+      "code": "has_next",
+      "text": "(function(){if(!Survey.after_navigation||!Survey.relevance_map){return false;}for(var i=0;i<Survey.after_navigation.length;i++){if(Survey.relevance_map[Survey.after_navigation[i]]){return true}}return false;})()",
+      "returnType": "boolean",
+      "isActive": true
+    },
+    {
+      "code": "validity",
+      "text": "(!Gintro.in_current_navigation || !Gintro.relevance || Gintro.validity) && (!Gprofile.in_current_navigation || !Gprofile.relevance || Gprofile.validity) && (!Goverall.in_current_navigation || !Goverall.relevance || Goverall.validity) && (!Gfood.in_current_navigation || !Gfood.relevance || Gfood.validity) && (!Gservice.in_current_navigation || !Gservice.relevance || Gservice.validity) && (!Gend.in_current_navigation || !Gend.relevance || Gend.validity)",
+      "returnType": "boolean",
+      "isActive": true
+    }
+  ]
+}

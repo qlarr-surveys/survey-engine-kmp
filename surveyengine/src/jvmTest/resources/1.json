@@ -1,0 +1,54 @@
+{
+  "groups": [
+    {
+      "code": "G1",
+      "content": {
+        "en": {
+          "label": "Kabaka"
+        }
+      },
+      "groupType": "GROUP",
+      "questions": [
+        {
+          "content": {
+            "en": {
+              "label": "Sample Text Question"
+            }
+          },
+          "code": "Q1",
+          "type": "text_display"
+        }
+      ]
+    },
+    {
+      "content": {
+        "en": {
+          "label": "End Page"
+        }
+      },
+      "code": "G2",
+      "groupType": "END",
+      "questions": [
+        {
+          "content": {
+            "en": {
+              "label": "Bye Question"
+            }
+          },
+          "code": "Q2",
+          "type": "text_display"
+        }
+      ]
+    }
+  ],
+  "defaultLang": {
+    "code": "en",
+    "name": "English"
+  },
+  "code": "Survey",
+  "navigationMode": "group_by_group",
+  "allowPrevious": true,
+  "skipInvalid": true,
+  "allowIncomplete": true,
+  "allowJump": true
+}

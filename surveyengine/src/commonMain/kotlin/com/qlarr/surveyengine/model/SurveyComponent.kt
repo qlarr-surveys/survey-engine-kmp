@@ -329,8 +329,8 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
             } ?: listOf()
             Survey(instructionList, groups, errors)
         } else if (code.isGroupCode()) {
-            val groupType: GroupType = jsonElement["groupType"]?.jsonPrimitive?.contentOrNull?.let {
-                json.decodeFromString(serializer<GroupType>(), it)
+            val groupType: GroupType = jsonElement["groupType"]?.jsonPrimitive?.let {
+                json.decodeFromJsonElement(serializer<GroupType>(), it)
             } ?: GroupType.GROUP
 
             val questions: List<Question> = jsonElement["questions"]?.let {
