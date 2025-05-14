@@ -1,6 +1,8 @@
 package com.qlarr.surveyengine.model
 
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SurveyLang(val code: String, val name: String) {
 
     companion object {
