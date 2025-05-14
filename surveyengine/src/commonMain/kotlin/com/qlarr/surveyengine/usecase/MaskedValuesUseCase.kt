@@ -14,9 +14,13 @@ import com.qlarr.surveyengine.navigate.componentsInCurrentNav
 
 
 @Suppress("unused")
-class MaskedValuesUseCase(processedSurvey: String) {
+class MaskedValuesUseCase(
+    private val scriptEngine: ScriptEngineNavigate,
+    private val useCaseInput: NavigationUseCaseInput
+
+) {
     private val validationJsonOutput: ValidationJsonOutput =
-        jsonMapper.decodeFromString<ValidationJsonOutput>(processedSurvey)
+        jsonMapper.decodeFromString<ValidationJsonOutput>(useCaseInput.processedSurvey)
     private val validationOutput: ValidationOutput = validationJsonOutput.toValidationOutput()
     private val defaultLang = validationJsonOutput.survey.defaultLang()
     val lang = defaultLang
@@ -25,13 +29,13 @@ class MaskedValuesUseCase(processedSurvey: String) {
     private val surveyJson = validationJsonOutput.survey
     private val contextExecutor = ContextExecutor()
 
-    fun navigate(scriptEngine: ScriptEngineNavigate, useCaseInput: NavigationUseCaseInput): Map<String, Any> {
-        val script = getNavigationScript(useCaseInput)
+    fun navigate(): Map<String, Any> {
+        val script = getNavigationScript()
         val scriptResult = scriptEngine.navigate(script)
         return processNavigationResult(scriptResult)
     }
 
-    fun getNavigationScript(useCaseInput: NavigationUseCaseInput): String {
+    fun getNavigationScript(): String {
         val values = useCaseInput.values.withDependencyKeys()
         val startupRandomValues = mutableMapOf<Dependency, Int>()
         val dependencyMapper = DependencyMapper(validationOutput.impactMap)
