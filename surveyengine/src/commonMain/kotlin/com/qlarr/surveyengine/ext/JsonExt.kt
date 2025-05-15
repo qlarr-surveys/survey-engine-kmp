@@ -2,25 +2,29 @@ package com.qlarr.surveyengine.ext
 
 import com.qlarr.surveyengine.model.*
 import kotlinx.serialization.json.*
+import kotlinx.serialization.serializer
 
 
 class JsonExt {
 
     companion object {
-        fun flatObject(surveyJson: String): String =
-            jsonMapper.encodeToJsonElement(surveyJson).jsonObject.flatten().toString()
+        fun flatObject(surveyJson: String): String {
+            val obj = jsonMapper.parseToJsonElement(surveyJson).jsonObject
+            return obj.flatten().toString()
+        }
+
 
         fun addChildren(surveyJson: String, code: String, state: String): String =
-            jsonMapper.encodeToJsonElement(surveyJson).jsonObject.addChildren(
+            jsonMapper.parseToJsonElement(surveyJson).jsonObject.addChildren(
                 code,
-                jsonMapper.encodeToJsonElement(state).jsonObject
+                jsonMapper.parseToJsonElement(state).jsonObject
             ).toString()
 
         fun resources(surveyJson: String): List<String> =
-            jsonMapper.encodeToJsonElement(surveyJson).jsonObject.resources()
+            jsonMapper.parseToJsonElement(surveyJson).jsonObject.resources()
 
         fun labels(surveyJson: String, parentCode: String = "", lang: String): Map<String, String> =
-            jsonMapper.encodeToJsonElement(surveyJson).jsonObject.labels(parentCode, lang)
+            jsonMapper.parseToJsonElement(surveyJson).jsonObject.labels(parentCode, lang)
     }
 }
 
@@ -144,7 +148,7 @@ fun JsonObject.addChildren(code: String, state: JsonObject): JsonObject {
 
 internal fun JsonObject.flatten(
     parentCode: String = "",
-    returnObj: JsonObject = buildJsonObject {}
+    returnObj: MutableMap<String,JsonElement> = mutableMapOf()
 ): JsonObject {
     val code = this["code"]!!.jsonPrimitive.content
     val qualifiedCode = if (code.isUniqueCode()) code else parentCode + code
@@ -195,8 +199,9 @@ internal fun JsonObject.flatten(
             }
         }
     }
+    returnObj[qualifiedCode] = objectWithoutChildren
 
-    return JsonObject(returnObj + (qualifiedCode to objectWithoutChildren))
+    return JsonObject(returnObj)
 }
 
 
