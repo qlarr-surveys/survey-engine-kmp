@@ -182,6 +182,16 @@ class JsonAdapterTest {
         )
     }
 
+    @Test
+    fun serialises_and_deserialises_reserved_code() {
+        val reservedCode:ReservedCode = ValidationRule("validation_required")
+        val string = jsonMapper.encodeToString(reservedCode)
+        assertEquals(
+            reservedCode,
+            jsonMapper.decodeFromString<ReservedCode>(jsonMapper.encodeToString(reservedCode))
+        )
+    }
+
 
     @Test
     fun serializes_and_de_serializes_to_validation_json_output() {
