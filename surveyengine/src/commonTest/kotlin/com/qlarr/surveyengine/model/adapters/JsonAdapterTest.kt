@@ -6,7 +6,6 @@ import com.qlarr.surveyengine.model.InstructionError.ScriptError
 import com.qlarr.surveyengine.model.ReservedCode.*
 import com.qlarr.surveyengine.model.exposed.*
 import com.qlarr.surveyengine.usecase.ValidationJsonOutput
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.jsonObject
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -81,44 +80,15 @@ class JsonAdapterTest {
     private val NAV_INDEX_G1_2_3 = NavigationIndex.Groups(listOf("G1", "G2", "G3"))
 
 
-    private val useCaseInput = NavigationUseCaseInput(
-        lang = SurveyLang.DE.code,
-        navigationDirection = NavigationDirection.Jump(navigationIndex = NavigationIndex.Groups(listOf())),
-        values = mapOf(
-            "Q1.value" to "",
-            "Q2.value" to 2.2,
-            "Q3.value" to true,
-            "Q4.value" to listOf("1", "2", "3"),
-            "Q5.value" to mapOf("first" to "john", "last" to "smith")
-        ),
-        processedSurvey = "",
-        skipInvalid = false,
-        surveyMode = SurveyMode.ONLINE
-    )
-    private val useCaseInputText =
-        "{\"values\":{\"Q1.value\":\"\",\"Q2.value\":2.2,\"Q3.value\":true,\"Q4.value\":[\"1\",\"2\",\"3\"],\"Q5.value\":{\"first\":\"john\",\"last\":\"smith\"}},\"processedSurvey\":\"\",\"lang\":\"de\",\"navigationMode\":null,\"navigationIndex\":null,\"navigationDirection\":{\"name\":\"JUMP\",\"navigationIndex\":{\"groupIds\":[],\"name\":\"groups\"}},\"skipInvalid\":false,\"surveyMode\":\"ONLINE\"}"
-
-    private val useCaseInput1 = NavigationUseCaseInput(
-        navigationIndex = NavigationIndex.Question("Q1"),
-        navigationDirection = NavigationDirection.Next,
-        processedSurvey = "",
-        skipInvalid = false,
-        surveyMode = SurveyMode.OFFLINE
-    )
-
-    private val useCaseInput2 = NavigationUseCaseInput(
-        processedSurvey = "",
-        skipInvalid = false,
-        surveyMode = SurveyMode.ONLINE
-    )
-
-
     @Test
     fun serializes_and_deserializes_instructions() {
         // Instead of comparing specific string formats, we'll test round-trip serialization
         assertEquals(SKIP, jsonMapper.decodeFromString<Instruction>(jsonMapper.encodeToString(SKIP)))
         assertEquals(RANDOM_GROUP, jsonMapper.decodeFromString<Instruction>(jsonMapper.encodeToString(RANDOM_GROUP)))
-        assertEquals(PRIORITY_GROUPS, jsonMapper.decodeFromString<Instruction>(jsonMapper.encodeToString(PRIORITY_GROUPS)))
+        assertEquals(
+            PRIORITY_GROUPS,
+            jsonMapper.decodeFromString<Instruction>(jsonMapper.encodeToString(PRIORITY_GROUPS))
+        )
         assertEquals(DYNAMIC_EQ, jsonMapper.decodeFromString<Instruction>(jsonMapper.encodeToString(DYNAMIC_EQ)))
         assertEquals(PARENT_REL, jsonMapper.decodeFromString<Instruction>(jsonMapper.encodeToString(PARENT_REL)))
         assertEquals(REF_EQ, jsonMapper.decodeFromString<Instruction>(jsonMapper.encodeToString(REF_EQ)))
@@ -137,15 +107,27 @@ class JsonAdapterTest {
         )
 
         assertEquals(List_ERR, jsonMapper.decodeFromString<List<InstructionError>>(jsonMapper.encodeToString(List_ERR)))
-        assertEquals(List_ERR_1, jsonMapper.decodeFromString<List<InstructionError>>(jsonMapper.encodeToString(List_ERR_1)))
+        assertEquals(
+            List_ERR_1,
+            jsonMapper.decodeFromString<List<InstructionError>>(jsonMapper.encodeToString(List_ERR_1))
+        )
     }
 
     @Test
     fun serializes_and_de_serializes_nav_index() {
         // Test round-trip serialization
-        assertEquals(NAV_INDEX_G1, jsonMapper.decodeFromString<NavigationIndex>(jsonMapper.encodeToString(NAV_INDEX_G1)))
-        assertEquals(NAV_INDEX_G1_2_3, jsonMapper.decodeFromString<NavigationIndex>(jsonMapper.encodeToString(NAV_INDEX_G1_2_3)))
-        assertEquals(NAV_INDEX_Q1, jsonMapper.decodeFromString<NavigationIndex>(jsonMapper.encodeToString(NAV_INDEX_Q1)))
+        assertEquals(
+            NAV_INDEX_G1,
+            jsonMapper.decodeFromString<NavigationIndex>(jsonMapper.encodeToString(NAV_INDEX_G1))
+        )
+        assertEquals(
+            NAV_INDEX_G1_2_3,
+            jsonMapper.decodeFromString<NavigationIndex>(jsonMapper.encodeToString(NAV_INDEX_G1_2_3))
+        )
+        assertEquals(
+            NAV_INDEX_Q1,
+            jsonMapper.decodeFromString<NavigationIndex>(jsonMapper.encodeToString(NAV_INDEX_Q1))
+        )
     }
 
 
@@ -153,7 +135,10 @@ class JsonAdapterTest {
     fun serializes_and_de_serializes_components() {
         // Test round-trip serialization
         assertEquals(QUESTION, jsonMapper.decodeFromString<Question>(jsonMapper.encodeToString(QUESTION)))
-        assertEquals(COMPONENT_List, jsonMapper.decodeFromString<List<Group>>(jsonMapper.encodeToString(COMPONENT_List)))
+        assertEquals(
+            COMPONENT_List,
+            jsonMapper.decodeFromString<List<Group>>(jsonMapper.encodeToString(COMPONENT_List))
+        )
         assertEquals(G3, jsonMapper.decodeFromString<Group>(jsonMapper.encodeToString(G3)))
     }
 
@@ -163,28 +148,10 @@ class JsonAdapterTest {
         assertEquals(file, jsonMapper.decodeFromString<ReturnType>(jsonMapper.encodeToString(file)))
     }
 
-    @Test
-    fun serialises_and_deserialises_use_case_input() {
-        // Test round-trip serialization
-        assertEquals(
-            useCaseInput,
-            jsonMapper.decodeFromString<NavigationUseCaseInput>(jsonMapper.encodeToString(useCaseInput))
-        )
-        
-        assertEquals(
-            useCaseInput1,
-            jsonMapper.decodeFromString<NavigationUseCaseInput>(jsonMapper.encodeToString(useCaseInput1))
-        )
-        
-        assertEquals(
-            useCaseInput2,
-            jsonMapper.decodeFromString<NavigationUseCaseInput>(jsonMapper.encodeToString(useCaseInput2))
-        )
-    }
 
     @Test
     fun serialises_and_deserialises_reserved_code() {
-        val reservedCode:ReservedCode = ValidationRule("validation_required")
+        val reservedCode: ReservedCode = ValidationRule("validation_required")
         val string = jsonMapper.encodeToString(reservedCode)
         assertEquals(
             reservedCode,
@@ -198,10 +165,10 @@ class JsonAdapterTest {
         // Create a sample JsonObject for testing
         val sampleJsonObject = jsonMapper.parseToJsonElement(
             "{\"code\":\"G3\"," +
-            "\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]," +
-            "\"children\":[{\"code\":\"Q5\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]},{\"code\":\"Q6\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]}]}"
+                    "\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]," +
+                    "\"children\":[{\"code\":\"Q5\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]},{\"code\":\"Q6\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]}]}"
         ).jsonObject
-        
+
         // Create a ValidationJsonOutput with meaningful test data
         val validationJsonOutput = ValidationJsonOutput(
             schema = listOf(
@@ -229,18 +196,18 @@ class JsonAdapterTest {
             script = "",
             skipMap = mapOf()
         )
-        
+
         // Test serializing
         val jsonString = jsonMapper.encodeToString(validationJsonOutput)
-        
+
         // Create a new instance for comparison
         val newJsonObject = jsonMapper.parseToJsonElement(
             "{\"code\":\"G3\"," +
-            "\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]," +
-            "\"children\":[{\"code\":\"Q5\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]},{\"code\":\"Q6\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]}]}"
+                    "\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]," +
+                    "\"children\":[{\"code\":\"Q5\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]},{\"code\":\"Q6\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]}]}"
         ).jsonObject
 
-        
+
         // Verify schema, impactMap, componentIndexList, script, and skipMap are correctly serialized
         val deserializedOutput = jsonMapper.decodeFromString<ValidationJsonOutput>(jsonString)
         assertEquals(validationJsonOutput.schema, deserializedOutput.schema)
@@ -248,7 +215,7 @@ class JsonAdapterTest {
         assertEquals(validationJsonOutput.componentIndexList, deserializedOutput.componentIndexList)
         assertEquals(validationJsonOutput.script, deserializedOutput.script)
         assertEquals(validationJsonOutput.skipMap, deserializedOutput.skipMap)
-        
+
         // JsonObject content comparison (can't use direct equality because JsonObject equality is reference-based)
         assertEquals(
             sampleJsonObject.toString(),

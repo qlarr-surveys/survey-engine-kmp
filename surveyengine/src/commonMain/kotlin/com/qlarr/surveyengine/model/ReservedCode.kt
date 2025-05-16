@@ -9,6 +9,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+@Suppress("SERIALIZER_TYPE_INCOMPATIBLE")
 @Serializable(with = ReservedCodeSerializer::class)
 sealed class ReservedCode(
     open val code: String,
@@ -19,15 +20,15 @@ sealed class ReservedCode(
     val isRuntime: Boolean = true,
     val requiresValidation: Boolean = false,
 ) {
-    data object Lang :
-        ReservedCode(
+    @Serializable(with = ReservedCodeSerializer::class)
+    data object Lang : ReservedCode(
             "lang",
             executionOrder = 1,
             isAccessible = true,
             accessibleByChildren = true,
             isRuntime = false
         )
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Mode :
         ReservedCode(
             "mode",
@@ -36,53 +37,53 @@ sealed class ReservedCode(
             accessibleByChildren = true,
             isRuntime = false
         )
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Prioritised : ReservedCode("prioritised", executionOrder = 1, isAccessible = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object NotSkipped : ReservedCode("not_skipped", executionOrder = 1, isAccessible = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object ConditionalRelevance :
         ReservedCode("conditional_relevance", executionOrder = 1, requiresValidation = true, isAccessible = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object ChildrenRelevance : ReservedCode("children_relevance", executionOrder = 1, requiresValidation = true, isAccessible = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object ModeRelevance : ReservedCode("mode_relevance", executionOrder = 1, requiresValidation = true, isAccessible = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Relevance : ReservedCode("relevance", executionOrder = 2, true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Value : ReservedCode("value", executionOrder = 3, true, true, requiresValidation = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data class ValidationRule(override val code: String) :
         ReservedCode(code, executionOrder = 5, requiresValidation = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Validity : ReservedCode("validity", executionOrder = 6, true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data class Skip(override val code: String) : ReservedCode(code, executionOrder = 7, true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object MaskedValue : ReservedCode("masked_value", isAccessible = true, requiresValidation = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object RelevanceMap : ReservedCode("relevance_map", executionOrder = 8)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object ValidityMap : ReservedCode("validity_map", executionOrder = 8)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object BeforeNavigation : ReservedCode("before_navigation", executionOrder = 8)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object AfterNavigation : ReservedCode("after_navigation", executionOrder = 8)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Order : ReservedCode("order", isAccessible = true, requiresValidation = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Priority : ReservedCode("priority", isAccessible = true, isRuntime = false)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object ShowErrors : ReservedCode("show_errors", isRuntime = false)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object HasPrevious : ReservedCode("has_previous")
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object HasNext : ReservedCode("has_next")
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Meta : ReservedCode("meta", isRuntime = false)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object Label : ReservedCode("label", isRuntime = false, isAccessible = true, accessibleByChildren = true)
-
+    @Serializable(with = ReservedCodeSerializer::class)
     data object InCurrentNavigation : ReservedCode("in_current_navigation", isRuntime = false, isAccessible = true)
 
     fun defaultReturnType(): ReturnType {
@@ -106,7 +107,7 @@ sealed class ReservedCode(
     }
 }
 
-class ReservedCodeSerializer : KSerializer<ReservedCode> {
+object ReservedCodeSerializer : KSerializer<ReservedCode> {
     override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("ReservedCode", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: ReservedCode) {

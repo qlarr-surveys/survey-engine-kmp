@@ -1,5 +1,7 @@
 package com.qlarr.surveyengine.model
 
+import kotlinx.serialization.json.JsonElement
+
 typealias ImpactMap = Map<Dependency, List<Dependent>>
 typealias StringImpactMap = Map<String, List<String>>
 typealias DependencyMapBundle = Pair<ImpactMap, DependencyMap>
@@ -26,5 +28,5 @@ fun StringImpactMap.toImpactMap(): ImpactMap {
     return returnMap
 }
 
-fun Map<String, Any>.withDependencyKeys(): Map<Dependency, Any> = mapKeys { it.key.toDependency()!! }
-fun Map<Dependency, Any>.withStringKeys(): Map<String, Any> = mapKeys { it.key.toValueKey() }
+fun Map<String, JsonElement>.withDependencyKeys(): Map<Dependency, JsonElement> = mapKeys { it.key.toDependency()!! }
+fun Map<Dependency, JsonElement>.withStringKeys(): Map<String, JsonElement> = mapKeys { it.key.toValueKey() }

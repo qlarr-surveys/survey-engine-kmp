@@ -10,14 +10,17 @@ import com.qlarr.surveyengine.ext.*
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.navigate.allInOne
 import com.qlarr.surveyengine.navigate.componentsInCurrentNav
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.jsonObject
 
 
 @Suppress("unused")
 class MaskedValuesUseCase(
     private val scriptEngine: ScriptEngineNavigate,
     processedSurvey: String,
-    private val values: Map<String, Any> = mapOf(),
+    useCaseValues: String = "{}",
 ) {
+    private val values = jsonMapper.parseToJsonElement(useCaseValues).jsonObject
     private val validationJsonOutput: ValidationJsonOutput =
         jsonMapper.decodeFromString<ValidationJsonOutput>(processedSurvey)
     private val validationOutput: ValidationOutput = validationJsonOutput.toValidationOutput()
@@ -44,16 +47,16 @@ class MaskedValuesUseCase(
         val labelsMap = survey.getLabels(surveyJson, "", lang, defaultLang, dependencyMapper.impactMap)
         val valueBindings =
             values.toMutableMap().apply {
-                putAll(startupRandomValues)
-                putAll(alphaSorted)
-                putAll(labelsMap)
+                putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
+                putAll(alphaSorted.mapValues { JsonPrimitive(it.value) })
+                putAll(labelsMap.mapValues { JsonPrimitive(it.value) })
             }
 
         val instructionsMap = listOf(survey).instructionsMap()
 
         // We want to assume that the survey is all shown, to get a good feeling of what is valid and what is not
         survey.componentsInCurrentNav(survey.allInOne()).forEach {
-            valueBindings[Dependency(it, ReservedCode.InCurrentNavigation)] = true
+            valueBindings[Dependency(it, ReservedCode.InCurrentNavigation)] = JsonPrimitive(true)
         }
 
         val sequence = instructionsMap.filterValues { !it.isActive }.keys.toMutableList()

@@ -11,7 +11,7 @@ import com.qlarr.surveyengine.model.ReservedCode.Order
 import com.qlarr.surveyengine.model.ReservedCode.Priority
 import com.qlarr.surveyengine.model.exposed.*
 import com.qlarr.surveyengine.navigate.*
-import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.*
 import kotlin.collections.flatten
 
 interface NavigationUseCase {
@@ -23,7 +23,7 @@ interface NavigationUseCase {
 class NavigationUseCaseImp(
     private val validationOutput: ValidationOutput,
     private val surveyJson: JsonObject,
-    stringValues: Map<String, Any> = mapOf(),
+    stringValues: Map<String, JsonElement> = mapOf(),
     private val navigationIndex: NavigationIndex? = null,
     private val navigationDirection: NavigationDirection,
     private val navigationMode: NavigationMode,
@@ -59,10 +59,10 @@ class NavigationUseCaseImp(
         val labelsMap = survey.getLabels(surveyJson, "", lang, surveyJson.defaultLang(), dependencyMapper.impactMap)
         val valueBindings =
             values.toMutableMap().apply {
-                putAll(startupRandomValues)
-                putAll(alphaSorted)
-                putAll(labelsMap)
-                put(modeDependency, surveyMode.name.lowercase())
+                putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
+                putAll(alphaSorted.mapValues { JsonPrimitive(it.value) })
+                putAll(labelsMap.mapValues { JsonPrimitive(it.value) })
+                put(modeDependency, JsonPrimitive(surveyMode.name.lowercase()))
             }
 
         val instructionsMap = listOf(survey).instructionsMap()
@@ -80,7 +80,7 @@ class NavigationUseCaseImp(
         )
         // We want to assume that the survey is all shown, to get a good feeling of what is valid and what is not
         survey.componentsInCurrentNav(survey.allInOne()).forEach {
-            valueBindings[Dependency(it, ReservedCode.InCurrentNavigation)] = true
+            valueBindings[Dependency(it, ReservedCode.InCurrentNavigation)] = JsonPrimitive(true)
         }
         val sequence = contextRunner.instructionsRefreshSequence()
         val referenceInstructions = survey.nestedComponents().map { childlessComponent ->
@@ -100,7 +100,7 @@ class NavigationUseCaseImp(
         val formatBindings = valuesMap.second
         val navigationBindings = stateBindings.filterBindings(navDependencies)
         survey = survey.sortByOrder(stateBindings.filterKeys { it.reservedCode == Order })
-        val extraBindings = mutableMapOf<Dependency, Any>()
+        val extraBindings = mutableMapOf<Dependency, JsonElement>()
         val runtimeContextBuilder = RuntimeContextBuilder(
             stateBindings,
             dependencyMapper.impactMap.toMutableMap(),
@@ -112,7 +112,7 @@ class NavigationUseCaseImp(
         )[Dependency(
             "Survey",
             ReservedCode.Validity
-        )] as Boolean
+        )]!!.jsonPrimitive.boolean
         val newNavIndex =
             survey.navigate(
                 navigationIndex,
@@ -140,8 +140,8 @@ class NavigationUseCaseImp(
                 values.keys.contains(it.toDependency())
         }.map { it.toDependency() }.toSet()
 
-        val toSave = stateBindings.apply {
-            putAll(startupRandomValues)
+        val toSave:Map<Dependency,JsonElement> = stateBindings.apply {
+            putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
         }.filterBindings(dependenciesToSave)
 
         return NavigationOutput(
@@ -166,7 +166,7 @@ class NavigationUseCaseImp(
     }
 }
 
-private fun Map<Dependency, Any>.filterBindings(dependencies: Set<Dependency>): Map<Dependency, Any> {
+private fun Map<Dependency, JsonElement>.filterBindings(dependencies: Set<Dependency>): Map<Dependency, JsonElement> {
     return filterKeys { dependencies.contains(it) }
 }
 
@@ -175,9 +175,9 @@ data class NavigationOutput(
     val orderedSurvey: Survey = Survey(),
     val reducedSurvey: Survey = Survey(),
     val contextComponents: List<ChildlessComponent> = listOf(),
-    val stateBindings: Map<Dependency, Any> = mapOf(),
-    val toSave: Map<Dependency, Any> = mapOf(),
+    val stateBindings: Map<Dependency, JsonElement> = mapOf(),
+    val toSave: Map<Dependency, JsonElement> = mapOf(),
     val dependencyMapBundle: DependencyMapBundle = DependencyMapBundle(mapOf(), mapOf()),
     val navigationIndex: NavigationIndex,
-    val formatBindings: Map<Dependent, Any> = mapOf()
+    val formatBindings: Map<Dependent, JsonElement> = mapOf()
 )

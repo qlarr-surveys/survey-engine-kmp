@@ -2,13 +2,14 @@ package com.qlarr.surveyengine.model.exposed
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
 
 @OptIn(ExperimentalJsExport::class)
-@Serializable
 @JsExport
+@Serializable
 enum class ReturnType {
     BOOLEAN, STRING, INT, DOUBLE, LIST, MAP, DATE, FILE;
 
@@ -31,5 +32,5 @@ enum class ReturnType {
 }
 
 @Serializable
-data class TypedValue(val returnType: ReturnType, @Contextual val value: Any)
+data class TypedValue(val returnType: ReturnType, val value: JsonElement)
 

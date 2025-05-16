@@ -1,7 +1,7 @@
 package com.qlarr.surveyengine.model
 
 import com.qlarr.surveyengine.model.exposed.AnySerializer
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 
 // This replaces the former Jackson mapper with kotlinx.serialization

@@ -11,19 +11,6 @@ import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
 
-@OptIn(ExperimentalJsExport::class)
-@Serializable
-@JsExport
-data class NavigationUseCaseInput(
-    val values: Map<String, @Contextual Any> = mapOf(),
-    val processedSurvey: String,
-    val lang: String? = null,
-    val navigationMode: NavigationMode? = null,
-    val navigationIndex: NavigationIndex? = null,
-    val navigationDirection: NavigationDirection = NavigationDirection.Start,
-    val skipInvalid: Boolean,
-    val surveyMode: SurveyMode
-)
 
 object AnySerializer : KSerializer<Any> {
 

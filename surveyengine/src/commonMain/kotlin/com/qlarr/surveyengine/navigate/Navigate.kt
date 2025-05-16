@@ -7,13 +7,14 @@ import com.qlarr.surveyengine.model.ReservedCode.*
 import com.qlarr.surveyengine.model.exposed.NavigationDirection
 import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.model.exposed.NavigationMode
+import kotlinx.serialization.json.*
 
 
 fun Survey.navigate(
     navigationIndex: NavigationIndex? = null,
     navigationDirection: NavigationDirection,
     navigationMode: NavigationMode,
-    navigationBindings: Map<Dependency, Any>,
+    navigationBindings: Map<Dependency, JsonElement>,
     skipInvalid: Boolean = false,
     currentIndexValid: Boolean = true,
 ): NavigationIndex {
@@ -25,7 +26,7 @@ fun Survey.navigate(
         NavigationDirection.Previous -> prevRelevant(navigationIndex!!, navigationMode, navigationBindings)
     }
     // we can get the whole survey validity from the bindings...
-    val surveyValid = navigationBindings[Dependency("Survey", Validity)] as Boolean
+    val surveyValid = navigationBindings[Dependency("Survey", Validity)]!!.jsonPrimitive.boolean
     val isSubmitting = navigationIndex is NavigationIndex.End
     val isNextOrJump = navigationDirection is NavigationDirection.Next
     val shouldNotSkipValid = !skipInvalid && isNextOrJump
@@ -86,7 +87,7 @@ fun Survey.allNavigationCodes(): List<String> {
     return returnList
 }
 
-fun Survey.navBefore(navigationIndex: NavigationIndex, bindings: Map<Dependency, Any>): List<String> {
+fun Survey.navBefore(navigationIndex: NavigationIndex, bindings: Map<Dependency, JsonElement>): List<String> {
     val indexableCodes = children.indexableCodesRemoveDeprioritised(bindings)
     return when (navigationIndex) {
         is NavigationIndex.Groups -> {
@@ -110,7 +111,7 @@ fun Survey.navBefore(navigationIndex: NavigationIndex, bindings: Map<Dependency,
     }
 }
 
-fun Survey.navAfter(navigationIndex: NavigationIndex, bindings: Map<Dependency, Any>): List<String> {
+fun Survey.navAfter(navigationIndex: NavigationIndex, bindings: Map<Dependency, JsonElement>): List<String> {
     val indexableCodes = children.indexableCodesRemoveDeprioritised(bindings)
     return when (navigationIndex) {
         is NavigationIndex.Groups -> {
@@ -144,14 +145,12 @@ fun Survey.navAfter(navigationIndex: NavigationIndex, bindings: Map<Dependency, 
     }
 }
 
-fun List<SurveyComponent>.indexableCodesRemoveDeprioritised(bindings: Map<Dependency, Any>): List<String> {
+fun List<SurveyComponent>.indexableCodesRemoveDeprioritised(bindings: Map<Dependency, JsonElement>): List<String> {
     return mapNotNull {
         if (it.noErrors() && it.hasUniqueCode()
             && (it !is Group || it.groupType != GroupType.END)
-            && (!bindings.keys.contains(Dependency(it.code, Prioritised)) || bindings[Dependency(
-                it.code,
-                Prioritised
-            )] as Boolean)
+            && (!bindings.keys.contains(Dependency(it.code, Prioritised))
+            || bindings[Dependency(it.code, Prioritised)]!!.jsonPrimitive.boolean)
         )
             mutableListOf(it.code)
                 .apply {
@@ -170,7 +169,7 @@ fun Survey.allInOne(): NavigationIndex {
 
 private fun Survey.firstRelevant(
     navigationMode: NavigationMode,
-    orderRelevanceBindings: Map<Dependency, Any>
+    orderRelevanceBindings: Map<Dependency, JsonElement>
 ): NavigationIndex {
     return when (navigationMode) {
         NavigationMode.ALL_IN_ONE -> allInOne()
@@ -188,7 +187,7 @@ private fun Survey.firstRelevant(
 
 private fun Survey.firstInvalid(
     navigationMode: NavigationMode,
-    orderRelevanceBindings: Map<Dependency, Any>
+    orderRelevanceBindings: Map<Dependency, JsonElement>
 ): NavigationIndex {
     return when (navigationMode) {
         NavigationMode.ALL_IN_ONE -> {
@@ -209,7 +208,7 @@ private fun Survey.firstInvalid(
 private fun Survey.nextRelevant(
     navigationIndex: NavigationIndex,
     navigationMode: NavigationMode,
-    orderRelevanceBindings: Map<Dependency, Any>
+    orderRelevanceBindings: Map<Dependency, JsonElement>
 ): NavigationIndex {
     return when (navigationMode) {
         NavigationMode.ALL_IN_ONE -> {
@@ -263,14 +262,14 @@ private fun Survey.nextRelevant(
     }
 }
 
-fun SurveyComponent.hasRelevantChildren(orderRelevanceBindings: Map<Dependency, Any>): Boolean {
+fun SurveyComponent.hasRelevantChildren(orderRelevanceBindings: Map<Dependency, JsonElement>): Boolean {
     return this.children.any { orderRelevanceBindings.isRelevant(it.code) }
 }
 
 private fun Survey.prevRelevant(
     navigationIndex: NavigationIndex,
     navigationMode: NavigationMode,
-    orderRelevanceBindings: Map<Dependency, Any>
+    orderRelevanceBindings: Map<Dependency, JsonElement>
 ): NavigationIndex {
     return when (navigationMode) {
         NavigationMode.ALL_IN_ONE -> allInOne()
@@ -317,12 +316,12 @@ private fun Survey.prevRelevant(
     }
 }
 
-private fun Map<Dependency, Any>.isRelevant(code: String): Boolean {
-    return get(Dependency(code, Relevance)) as? Boolean ?: true
+private fun Map<Dependency, JsonElement>.isRelevant(code: String): Boolean {
+    return get(Dependency(code, Relevance))?.jsonPrimitive?.boolean ?: true
 }
 
-private fun Map<Dependency, Any>.isInvalid(code: String): Boolean {
-    return get(Dependency(code, Validity)) as? Boolean == false
+private fun Map<Dependency, JsonElement>.isInvalid(code: String): Boolean {
+    return get(Dependency(code, Validity))?.jsonPrimitive?.boolean == false
 }
 
 private fun Survey.getGroup(questionCode: String): Group {
@@ -332,19 +331,19 @@ private fun Survey.getGroup(questionCode: String): Group {
 }
 
 @Suppress("UNCHECKED_CAST")
-internal fun Survey.sortByOrder(orderBindings: Map<Dependency, Any>): Survey {
+internal fun Survey.sortByOrder(orderBindings: Map<Dependency, JsonElement>): Survey {
     return copy(groups = (groups.toMutableList() as MutableList<SurveyComponent>)
         .apply { sortByOrder(code, orderBindings) } as List<Group>)
 }
 
 internal fun MutableList<SurveyComponent>.sortByOrder(
     parentCode: String = "",
-    orderBindings: Map<Dependency, Any>
+    orderBindings: Map<Dependency, JsonElement>
 ) {
     sortBy { surveyComponent ->
         val code = surveyComponent.uniqueCode(parentCode)
         if (orderBindings.containsKey(Dependency(code, Order))) {
-            (orderBindings[Dependency(code, Order)] as Number).toInt()
+            orderBindings[Dependency(code, Order)]!!.jsonPrimitive.int
         } else {
             indexOf(surveyComponent) + 1
         }

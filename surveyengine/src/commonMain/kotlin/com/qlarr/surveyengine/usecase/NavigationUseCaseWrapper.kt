@@ -1,7 +1,8 @@
 package com.qlarr.surveyengine.usecase
 
-import com.qlarr.surveyengine.model.exposed.NavigationUseCaseInput
+import com.qlarr.surveyengine.model.exposed.*
 import com.qlarr.surveyengine.model.jsonMapper
+import kotlinx.serialization.json.jsonObject
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
@@ -16,19 +17,25 @@ interface NavigationUseCaseWrapper {
     companion object {
         fun init(
             scriptEngine: ScriptEngineNavigate,
-            useCaseInput:String
+            values: String = "{}",
+            processedSurvey: String,
+            lang: String? = null,
+            navigationMode: NavigationMode? = null,
+            navigationIndex: NavigationIndex? = null,
+            navigationDirection: NavigationDirection = NavigationDirection.Start,
+            skipInvalid: Boolean,
+            surveyMode: SurveyMode
         ): NavigationUseCaseWrapper {
-            val input = jsonMapper.decodeFromString(NavigationUseCaseInput.serializer(), useCaseInput)
             return NavigationUseCaseWrapperImpl(
                 scriptEngine = scriptEngine,
-                processedSurvey = input.processedSurvey,
-                skipInvalid = input.skipInvalid,
-                surveyMode = input.surveyMode,
-                values = input.values,
-                lang = input.lang,
-                navigationMode = input.navigationMode,
-                navigationIndex = input.navigationIndex,
-                navigationDirection = input.navigationDirection
+                processedSurvey = processedSurvey,
+                skipInvalid = skipInvalid,
+                surveyMode = surveyMode,
+                values = jsonMapper.parseToJsonElement(values).jsonObject,
+                lang = lang,
+                navigationMode = navigationMode,
+                navigationIndex = navigationIndex,
+                navigationDirection = navigationDirection
             )
         }
     }

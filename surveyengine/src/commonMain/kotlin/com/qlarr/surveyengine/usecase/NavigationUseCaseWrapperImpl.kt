@@ -7,13 +7,14 @@ import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.model.exposed.NavigationMode
 import com.qlarr.surveyengine.model.exposed.SurveyMode
 import kotlinx.serialization.Contextual
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 internal class NavigationUseCaseWrapperImpl(
     private val scriptEngine: ScriptEngineNavigate,
     private val lang: String? = null,
     processedSurvey: String,
-    values: Map<String, @Contextual Any> = mapOf(),
+    values: Map<String, JsonElement> = mapOf(),
     navigationMode: NavigationMode? = null,
     val navigationIndex: NavigationIndex? = null,
     val navigationDirection: NavigationDirection = NavigationDirection.Start,
@@ -70,9 +71,9 @@ internal class NavigationUseCaseWrapperImpl(
 
 data class ScriptInput(
     val contextComponents: List<ChildlessComponent>,
-    val bindings: Map<Dependency, Any>,
+    val bindings: Map<Dependency, JsonElement>,
     val dependencyMapBundle: DependencyMapBundle,
-    val formatBindings: Map<Dependent, Any>,
+    val formatBindings: Map<Dependent, JsonElement>,
 )
 
 private fun NavigationOutput.toScriptInput(): ScriptInput {

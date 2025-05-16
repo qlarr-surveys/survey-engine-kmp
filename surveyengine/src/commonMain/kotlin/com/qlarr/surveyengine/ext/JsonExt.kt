@@ -2,7 +2,6 @@ package com.qlarr.surveyengine.ext
 
 import com.qlarr.surveyengine.model.*
 import kotlinx.serialization.json.*
-import kotlinx.serialization.serializer
 
 
 class JsonExt {
@@ -63,11 +62,11 @@ internal fun JsonObject.copyToJSON(
         }
     }
 
-    if (returnObj.containsKey("content")) {
+    return if (returnObj.containsKey("content")) {
         returnObj.reduceContent(lang, defaultLang)
+    } else {
+        returnObj
     }
-
-    return returnObj
 }
 
 internal fun JsonObject.copyReducedToJSON(
@@ -148,7 +147,7 @@ fun JsonObject.addChildren(code: String, state: JsonObject): JsonObject {
 
 internal fun JsonObject.flatten(
     parentCode: String = "",
-    returnObj: MutableMap<String,JsonElement> = mutableMapOf()
+    returnObj: MutableMap<String, JsonElement> = mutableMapOf()
 ): JsonObject {
     val code = this["code"]!!.jsonPrimitive.content
     val qualifiedCode = if (code.isUniqueCode()) code else parentCode + code

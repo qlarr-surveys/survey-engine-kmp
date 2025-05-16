@@ -8,6 +8,7 @@ import com.qlarr.surveyengine.model.ReservedCode.Relevance
 import com.qlarr.surveyengine.model.exposed.NavigationDirection
 import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.model.exposed.NavigationMode
+import kotlinx.serialization.json.JsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -70,7 +71,7 @@ class NavigateTest {
                 navigationIndex = null,
                 navigationDirection = NavigationDirection.Start,
                 navigationMode = NavigationMode.ALL_IN_ONE,
-                mapOf(Dependency("Survey", ReservedCode.Validity) to true)
+                mapOf(Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true))
             )
         )
     }
@@ -83,8 +84,8 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Start,
                 navigationMode = NavigationMode.GROUP_BY_GROUP,
                 mapOf(
-                    Dependency("Survey", ReservedCode.Validity) to true,
-                    Dependency("G1", Relevance) to false
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true),
+                    Dependency("G1", Relevance) to JsonPrimitive(false)
                 )
             )
         )
@@ -98,9 +99,9 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Start,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
-                    Dependency("Survey", ReservedCode.Validity) to true,
-                    Dependency("G1", Relevance) to false,
-                    Dependency("Q5", Relevance) to false
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true),
+                    Dependency("G1", Relevance) to JsonPrimitive(false),
+                    Dependency("Q5", Relevance) to JsonPrimitive(false)
                 )
             )
         )
@@ -114,8 +115,8 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Next,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
-                    Dependency("Q7", Relevance) to false,
-                    Dependency("Survey", ReservedCode.Validity) to true
+                    Dependency("Q7", Relevance) to JsonPrimitive(false),
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true)
                 )
             )
         )
@@ -130,8 +131,8 @@ class NavigateTest {
                 navigationMode = NavigationMode.GROUP_BY_GROUP,
                 mapOf(
 
-                    Dependency("G3", Relevance) to false,
-                    Dependency("Survey", ReservedCode.Validity) to true
+                    Dependency("G3", Relevance) to JsonPrimitive(false),
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true)
                 )
             )
         )
@@ -145,11 +146,11 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Next,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
-                    Dependency("Q7", Relevance) to false,
-                    Dependency("Q8", Relevance) to false,
-                    Dependency("Q10", Relevance) to false,
-                    Dependency("G3", Relevance) to false,
-                    Dependency("Survey", ReservedCode.Validity) to true
+                    Dependency("Q7", Relevance) to JsonPrimitive(false),
+                    Dependency("Q8", Relevance) to JsonPrimitive(false),
+                    Dependency("Q10", Relevance) to JsonPrimitive(false),
+                    Dependency("G3", Relevance) to JsonPrimitive(false),
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true)
                 )
             )
         )
@@ -163,11 +164,11 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Next,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
-                    Dependency("Q7", Relevance) to false,
-                    Dependency("Q8", Relevance) to false,
-                    Dependency("Q10", Relevance) to false,
-                    Dependency("Q9", Relevance) to false,
-                    Dependency("Survey", ReservedCode.Validity) to true
+                    Dependency("Q7", Relevance) to JsonPrimitive(false),
+                    Dependency("Q8", Relevance) to JsonPrimitive(false),
+                    Dependency("Q10", Relevance) to JsonPrimitive(false),
+                    Dependency("Q9", Relevance) to JsonPrimitive(false),
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true)
                 )
             )
         )
@@ -181,8 +182,8 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Previous,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
-                    Dependency("Survey", ReservedCode.Validity) to true,
-                    Dependency("Q7", Relevance) to false
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true),
+                    Dependency("Q7", Relevance) to JsonPrimitive(false)
                 )
             )
         )
@@ -196,8 +197,8 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Previous,
                 navigationMode = NavigationMode.GROUP_BY_GROUP,
                 mapOf(
-                    Dependency("Survey", ReservedCode.Validity) to true,
-                    Dependency("G3", Relevance) to false
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true),
+                    Dependency("G3", Relevance) to JsonPrimitive(false)
                 )
             )
         )
@@ -212,12 +213,12 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Previous,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
-                    Dependency("Survey", ReservedCode.Validity) to true,
-                    Dependency("Q7", Relevance) to false,
-                    Dependency("Q8", Relevance) to false,
-                    Dependency("Q13", Relevance) to false,
-                    Dependency("G3", Relevance) to false,
-                    Dependency("G4", Relevance) to false
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true),
+                    Dependency("Q7", Relevance) to JsonPrimitive(false),
+                    Dependency("Q8", Relevance) to JsonPrimitive(false),
+                    Dependency("Q13", Relevance) to JsonPrimitive(false),
+                    Dependency("G3", Relevance) to JsonPrimitive(false),
+                    Dependency("G4", Relevance) to JsonPrimitive(false)
                 )
             )
         )
@@ -231,12 +232,12 @@ class NavigateTest {
                 navigationDirection = NavigationDirection.Previous,
                 navigationMode = NavigationMode.QUESTION_BY_QUESTION,
                 mapOf(
-                    Dependency("Survey", ReservedCode.Validity) to true,
-                    Dependency("Q7", Relevance) to false,
-                    Dependency("Q8", Relevance) to false,
-                    Dependency("Q13", Relevance) to false,
-                    Dependency("Q9", Relevance) to false,
-                    Dependency("G4", Relevance) to false
+                    Dependency("Survey", ReservedCode.Validity) to JsonPrimitive(true),
+                    Dependency("Q7", Relevance) to JsonPrimitive(false),
+                    Dependency("Q8", Relevance) to JsonPrimitive(false),
+                    Dependency("Q13", Relevance) to JsonPrimitive(false),
+                    Dependency("Q9", Relevance) to JsonPrimitive(false),
+                    Dependency("G4", Relevance) to JsonPrimitive(false)
                 )
             )
         )
@@ -255,10 +256,10 @@ class NavigateTest {
             )
         )
         val bindings = mapOf(
-            Dependency("Q1A1", Order) to 3,
-            Dependency("Q1A2", Order) to 2,
-            Dependency("Q1A3", Order) to 0,
-            Dependency("Q1A4", Order) to 1
+            Dependency("Q1A1", Order) to JsonPrimitive(3),
+            Dependency("Q1A2", Order) to JsonPrimitive(2),
+            Dependency("Q1A3", Order) to JsonPrimitive(0),
+            Dependency("Q1A4", Order) to JsonPrimitive(1)
         )
         val list = mutableListOf(question)
         (list as MutableList<SurveyComponent>).sortByOrder("", bindings)

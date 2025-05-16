@@ -6,19 +6,19 @@ import com.qlarr.surveyengine.model.exposed.TypedValue
 import kotlinx.serialization.json.*
 
 internal class ContextExecutor {
-    fun processNavigationValues(navigationValues: String): Pair<MutableMap<Dependency, Any>, Map<Dependent, Any>> {
+    fun processNavigationValues(navigationValues: String): Pair<MutableMap<Dependency, JsonElement>, Map<Dependent, JsonElement>> {
         val jsonElement = Json.parseToJsonElement(navigationValues)
         val jsonObject = jsonElement.jsonObject
-        val stateValues = mutableMapOf<Dependency, Any>()
-        val formatValues = mutableMapOf<Dependent, Any>()
+        val stateValues = mutableMapOf<Dependency, JsonElement>()
+        val formatValues = mutableMapOf<Dependent, JsonElement>()
         
         jsonObject.entries.forEach { (componentName, componentJson) ->
             val vars = componentJson.jsonObject
             vars.entries.forEach { (key, value) ->
                 if (key.isReservedCode()) {
-                    stateValues[Dependency(componentName, key.toReservedCode())] = jsonValueToObject(value)
+                    stateValues[Dependency(componentName, key.toReservedCode())] = value
                 } else {
-                    formatValues[Dependent(componentName, key)] = jsonValueToObject(value)
+                    formatValues[Dependent(componentName, key)] = value
                 }
             }
         }
@@ -28,7 +28,7 @@ internal class ContextExecutor {
 
     fun getNavigationScript(
         instructionsMap: LinkedHashMap<Dependency, Instruction.State>,
-        valueBindings: Map<Dependency, Any>,
+        valueBindings: Map<Dependency, JsonElement>,
         sequence: List<Dependency>,
         formatInstructions: List<ComponentInstruction>
     ): String {
