@@ -6,12 +6,10 @@ import com.qlarr.surveyengine.model.exposed.NavigationDirection
 import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.model.exposed.NavigationMode
 import com.qlarr.surveyengine.model.exposed.SurveyMode
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
 internal class NavigationUseCaseWrapperImpl(
-    private val scriptEngine: ScriptEngineNavigate,
     private val lang: String? = null,
     processedSurvey: String,
     values: Map<String, JsonElement> = mapOf(),
@@ -43,7 +41,7 @@ internal class NavigationUseCaseWrapperImpl(
         surveyMode
     )
 
-    override fun navigate(): String {
+    override fun navigate(scriptEngine: ScriptEngineNavigate): String {
         if (validationOutput.survey.hasErrors()) {
             throw SurveyDesignWithErrorException
         }

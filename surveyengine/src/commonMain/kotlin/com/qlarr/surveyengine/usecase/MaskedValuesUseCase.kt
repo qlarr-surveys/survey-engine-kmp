@@ -16,11 +16,8 @@ import kotlinx.serialization.json.jsonObject
 
 @Suppress("unused")
 class MaskedValuesUseCase(
-    private val scriptEngine: ScriptEngineNavigate,
     processedSurvey: String,
-    useCaseValues: String = "{}",
 ) {
-    private val values = jsonMapper.parseToJsonElement(useCaseValues).jsonObject
     private val validationJsonOutput: ValidationJsonOutput =
         jsonMapper.decodeFromString<ValidationJsonOutput>(processedSurvey)
     private val validationOutput: ValidationOutput = validationJsonOutput.toValidationOutput()
@@ -31,14 +28,15 @@ class MaskedValuesUseCase(
     private val surveyJson = validationJsonOutput.survey
     private val contextExecutor = ContextExecutor()
 
-    fun navigate(): Map<String, Any> {
-        val script = getNavigationScript()
+    fun navigate(scriptEngine: ScriptEngineNavigate, useCaseValues: String): Map<String, Any> {
+        val script = getNavigationScript(useCaseValues)
         val scriptResult = scriptEngine.navigate(script)
         return processNavigationResult(scriptResult)
     }
 
-    fun getNavigationScript(): String {
-        val values = values.withDependencyKeys()
+    fun getNavigationScript(useCaseValues: String): String {
+        val jsonValues = jsonMapper.parseToJsonElement(useCaseValues).jsonObject
+        val values = jsonValues.withDependencyKeys()
         val startupRandomValues = mutableMapOf<Dependency, Int>()
         val dependencyMapper = DependencyMapper(validationOutput.impactMap)
         val alphaSorted = mutableMapOf<Dependency, Int>()

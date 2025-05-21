@@ -18,14 +18,13 @@ class NavigationUseCaseWrapperImplTest {
     fun navigate() {
         val x = loadFromResources("3.json")
         val output = NavigationUseCaseWrapper.init(
-            scriptEngine = getNavigate(engineScript().script),
             values = "{}",
             processedSurvey = x,
             skipInvalid = false,
             surveyMode = SurveyMode.ONLINE,
             navigationMode = NavigationMode.GROUP_BY_GROUP,
             navigationDirection = NavigationDirection.Start
-        ).navigate()
+        ).navigate(getNavigate(engineScript().script))
         val deserialised: NavigationJsonOutput =
             jsonMapper.decodeFromString(NavigationJsonOutput.serializer(), output)
         assertTrue(deserialised.toSave.isNotEmpty())

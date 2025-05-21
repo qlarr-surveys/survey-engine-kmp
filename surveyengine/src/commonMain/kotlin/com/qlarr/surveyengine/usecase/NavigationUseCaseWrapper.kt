@@ -10,13 +10,12 @@ import kotlin.js.JsExport
 @JsExport
 interface NavigationUseCaseWrapper {
     // Serialized NavigationJsonOutput
-    fun navigate(): String
+    fun navigate(scriptEngine: ScriptEngineNavigate): String
     fun getNavigationScript(): String
     fun processNavigationResult(scriptResult: String): String
 
     companion object {
         fun init(
-            scriptEngine: ScriptEngineNavigate,
             values: String = "{}",
             processedSurvey: String,
             lang: String? = null,
@@ -27,7 +26,6 @@ interface NavigationUseCaseWrapper {
             surveyMode: SurveyMode
         ): NavigationUseCaseWrapper {
             return NavigationUseCaseWrapperImpl(
-                scriptEngine = scriptEngine,
                 processedSurvey = processedSurvey,
                 skipInvalid = skipInvalid,
                 surveyMode = surveyMode,
