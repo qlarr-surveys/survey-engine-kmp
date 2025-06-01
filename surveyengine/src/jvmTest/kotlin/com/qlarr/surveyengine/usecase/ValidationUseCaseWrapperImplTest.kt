@@ -11,8 +11,7 @@ class ValidationUseCaseWrapperImplTest {
 
     @Test
     fun validate() {
-        val x = loadFromResources("2.json")
-        val stringOutput = ValidationUseCaseWrapper.create(getValidate(), loadFromResources("1.json")).validate()
+        val stringOutput = ValidationUseCaseWrapper.create(getValidate(), loadFromResources("surveyDesign.json")).validate()
         val jsonOutput: ValidationJsonOutput =
             jsonMapper.decodeFromString(ValidationJsonOutput.serializer(), stringOutput)
         val stringified: String = jsonMapper.encodeToString(ValidationJsonOutput.serializer(), jsonOutput)

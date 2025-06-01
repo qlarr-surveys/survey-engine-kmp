@@ -1,0 +1,3289 @@
+{
+  "qlarrVariables": {
+    "Q1": {
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 4,
+      "relevance": true,
+      "order": 4
+    },
+    "Qfood_rating_matrixAr4": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 8,
+      "value": "",
+      "relevance": true,
+      "order": 6,
+      "masked_value": ""
+    },
+    "Gprofile": {
+      "not_skipped": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Qadditional_comments": {
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 3,
+      "value": "",
+      "relevance": true,
+      "order": 3
+    },
+    "Qsatisfaction": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 0,
+      "value": "",
+      "relevance": true,
+      "order": 0,
+      "masked_value": ""
+    },
+    "Qfood_selection": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 0,
+      "value": "",
+      "relevance": true,
+      "order": 0,
+      "masked_value": ""
+    },
+    "QdinedA2": {
+      "label": "No",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Qrecommend_reason": {
+      "conditional_relevance": false,
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 3,
+      "value": "",
+      "relevance": false,
+      "order": 3
+    },
+    "Gend": {
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 5,
+      "relevance": true,
+      "order": 5
+    },
+    "Qstaff_friendliness_reason": {
+      "conditional_relevance": false,
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 1,
+      "value": "",
+      "relevance": false,
+      "order": 1
+    },
+    "QoccasionAotherAtext": {
+      "conditional_relevance": false,
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 0,
+      "value": "",
+      "relevance": false,
+      "order": 0
+    },
+    "Qsatisfaction_reason": {
+      "conditional_relevance": false,
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 1,
+      "value": "",
+      "relevance": false,
+      "order": 1
+    },
+    "QageA6": {
+      "label": "65+",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 5,
+      "relevance": true,
+      "order": 5
+    },
+    "Qfood_rating_matrixAr2": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 6,
+      "value": "",
+      "relevance": true,
+      "order": 8,
+      "masked_value": ""
+    },
+    "QageA5": {
+      "label": "55-64",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 4,
+      "relevance": true,
+      "order": 4
+    },
+    "Qfood_rating_matrixAr3": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 7,
+      "value": "",
+      "relevance": true,
+      "order": 7,
+      "masked_value": ""
+    },
+    "QageA4": {
+      "label": "45-54",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 3,
+      "relevance": true,
+      "order": 3
+    },
+    "QdinedA1": {
+      "label": "Yes",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "QageA3": {
+      "label": "35-44",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "Qfood_rating_matrixAr1": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 5,
+      "value": "",
+      "relevance": true,
+      "order": 9,
+      "masked_value": ""
+    },
+    "QageA2": {
+      "label": "25-34",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "QageA1": {
+      "label": "18-24",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "Qthank_you": {
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "QsatisfactionA2": {
+      "label": "Satisfied",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Qfood_selectionA1": {
+      "label": "To try something new",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "QsatisfactionA3": {
+      "label": "Neutral",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "Qfood_selectionA2": {
+      "label": "A particular craving",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Gintro": {
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "Qfood_selectionA3": {
+      "label": "Recommendation from others",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "QsatisfactionA1": {
+      "label": "Very Satisfied",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "Qfood_selectionA4": {
+      "label": "Price",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 3,
+      "relevance": true,
+      "order": 3
+    },
+    "Qage": {
+      "validation_required": true,
+      "reference_label_en": "",
+      "not_skipped": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 1,
+      "value": "",
+      "relevance": true,
+      "order": 1,
+      "masked_value": ""
+    },
+    "Qatmosphere_matrixAc1": {
+      "label": "Excellent",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 3
+    },
+    "Qatmosphere_matrixAc2": {
+      "label": "Good",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Qfood_rating_matrixAc3": {
+      "label": "Average",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "Qatmosphere_matrixAc3": {
+      "label": "Average",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "Qfood_rating_matrixAc4": {
+      "label": "Poor",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 3,
+      "relevance": true,
+      "order": 4
+    },
+    "Qatmosphere_matrixAc4": {
+      "label": "Poor",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 3,
+      "relevance": true,
+      "order": 4
+    },
+    "Qfood_rating_matrixAc1": {
+      "label": "Excellent",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 3
+    },
+    "Qatmosphere_matrixAc5": {
+      "label": "Very Poor",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 4,
+      "relevance": true,
+      "order": 5
+    },
+    "Qfood_rating_matrixAc2": {
+      "label": "Good",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Survey": {
+      "mode": "online",
+      "show_errors": false,
+      "after_navigation": [
+        "Gprofile",
+        "Qdined",
+        "Qage",
+        "Goverall",
+        "Qsatisfaction",
+        "Qsatisfaction_reason",
+        "Qrecommend",
+        "Qrecommend_reason",
+        "Qoccasion",
+        "Qoccasion_other",
+        "Qexperience_matrix",
+        "Gfood",
+        "Qfood_selection",
+        "Qfood_selection_other",
+        "Qfavorite_item",
+        "Qfood_rating_matrix",
+        "Qfood_improve",
+        "Gservice",
+        "Qstaff_friendliness",
+        "Qstaff_friendliness_reason",
+        "Qatmosphere_matrix",
+        "Qadditional_comments",
+        "Q1"
+      ],
+      "has_previous": false,
+      "before_navigation": [],
+      "has_next": true,
+      "validity": false,
+      "lang": "en",
+      "relevance_map": {
+        "Q1": true,
+        "Goverall": true,
+        "Gprofile": true,
+        "Qadditional_comments": true,
+        "Qfavorite_item": true,
+        "Qsatisfaction": true,
+        "Qfood_rating_matrix": true,
+        "Qfood_selection": true,
+        "Qstaff_friendliness": true,
+        "Qrecommend_reason": false,
+        "Qexperience_matrix": false,
+        "Gend": true,
+        "Qstaff_friendliness_reason": false,
+        "Qsatisfaction_reason": false,
+        "Qconsent": true,
+        "Qdined": true,
+        "Qoccasion_other": false,
+        "Qthank_you": true,
+        "Gintro": true,
+        "Qage": true,
+        "Qatmosphere_matrix": true,
+        "Qoccasion": true,
+        "Qfood_selection_other": false,
+        "Qrecommend": true,
+        "Gservice": true,
+        "Gfood": true,
+        "Qfood_improve": true
+      },
+      "validity_map": {
+        "Q1": true,
+        "Goverall": false,
+        "Gprofile": false,
+        "Qadditional_comments": true,
+        "Qfavorite_item": false,
+        "Qsatisfaction": false,
+        "Qfood_rating_matrix": false,
+        "Qfood_selection": false,
+        "Qstaff_friendliness": false,
+        "Qrecommend_reason": true,
+        "Qexperience_matrix": true,
+        "Gend": true,
+        "Qstaff_friendliness_reason": true,
+        "Qsatisfaction_reason": true,
+        "Qconsent": false,
+        "Qdined": false,
+        "Qoccasion_other": false,
+        "Qthank_you": true,
+        "Gintro": false,
+        "Qage": false,
+        "Qatmosphere_matrix": false,
+        "Qoccasion": false,
+        "Qfood_selection_other": false,
+        "Qrecommend": false,
+        "Gservice": false,
+        "Gfood": false,
+        "Qfood_improve": true
+      }
+    },
+    "Qatmosphere_matrix": {
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "Qexperience_matrixAc2": {
+      "label": "Good",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": false,
+      "order": 1
+    },
+    "Qfood_selection_other": {
+      "conditional_relevance": false,
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 1,
+      "value": "",
+      "relevance": false,
+      "order": 1
+    },
+    "QconsentA2": {
+      "label": "No",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Qrecommend": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "Qexperience_matrixAc1": {
+      "label": "Excellent",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": false,
+      "order": 3
+    },
+    "Gservice": {
+      "not_skipped": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 4,
+      "relevance": true,
+      "order": 4
+    },
+    "QconsentA1": {
+      "label": "Yes ssd",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "QsatisfactionA4": {
+      "label": "Dissatisfied",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 3,
+      "relevance": true,
+      "order": 3
+    },
+    "QsatisfactionA5": {
+      "label": "Very Dissatisfied",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 4,
+      "relevance": true,
+      "order": 4
+    },
+    "Qexperience_matrixAc5": {
+      "label": "Very Poor",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 4,
+      "relevance": false,
+      "order": 5
+    },
+    "Gfood": {
+      "not_skipped": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 3,
+      "relevance": true,
+      "order": 3
+    },
+    "Qexperience_matrixAc4": {
+      "label": "Poor",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 3,
+      "relevance": false,
+      "order": 4
+    },
+    "Qexperience_matrixAc3": {
+      "label": "Average",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 2,
+      "relevance": false,
+      "order": 2
+    },
+    "Qfood_improve": {
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 4,
+      "value": "",
+      "relevance": true,
+      "order": 4
+    },
+    "Goverall": {
+      "not_skipped": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "Qfavorite_item": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 2,
+      "value": "",
+      "relevance": true,
+      "order": 2
+    },
+    "Qfood_selectionAotherAtext": {
+      "conditional_relevance": false,
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 0,
+      "value": "",
+      "relevance": false,
+      "order": 0
+    },
+    "Qfood_rating_matrix": {
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 3,
+      "relevance": true,
+      "order": 3
+    },
+    "Qstaff_friendliness": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 0,
+      "value": "",
+      "relevance": true,
+      "order": 0,
+      "masked_value": ""
+    },
+    "Qfood_rating_matrixAc5": {
+      "label": "Very Poor",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 4,
+      "relevance": true,
+      "order": 5
+    },
+    "Qexperience_matrix": {
+      "conditional_relevance": false,
+      "label": "",
+      "validity": true,
+      "in_current_navigation": false,
+      "priority": 6,
+      "relevance": false,
+      "order": 6
+    },
+    "Qstaff_friendlinessA4": {
+      "label": "Unfriendly",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 3,
+      "relevance": true,
+      "order": 3
+    },
+    "Qstaff_friendlinessA3": {
+      "label": "Neutral",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    },
+    "Qstaff_friendlinessA5": {
+      "label": "Very Unfriendly",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 4,
+      "relevance": true,
+      "order": 4
+    },
+    "Qconsent": {
+      "validation_required": true,
+      "skip_to_on_A2": false,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 0,
+      "value": "",
+      "relevance": true,
+      "order": 0,
+      "masked_value": ""
+    },
+    "Qdined": {
+      "validation_required": true,
+      "skip_to_on_A2": false,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 0,
+      "value": "",
+      "relevance": true,
+      "order": 0,
+      "masked_value": ""
+    },
+    "QoccasionAother": {
+      "label": "",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 5,
+      "relevance": true,
+      "order": 5
+    },
+    "Qstaff_friendlinessA2": {
+      "label": "Friendly",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Qstaff_friendlinessA1": {
+      "label": "Very Friendly",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "Qoccasion_other": {
+      "conditional_relevance": false,
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 5,
+      "value": "",
+      "relevance": false,
+      "order": 5
+    },
+    "Qexperience_matrixAr1": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 5,
+      "value": "",
+      "relevance": false,
+      "order": 8,
+      "masked_value": ""
+    },
+    "Qexperience_matrixAr5": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 9,
+      "value": "",
+      "relevance": false,
+      "order": 7,
+      "masked_value": ""
+    },
+    "Qexperience_matrixAr4": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 8,
+      "value": "",
+      "relevance": false,
+      "order": 9,
+      "masked_value": ""
+    },
+    "Qexperience_matrixAr3": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 7,
+      "value": "",
+      "relevance": false,
+      "order": 10,
+      "masked_value": ""
+    },
+    "Qexperience_matrixAr2": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 6,
+      "value": "",
+      "relevance": false,
+      "order": 6,
+      "masked_value": ""
+    },
+    "Qfood_selectionAother": {
+      "label": "",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 4,
+      "relevance": true,
+      "order": 4
+    },
+    "Qoccasion": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": false,
+      "priority": 4,
+      "value": "",
+      "relevance": true,
+      "order": 4,
+      "masked_value": ""
+    },
+    "QoccasionA5": {
+      "label": "Catering",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 4,
+      "relevance": true,
+      "order": 4
+    },
+    "Qatmosphere_matrixAr1": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 5,
+      "value": "",
+      "relevance": true,
+      "order": 6,
+      "masked_value": ""
+    },
+    "QoccasionA2": {
+      "label": "Dinner",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 1,
+      "relevance": true,
+      "order": 1
+    },
+    "Qatmosphere_matrixAr2": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 6,
+      "value": "",
+      "relevance": true,
+      "order": 7,
+      "masked_value": ""
+    },
+    "QoccasionA1": {
+      "label": "Lunch",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 0,
+      "relevance": true,
+      "order": 0
+    },
+    "Qatmosphere_matrixAr3": {
+      "validation_required": true,
+      "label": "",
+      "validity": false,
+      "in_current_navigation": true,
+      "priority": 7,
+      "value": "",
+      "relevance": true,
+      "order": 8,
+      "masked_value": ""
+    },
+    "QoccasionA4": {
+      "label": "Delivery",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 3,
+      "relevance": true,
+      "order": 3
+    },
+    "QoccasionA3": {
+      "label": "Takeout",
+      "validity": true,
+      "in_current_navigation": true,
+      "priority": 2,
+      "relevance": true,
+      "order": 2
+    }
+  },
+  "qlarrDependents": {
+    "Q1": {
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAr4": {
+      "validation_required": [
+        [
+          "Qfood_rating_matrixAr4",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qfood_rating_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qfood_rating_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr4",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qfood_rating_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "Gprofile": {
+      "not_skipped": [
+        [
+          "Gprofile",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qage",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ],
+        [
+          "Qdined",
+          "relevance"
+        ]
+      ]
+    },
+    "Qadditional_comments": {
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ]
+      ]
+    },
+    "Qsatisfaction": {
+      "validation_required": [
+        [
+          "Qsatisfaction",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qsatisfaction",
+          "validation_required"
+        ],
+        [
+          "Qsatisfaction",
+          "masked_value"
+        ],
+        [
+          "Qsatisfaction_reason",
+          "conditional_relevance"
+        ]
+      ],
+      "relevance": [
+        [
+          "QsatisfactionA5",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ],
+        [
+          "QsatisfactionA3",
+          "relevance"
+        ],
+        [
+          "QsatisfactionA4",
+          "relevance"
+        ],
+        [
+          "QsatisfactionA1",
+          "relevance"
+        ],
+        [
+          "QsatisfactionA2",
+          "relevance"
+        ]
+      ]
+    },
+    "Qfood_selection": {
+      "validation_required": [
+        [
+          "Qfood_selection",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qfood_selection",
+          "masked_value"
+        ],
+        [
+          "Qfood_selection",
+          "validation_required"
+        ],
+        [
+          "Qfood_selection_other",
+          "conditional_relevance"
+        ],
+        [
+          "Qfood_selectionAotherAtext",
+          "conditional_relevance"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Qfood_selectionA3",
+          "relevance"
+        ],
+        [
+          "Qfood_selectionA4",
+          "relevance"
+        ],
+        [
+          "Qfood_selectionA1",
+          "relevance"
+        ],
+        [
+          "Qfood_selectionA2",
+          "relevance"
+        ],
+        [
+          "Qfood_selectionAother",
+          "relevance"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ]
+    },
+    "QdinedA2": {
+      "label": [
+        [
+          "Qdined",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qrecommend_reason": {
+      "conditional_relevance": [
+        [
+          "Qrecommend_reason",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ]
+    },
+    "Gend": {
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ]
+    },
+    "Qstaff_friendliness_reason": {
+      "conditional_relevance": [
+        [
+          "Qstaff_friendliness_reason",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ]
+      ]
+    },
+    "QoccasionAotherAtext": {
+      "conditional_relevance": [
+        [
+          "QoccasionAotherAtext",
+          "relevance"
+        ]
+      ],
+      "validation_required": [
+        [
+          "QoccasionAotherAtext",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "QoccasionAother",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qoccasion",
+          "masked_value"
+        ],
+        [
+          "QoccasionAotherAtext",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "QoccasionAother",
+          "validity"
+        ]
+      ]
+    },
+    "Qsatisfaction_reason": {
+      "conditional_relevance": [
+        [
+          "Qsatisfaction_reason",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ]
+    },
+    "QageA6": {
+      "label": [
+        [
+          "Qage",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAr2": {
+      "validation_required": [
+        [
+          "Qfood_rating_matrixAr2",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qfood_rating_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qfood_rating_matrixAr2",
+          "validation_required"
+        ],
+        [
+          "Qfood_rating_matrixAr2",
+          "masked_value"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qfood_rating_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "QageA5": {
+      "label": [
+        [
+          "Qage",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAr3": {
+      "validation_required": [
+        [
+          "Qfood_rating_matrixAr3",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qfood_rating_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qfood_rating_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr3",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qfood_rating_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "QageA4": {
+      "label": [
+        [
+          "Qage",
+          "masked_value"
+        ]
+      ]
+    },
+    "QdinedA1": {
+      "label": [
+        [
+          "Qdined",
+          "masked_value"
+        ]
+      ]
+    },
+    "QageA3": {
+      "label": [
+        [
+          "Qage",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAr1": {
+      "validation_required": [
+        [
+          "Qfood_rating_matrixAr1",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qfood_rating_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qfood_rating_matrixAr1",
+          "validation_required"
+        ],
+        [
+          "Qfood_rating_matrixAr1",
+          "masked_value"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qfood_rating_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "QageA2": {
+      "label": [
+        [
+          "Qage",
+          "masked_value"
+        ]
+      ]
+    },
+    "QageA1": {
+      "label": [
+        [
+          "Qage",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qthank_you": {
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ]
+      ]
+    },
+    "QsatisfactionA2": {
+      "label": [
+        [
+          "Qsatisfaction",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_selectionA1": {
+      "label": [
+        [
+          "Qfood_selection",
+          "masked_value"
+        ]
+      ]
+    },
+    "QsatisfactionA3": {
+      "label": [
+        [
+          "Qsatisfaction",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_selectionA2": {
+      "label": [
+        [
+          "Qfood_selection",
+          "masked_value"
+        ]
+      ]
+    },
+    "Gintro": {
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ]
+    },
+    "Qfood_selectionA3": {
+      "label": [
+        [
+          "Qfood_selection",
+          "masked_value"
+        ]
+      ]
+    },
+    "QsatisfactionA1": {
+      "label": [
+        [
+          "Qsatisfaction",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_selectionA4": {
+      "label": [
+        [
+          "Qfood_selection",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qage": {
+      "validation_required": [
+        [
+          "Qage",
+          "validity"
+        ]
+      ],
+      "not_skipped": [
+        [
+          "Qage",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gprofile",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gprofile",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qage",
+          "masked_value"
+        ],
+        [
+          "Qage",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "QageA3",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "QageA2",
+          "relevance"
+        ],
+        [
+          "QageA5",
+          "relevance"
+        ],
+        [
+          "QageA4",
+          "relevance"
+        ],
+        [
+          "Gprofile",
+          "validity"
+        ],
+        [
+          "QageA6",
+          "relevance"
+        ],
+        [
+          "QageA1",
+          "relevance"
+        ]
+      ]
+    },
+    "Qatmosphere_matrixAc1": {
+      "label": [
+        [
+          "Qatmosphere_matrixAr1",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr3",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qatmosphere_matrixAc2": {
+      "label": [
+        [
+          "Qatmosphere_matrixAr1",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr3",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAc3": {
+      "label": [
+        [
+          "Qfood_rating_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qatmosphere_matrixAc3": {
+      "label": [
+        [
+          "Qatmosphere_matrixAr1",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr3",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAc4": {
+      "label": [
+        [
+          "Qfood_rating_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qatmosphere_matrixAc4": {
+      "label": [
+        [
+          "Qatmosphere_matrixAr1",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr3",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAc1": {
+      "label": [
+        [
+          "Qfood_rating_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qatmosphere_matrixAc5": {
+      "label": [
+        [
+          "Qatmosphere_matrixAr1",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr3",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAc2": {
+      "label": [
+        [
+          "Qfood_rating_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Survey": {
+      "after_navigation": [
+        [
+          "Survey",
+          "has_next"
+        ]
+      ],
+      "before_navigation": [
+        [
+          "Survey",
+          "has_previous"
+        ]
+      ],
+      "relevance_map": [
+        [
+          "Survey",
+          "has_next"
+        ],
+        [
+          "Survey",
+          "has_previous"
+        ]
+      ]
+    },
+    "Qatmosphere_matrix": {
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ],
+        [
+          "Qatmosphere_matrixAc1",
+          "relevance"
+        ],
+        [
+          "Qatmosphere_matrixAc2",
+          "relevance"
+        ],
+        [
+          "Qatmosphere_matrixAc3",
+          "relevance"
+        ],
+        [
+          "Qatmosphere_matrixAc4",
+          "relevance"
+        ],
+        [
+          "Qatmosphere_matrixAr1",
+          "relevance"
+        ],
+        [
+          "Qatmosphere_matrixAc5",
+          "relevance"
+        ],
+        [
+          "Qatmosphere_matrixAr2",
+          "relevance"
+        ],
+        [
+          "Qatmosphere_matrixAr3",
+          "relevance"
+        ]
+      ]
+    },
+    "Qexperience_matrixAc2": {
+      "label": [
+        [
+          "Qexperience_matrixAr5",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_selection_other": {
+      "conditional_relevance": [
+        [
+          "Qfood_selection_other",
+          "relevance"
+        ]
+      ],
+      "validation_required": [
+        [
+          "Qfood_selection_other",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qfood_selection_other",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ]
+    },
+    "QconsentA2": {
+      "label": [
+        [
+          "Qconsent",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qrecommend": {
+      "validation_required": [
+        [
+          "Qrecommend",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qrecommend",
+          "validation_required"
+        ],
+        [
+          "Qrecommend_reason",
+          "conditional_relevance"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ]
+    },
+    "Qexperience_matrixAc1": {
+      "label": [
+        [
+          "Qexperience_matrixAr5",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Gservice": {
+      "not_skipped": [
+        [
+          "Gservice",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qatmosphere_matrix",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Q1",
+          "relevance"
+        ],
+        [
+          "Qadditional_comments",
+          "relevance"
+        ],
+        [
+          "Qstaff_friendliness",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "validity"
+        ],
+        [
+          "Qstaff_friendliness_reason",
+          "relevance"
+        ]
+      ]
+    },
+    "QconsentA1": {
+      "label": [
+        [
+          "Qconsent",
+          "masked_value"
+        ]
+      ]
+    },
+    "QsatisfactionA4": {
+      "label": [
+        [
+          "Qsatisfaction",
+          "masked_value"
+        ]
+      ]
+    },
+    "QsatisfactionA5": {
+      "label": [
+        [
+          "Qsatisfaction",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qexperience_matrixAc5": {
+      "label": [
+        [
+          "Qexperience_matrixAr5",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Gfood": {
+      "not_skipped": [
+        [
+          "Gfood",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Qfood_selection_other",
+          "relevance"
+        ],
+        [
+          "Qfood_rating_matrix",
+          "relevance"
+        ],
+        [
+          "Qfavorite_item",
+          "relevance"
+        ],
+        [
+          "Qfood_selection",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "validity"
+        ],
+        [
+          "Qfood_improve",
+          "relevance"
+        ]
+      ]
+    },
+    "Qexperience_matrixAc4": {
+      "label": [
+        [
+          "Qexperience_matrixAr5",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qexperience_matrixAc3": {
+      "label": [
+        [
+          "Qexperience_matrixAr5",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qfood_improve": {
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ]
+    },
+    "Goverall": {
+      "not_skipped": [
+        [
+          "Goverall",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Survey",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qoccasion_other",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Qexperience_matrix",
+          "relevance"
+        ],
+        [
+          "Qrecommend_reason",
+          "relevance"
+        ],
+        [
+          "Qsatisfaction",
+          "relevance"
+        ],
+        [
+          "Qsatisfaction_reason",
+          "relevance"
+        ],
+        [
+          "Qoccasion",
+          "relevance"
+        ],
+        [
+          "Qrecommend",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "validity"
+        ]
+      ]
+    },
+    "Qfavorite_item": {
+      "validation_required": [
+        [
+          "Qfavorite_item",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qfavorite_item",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ]
+    },
+    "Qfood_selectionAotherAtext": {
+      "conditional_relevance": [
+        [
+          "Qfood_selectionAotherAtext",
+          "relevance"
+        ]
+      ],
+      "validation_required": [
+        [
+          "Qfood_selectionAotherAtext",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qfood_selectionAother",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qfood_selection",
+          "masked_value"
+        ],
+        [
+          "Qfood_selectionAotherAtext",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qfood_selectionAother",
+          "validity"
+        ]
+      ]
+    },
+    "Qfood_rating_matrix": {
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gfood",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qfood_rating_matrixAc2",
+          "relevance"
+        ],
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Qfood_rating_matrixAc1",
+          "relevance"
+        ],
+        [
+          "Qfood_rating_matrixAc4",
+          "relevance"
+        ],
+        [
+          "Qfood_rating_matrixAr1",
+          "relevance"
+        ],
+        [
+          "Qfood_rating_matrixAc3",
+          "relevance"
+        ],
+        [
+          "Qfood_rating_matrixAr3",
+          "relevance"
+        ],
+        [
+          "Qfood_rating_matrixAc5",
+          "relevance"
+        ],
+        [
+          "Qfood_rating_matrixAr2",
+          "relevance"
+        ],
+        [
+          "Gfood",
+          "validity"
+        ],
+        [
+          "Qfood_rating_matrixAr4",
+          "relevance"
+        ]
+      ]
+    },
+    "Qstaff_friendliness": {
+      "validation_required": [
+        [
+          "Qstaff_friendliness",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gservice",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qstaff_friendliness_reason",
+          "conditional_relevance"
+        ],
+        [
+          "Qstaff_friendliness",
+          "validation_required"
+        ],
+        [
+          "Qstaff_friendliness",
+          "masked_value"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gservice",
+          "validity"
+        ],
+        [
+          "Qstaff_friendlinessA5",
+          "relevance"
+        ],
+        [
+          "Qstaff_friendlinessA3",
+          "relevance"
+        ],
+        [
+          "Qstaff_friendlinessA4",
+          "relevance"
+        ],
+        [
+          "Qstaff_friendlinessA1",
+          "relevance"
+        ],
+        [
+          "Qstaff_friendlinessA2",
+          "relevance"
+        ]
+      ]
+    },
+    "Qfood_rating_matrixAc5": {
+      "label": [
+        [
+          "Qfood_rating_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qfood_rating_matrixAr1",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qexperience_matrix": {
+      "conditional_relevance": [
+        [
+          "Qexperience_matrix",
+          "relevance"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Qexperience_matrixAc2",
+          "relevance"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ],
+        [
+          "Qexperience_matrixAc1",
+          "relevance"
+        ],
+        [
+          "Qexperience_matrixAr2",
+          "relevance"
+        ],
+        [
+          "Qexperience_matrixAc4",
+          "relevance"
+        ],
+        [
+          "Qexperience_matrixAr1",
+          "relevance"
+        ],
+        [
+          "Qexperience_matrixAc3",
+          "relevance"
+        ],
+        [
+          "Qexperience_matrixAr4",
+          "relevance"
+        ],
+        [
+          "Qexperience_matrixAr3",
+          "relevance"
+        ],
+        [
+          "Qexperience_matrixAc5",
+          "relevance"
+        ],
+        [
+          "Qexperience_matrixAr5",
+          "relevance"
+        ]
+      ]
+    },
+    "Qstaff_friendlinessA4": {
+      "label": [
+        [
+          "Qstaff_friendliness",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qstaff_friendlinessA3": {
+      "label": [
+        [
+          "Qstaff_friendliness",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qstaff_friendlinessA5": {
+      "label": [
+        [
+          "Qstaff_friendliness",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qconsent": {
+      "validation_required": [
+        [
+          "Qconsent",
+          "validity"
+        ]
+      ],
+      "skip_to_on_A2": [
+        [
+          "Gservice",
+          "not_skipped"
+        ],
+        [
+          "Goverall",
+          "not_skipped"
+        ],
+        [
+          "Gprofile",
+          "not_skipped"
+        ],
+        [
+          "Gfood",
+          "not_skipped"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gintro",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gintro",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qconsent",
+          "masked_value"
+        ],
+        [
+          "Qconsent",
+          "skip_to_on_A2"
+        ],
+        [
+          "Qconsent",
+          "validation_required"
+        ],
+        [
+          "Qexperience_matrix",
+          "conditional_relevance"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Gservice",
+          "not_skipped"
+        ],
+        [
+          "Goverall",
+          "not_skipped"
+        ],
+        [
+          "Gprofile",
+          "not_skipped"
+        ],
+        [
+          "Gfood",
+          "not_skipped"
+        ],
+        [
+          "Gintro",
+          "validity"
+        ]
+      ]
+    },
+    "Qdined": {
+      "validation_required": [
+        [
+          "Qdined",
+          "validity"
+        ]
+      ],
+      "skip_to_on_A2": [
+        [
+          "Qage",
+          "not_skipped"
+        ],
+        [
+          "Gservice",
+          "not_skipped"
+        ],
+        [
+          "Goverall",
+          "not_skipped"
+        ],
+        [
+          "Gfood",
+          "not_skipped"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Gprofile",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Gprofile",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qdined",
+          "validation_required"
+        ],
+        [
+          "Qdined",
+          "skip_to_on_A2"
+        ],
+        [
+          "Qdined",
+          "masked_value"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "QdinedA2",
+          "relevance"
+        ],
+        [
+          "Qage",
+          "not_skipped"
+        ],
+        [
+          "Gservice",
+          "not_skipped"
+        ],
+        [
+          "QdinedA1",
+          "relevance"
+        ],
+        [
+          "Goverall",
+          "not_skipped"
+        ],
+        [
+          "Gprofile",
+          "validity"
+        ],
+        [
+          "Gfood",
+          "not_skipped"
+        ]
+      ],
+      "masked_value": [
+        [
+          "Qage",
+          "reference_label_en"
+        ]
+      ]
+    },
+    "QoccasionAother": {
+      "validity": [
+        [
+          "Qoccasion",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "QoccasionAotherAtext",
+          "relevance"
+        ],
+        [
+          "Qoccasion",
+          "validity"
+        ]
+      ]
+    },
+    "Qstaff_friendlinessA2": {
+      "label": [
+        [
+          "Qstaff_friendliness",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qstaff_friendlinessA1": {
+      "label": [
+        [
+          "Qstaff_friendliness",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qoccasion_other": {
+      "conditional_relevance": [
+        [
+          "Qoccasion_other",
+          "relevance"
+        ]
+      ],
+      "validation_required": [
+        [
+          "Qoccasion_other",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qoccasion_other",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ]
+    },
+    "Qexperience_matrixAr1": {
+      "validation_required": [
+        [
+          "Qexperience_matrixAr1",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qexperience_matrixAr1",
+          "validation_required"
+        ],
+        [
+          "Qexperience_matrixAr1",
+          "masked_value"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "Qexperience_matrixAr5": {
+      "validation_required": [
+        [
+          "Qexperience_matrixAr5",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qexperience_matrixAr5",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr5",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "Qexperience_matrixAr4": {
+      "validation_required": [
+        [
+          "Qexperience_matrixAr4",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qexperience_matrixAr4",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr4",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "Qexperience_matrixAr3": {
+      "validation_required": [
+        [
+          "Qexperience_matrixAr3",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qexperience_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qexperience_matrixAr3",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "Qexperience_matrixAr2": {
+      "validation_required": [
+        [
+          "Qexperience_matrixAr2",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qexperience_matrixAr2",
+          "validation_required"
+        ],
+        [
+          "Qexperience_matrixAr2",
+          "masked_value"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qexperience_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "Qfood_selectionAother": {
+      "validity": [
+        [
+          "Qfood_selection",
+          "validity"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qfood_selectionAotherAtext",
+          "relevance"
+        ],
+        [
+          "Qfood_selection",
+          "validity"
+        ]
+      ]
+    },
+    "Qoccasion": {
+      "validation_required": [
+        [
+          "Qoccasion",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Survey",
+          "validity_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "in_current_navigation": [
+        [
+          "Goverall",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qoccasion",
+          "masked_value"
+        ],
+        [
+          "Qoccasion",
+          "validation_required"
+        ],
+        [
+          "Qoccasion_other",
+          "conditional_relevance"
+        ],
+        [
+          "QoccasionAotherAtext",
+          "conditional_relevance"
+        ]
+      ],
+      "relevance": [
+        [
+          "Survey",
+          "relevance_map"
+        ],
+        [
+          "Goverall",
+          "validity"
+        ],
+        [
+          "QoccasionA5",
+          "relevance"
+        ],
+        [
+          "QoccasionA4",
+          "relevance"
+        ],
+        [
+          "QoccasionA3",
+          "relevance"
+        ],
+        [
+          "QoccasionAother",
+          "relevance"
+        ],
+        [
+          "QoccasionA2",
+          "relevance"
+        ],
+        [
+          "QoccasionA1",
+          "relevance"
+        ]
+      ]
+    },
+    "QoccasionA5": {
+      "label": [
+        [
+          "Qoccasion",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qatmosphere_matrixAr1": {
+      "validation_required": [
+        [
+          "Qatmosphere_matrixAr1",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qatmosphere_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qatmosphere_matrixAr1",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr1",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qatmosphere_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "QoccasionA2": {
+      "label": [
+        [
+          "Qoccasion",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qatmosphere_matrixAr2": {
+      "validation_required": [
+        [
+          "Qatmosphere_matrixAr2",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qatmosphere_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qatmosphere_matrixAr2",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr2",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qatmosphere_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "QoccasionA1": {
+      "label": [
+        [
+          "Qoccasion",
+          "masked_value"
+        ]
+      ]
+    },
+    "Qatmosphere_matrixAr3": {
+      "validation_required": [
+        [
+          "Qatmosphere_matrixAr3",
+          "validity"
+        ]
+      ],
+      "validity": [
+        [
+          "Qatmosphere_matrix",
+          "validity"
+        ]
+      ],
+      "value": [
+        [
+          "Qatmosphere_matrixAr3",
+          "masked_value"
+        ],
+        [
+          "Qatmosphere_matrixAr3",
+          "validation_required"
+        ]
+      ],
+      "relevance": [
+        [
+          "Qatmosphere_matrix",
+          "validity"
+        ]
+      ]
+    },
+    "QoccasionA4": {
+      "label": [
+        [
+          "Qoccasion",
+          "masked_value"
+        ]
+      ]
+    },
+    "QoccasionA3": {
+      "label": [
+        [
+          "Qoccasion",
+          "masked_value"
+        ]
+      ]
+    }
+  }
+}

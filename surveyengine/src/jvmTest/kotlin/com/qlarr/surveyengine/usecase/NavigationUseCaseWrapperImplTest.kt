@@ -16,7 +16,7 @@ class NavigationUseCaseWrapperImplTest {
 
     @Test
     fun navigate() {
-        val x = loadFromResources("3.json")
+        val x = loadFromResources("validationJsonOutput.json")
         val output = NavigationUseCaseWrapper.init(
             values = "{}",
             processedSurvey = x,
