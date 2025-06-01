@@ -101,7 +101,6 @@ sealed class Instruction {
     }
 
 
-
     @Serializable
     data class ChildPriority(val code: String, val weight: Float = 1F)
 
@@ -115,9 +114,10 @@ sealed class Instruction {
         override fun clearErrors() = copy(errors = emptyList())
     }
 
-    
+
     abstract class State(
         open val text: String,
+        open val generated: Boolean,
         open val reservedCode: ReservedCode,
         open val returnType: ReturnType = reservedCode.defaultReturnType(),
         open val isActive: Boolean = reservedCode.defaultIsActive(),
@@ -125,6 +125,7 @@ sealed class Instruction {
     ) : Instruction() {
         override val code: String
             get() = reservedCode.code
+
         fun validate() {
             if (reservedCode != ReservedCode.Value && returnType != reservedCode.defaultReturnType()) {
                 throw IllegalArgumentException("invalid ReturnType:$returnType for $reservedCode")
@@ -143,10 +144,11 @@ sealed class Instruction {
     data class SimpleState(
         override val text: String,
         override val reservedCode: ReservedCode,
+        override val generated: Boolean = false,
         override val returnType: ReturnType = reservedCode.defaultReturnType(),
         override val isActive: Boolean = reservedCode.defaultIsActive(),
         override val errors: List<InstructionError> = listOf()
-    ) : State(text = text, reservedCode = reservedCode) {
+    ) : State(text = text, reservedCode = reservedCode, generated = generated) {
         init {
             validate()
         }
@@ -175,7 +177,7 @@ sealed class Instruction {
         override val reservedCode: ReservedCode = ReservedCode.Skip(code),
         override val isActive: Boolean = reservedCode.defaultIsActive(),
         override val errors: List<InstructionError> = listOf()
-    ) : State(reservedCode = reservedCode, text = condition, returnType = ReturnType.BOOLEAN) {
+    ) : State(reservedCode = reservedCode, text = condition, returnType = ReturnType.BOOLEAN, generated = false) {
         init {
             validate()
             if (!code.matches(Regex(SKIP_INSTRUCTION_PATTERN))) {

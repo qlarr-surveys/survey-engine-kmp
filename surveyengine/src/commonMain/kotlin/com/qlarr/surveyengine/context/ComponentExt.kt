@@ -120,9 +120,9 @@ fun SurveyComponent.insertOrOverrideState(
     returnType: ReturnType? = null,
 ): SurveyComponent {
     val instructionEqu = if (returnType == null)
-        Instruction.SimpleState(text, reservedCode, isActive = isActive)
+        Instruction.SimpleState(text, reservedCode, isActive = isActive, generated = true)
     else
-        Instruction.SimpleState(text, reservedCode, isActive = isActive, returnType = returnType)
+        Instruction.SimpleState(text, reservedCode, isActive = isActive, returnType = returnType, generated = true)
 
     return replaceOrAddInstruction(instructionEqu)
 }
