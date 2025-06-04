@@ -8,7 +8,7 @@ function navigate(navigationInput) {
         qlarrVariables[componentCode] = eval(componentCode);
     })
     // first we will set all the variables from DB
-    valuesKeys.forEach(function(key){
+    valuesKeys.forEach(function(key) {
         var value = navigationInput.values[key]
         var names = key.split('.')
         qlarrVariables[names[0]][names[1]] = verifyValue(names[1], value.returnType.toLowerCase(), value.value)
@@ -26,13 +26,17 @@ function navigate(navigationInput) {
             } else {
                 var text = instruction.text
             }
-            try {
-                qlarrVariables[systemInstruction.componentCode][instruction.code] = JSON.parse(text)
-            } catch (e) {
-                print(text)
-                print(e)
+            if (text.length == 0) {
                 qlarrVariables[systemInstruction.componentCode][instruction.code] = defaultValue(instruction.code, instruction.returnType.toLowerCase());
+            } else {
+                try {
+                    qlarrVariables[systemInstruction.componentCode][instruction.code] = JSON.parse(text)
+                } catch (e) {
+                    print("error: " + e)
+                    qlarrVariables[systemInstruction.componentCode][instruction.code] = defaultValue(instruction.code, instruction.returnType.toLowerCase());
+                }
             }
+
         }
     })
     navigationInput.formatInstructions.forEach(function(formatInstruction, index) {
