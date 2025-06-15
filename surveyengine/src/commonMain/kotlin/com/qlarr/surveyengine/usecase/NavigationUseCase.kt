@@ -71,7 +71,7 @@ class NavigationUseCaseImp(
                 Order,
                 Priority
             )
-        } as Map<Dependency, Int>
+        }.mapValues { it.value.jsonPrimitive.int }
         contextRunner = ContextRunner(
             instructionsMap,
             dependencyMapper.dependencyMap,

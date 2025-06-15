@@ -58,7 +58,7 @@ sealed class ReservedCode(
     @Serializable(with = ReservedCodeSerializer::class)
     data object Validity : ReservedCode("validity", executionOrder = 6, true)
     @Serializable(with = ReservedCodeSerializer::class)
-    data class Skip(override val code: String) : ReservedCode(code, executionOrder = 7, true)
+    data class Skip(override val code: String) : ReservedCode(code, executionOrder = 7, true, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
     data object MaskedValue : ReservedCode("masked_value", isAccessible = true, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
@@ -120,10 +120,8 @@ object ReservedCodeSerializer : KSerializer<ReservedCode> {
 }
 
 
-const val VALIDATION_PREFIX = "validation_"
-const val VALIDATION_INSTRUCTION_PATTERN = "$VALIDATION_PREFIX[a-z0-9][a-z0-9_]*\$"
-const val SKIP_PREFIX = "skip_to_"
-const val SKIP_INSTRUCTION_PATTERN = "$SKIP_PREFIX[A-Za-z0-9][A-Za-z0-9_]*\$"
+const val VALIDATION_INSTRUCTION_PATTERN = "validation_[a-z0-9][a-z0-9_]*\$"
+const val SKIP_INSTRUCTION_PATTERN = "skip_to_[A-Za-z0-9][A-Za-z0-9_]*\$"
 
 fun String.toReservedCode(): ReservedCode {
     return when {
