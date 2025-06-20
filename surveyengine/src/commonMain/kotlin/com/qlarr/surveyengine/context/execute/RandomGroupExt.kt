@@ -25,9 +25,9 @@ internal fun Survey.setPriorities(): Map<Dependency, Int> {
 
 internal fun List<SurveyComponent>.randomizeChildren(
     parentCode: String = "",
-    pendulumDirection: FlipDirection = FlipDirection.values()[Random.nextInt().absoluteValue % 2],
+    pendulumDirection: FlipDirection = FlipDirection.entries[Random.nextInt().absoluteValue % 2],
     getLabel: (String) -> String = { "" },
-    randomOptions: List<RandomOption> = RandomOption.values().toList()
+    randomOptions: List<RandomOption> = entries
 ): Map<Dependency, Int> {
     val mutableMap = mutableMapOf<Dependency, Int>()
     forEach { surveyComponent ->
@@ -36,7 +36,14 @@ internal fun List<SurveyComponent>.randomizeChildren(
             surveyComponent.randomGroups(randomOptions).forEach {
                 mutableMap.putAll(surveyComponent.children.randomizeChildren(code, it, pendulumDirection, getLabel))
             }
-            mutableMap.putAll(surveyComponent.children.randomizeChildren(code, pendulumDirection, getLabel, randomOptions))
+            mutableMap.putAll(
+                surveyComponent.children.randomizeChildren(
+                    code,
+                    pendulumDirection,
+                    getLabel,
+                    randomOptions
+                )
+            )
         }
     }
     return mutableMap
@@ -69,18 +76,24 @@ private fun List<SurveyComponent>.randomizeChildren(
             surveyComponent.code == item
         }
     }
-    val orders = randomGroup.codes.map { item ->
-        indexOfFirst { it.code == item } + 1
-    }.toMutableList().apply {
-        if (randomGroup.randomOption == RANDOM) {
-            shuffle()
-        } else if (randomGroup.randomOption == FLIP && pendulumDirection == FlipDirection.DESCENDING) {
-            reverse()
-        } else if (randomGroup.randomOption == ALPHA) {
-            sortBy {
-                val code = randomGroup.codes[it - 1]
+    val orders = if (randomGroup.randomOption == ALPHA) {
+        // For ALPHA, sort the codes first, then get their indices
+        randomGroup.codes
+            .sortedBy { code ->
                 val qualifiedCode = if (code.isUniqueCode()) code else parentCode + code
                 getLabel(qualifiedCode)
+            }
+            .map { sortedCode ->
+                indexOfFirst { it.code == sortedCode } + 1
+            }
+    } else {
+        randomGroup.codes.map { item ->
+            indexOfFirst { it.code == item } + 1
+        }.toMutableList().apply {
+            if (randomGroup.randomOption == RANDOM) {
+                shuffle()
+            } else if (randomGroup.randomOption == FLIP && pendulumDirection == FlipDirection.DESCENDING) {
+                reverse()
             }
         }
     }
