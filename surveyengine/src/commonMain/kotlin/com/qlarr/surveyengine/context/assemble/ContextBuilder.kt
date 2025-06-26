@@ -4,12 +4,16 @@ import com.qlarr.surveyengine.dependency.DependencyMapper
 import com.qlarr.surveyengine.dependency.ForwardDependencyAnalyzer
 import com.qlarr.surveyengine.dependency.componentIndices
 import com.qlarr.surveyengine.model.*
-import com.qlarr.surveyengine.usecase.ScriptEngineValidate
-import com.qlarr.surveyengine.usecase.ScriptValidationInput
-import com.qlarr.surveyengine.usecase.ScriptValidationOutput
+import com.qlarr.surveyengine.model.exposed.ReturnType
+import com.qlarr.surveyengine.scriptengine.ScriptEngineValidate
+import com.qlarr.surveyengine.scriptengine.ScriptValidationInput
+import com.qlarr.surveyengine.scriptengine.ScriptValidationOutput
+import com.qlarr.surveyengine.scriptengine.ValidationScriptError
 import com.qlarr.surveyengine.validation.*
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.serializer
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.addJsonObject
+import kotlinx.serialization.json.buildJsonArray
+import kotlinx.serialization.json.putJsonArray
 
 internal class ContextBuilder(
     val components: MutableList<SurveyComponent> = mutableListOf(),
@@ -31,13 +35,35 @@ internal class ContextBuilder(
 
     fun validate(validateSpecialTypeGroups: Boolean = false) {
         val script = getValidationScript(validateSpecialTypeGroups)
+        val items = buildJsonArray {
+            script.forEach { validationInput ->
+                addJsonObject {
+                    validationInput.componentInstruction.instruction.run {
+                        put(
+                            "script",
+                            JsonPrimitive(if (returnType == ReturnType.STRING && !isActive) "\"$text\"" else text)
+                        )
+                    }
+                    putJsonArray("allowedVariables") {
+                        validationInput.dependencies.forEach { add(JsonPrimitive(it)) }
+                    }
+                }
+            }
+        }
         val result = scriptEngine.validate(
-            jsonMapper.encodeToString(
-                ListSerializer(serializer<ScriptValidationInput>()),
-                script
-            )
+            items.toString()
         )
-        processScriptResult(jsonMapper.decodeFromString(ListSerializer(serializer<ScriptValidationOutput>()), result))
+        val processed: List<List<ValidationScriptError>> = try {
+            jsonMapper.decodeFromString(result)
+        } catch (e: Exception) {
+            listOf() // Handle parsing issues gracefully
+        }
+
+        // Map results back to the expected output
+        val scriptOutput = script.mapIndexed { index, scriptValidationInput ->
+            ScriptValidationOutput(scriptValidationInput.componentInstruction, processed[index])
+        }
+        processScriptResult(scriptOutput)
     }
 
     private fun getValidationScript(validateSpecialTypeGroups: Boolean = false): List<ScriptValidationInput> {

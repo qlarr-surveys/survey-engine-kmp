@@ -10,6 +10,7 @@ import com.qlarr.surveyengine.model.ComponentIndex
 import com.qlarr.surveyengine.model.StringImpactMap
 import com.qlarr.surveyengine.model.Survey
 import com.qlarr.surveyengine.model.toStringImpactMap
+import com.qlarr.surveyengine.scriptengine.ScriptEngineValidate
 
 interface ValidationUseCase {
     fun validate(validateSpecialTypeGroups: Boolean = true): ValidationOutput

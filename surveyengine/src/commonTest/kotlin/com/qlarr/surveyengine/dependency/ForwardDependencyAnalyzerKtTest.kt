@@ -1,11 +1,11 @@
 package com.qlarr.surveyengine.dependency
 
-import com.qlarr.surveyengine.common.buildScriptEngine
 import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.context.assemble.ContextBuilder
 import com.qlarr.surveyengine.model.Group
 import com.qlarr.surveyengine.model.Instruction
 import com.qlarr.surveyengine.model.Question
+import com.qlarr.surveyengine.scriptengine.getValidate
 import kotlin.test.Test
 
 class ForwardDependencyAnalyzerKtTest {
@@ -31,7 +31,7 @@ class ForwardDependencyAnalyzerKtTest {
         )
 
         val group = Group("G1", listOf(), listOf(QUESTION_ONE, QUESTION_TWO, QUESTION_THREE))
-        val contextManager = ContextBuilder(mutableListOf(group), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(group), getValidate())
         contextManager.validate()
         contextManager.components[0]
     }

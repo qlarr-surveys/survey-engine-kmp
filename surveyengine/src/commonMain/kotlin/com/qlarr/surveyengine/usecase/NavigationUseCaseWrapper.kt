@@ -2,6 +2,7 @@ package com.qlarr.surveyengine.usecase
 
 import com.qlarr.surveyengine.model.exposed.*
 import com.qlarr.surveyengine.model.jsonMapper
+import com.qlarr.surveyengine.scriptengine.ScriptEngineNavigate
 import kotlinx.serialization.json.jsonObject
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport

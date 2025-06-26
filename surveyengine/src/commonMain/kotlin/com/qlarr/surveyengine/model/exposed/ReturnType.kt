@@ -1,6 +1,5 @@
 package com.qlarr.surveyengine.model.exposed
 
-import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlin.js.ExperimentalJsExport

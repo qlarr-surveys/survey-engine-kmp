@@ -1,10 +1,9 @@
 package com.qlarr.surveyengine.usecase
 
-import com.qlarr.surveyengine.ext.copyErrorsToJSON
-import com.qlarr.surveyengine.model.Survey
 import com.qlarr.surveyengine.model.SurveyLang
 import com.qlarr.surveyengine.model.exposed.NavigationMode
 import com.qlarr.surveyengine.model.jsonMapper
+import com.qlarr.surveyengine.scriptengine.ScriptEngineValidate
 import kotlinx.serialization.json.*
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport

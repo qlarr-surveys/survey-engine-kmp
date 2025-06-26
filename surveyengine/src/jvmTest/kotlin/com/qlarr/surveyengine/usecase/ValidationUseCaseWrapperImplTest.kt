@@ -1,9 +1,8 @@
 package com.qlarr.surveyengine.usecase
 
-import com.qlarr.scriptengine.getValidate
 import com.qlarr.surveyengine.common.loadFromResources
 import com.qlarr.surveyengine.model.jsonMapper
-import kotlinx.serialization.json.buildJsonObject
+import com.qlarr.surveyengine.scriptengine.getValidate
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

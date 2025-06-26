@@ -444,9 +444,6 @@ internal fun jsonValueToObject(jsonValue: JsonElement): Any {
             jsonPrimitiveToAny(jsonValue)
         }
 
-        else -> {
-            jsonValue.toString()
-        }
     }
 }
 

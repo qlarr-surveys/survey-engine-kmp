@@ -3,6 +3,7 @@ package com.qlarr.surveyengine.usecase
 import com.qlarr.surveyengine.ext.copyErrorsToJSON
 import com.qlarr.surveyengine.model.Survey
 import com.qlarr.surveyengine.model.jsonMapper
+import com.qlarr.surveyengine.scriptengine.ScriptEngineValidate
 import kotlinx.serialization.json.jsonObject
 
 internal class ValidationUseCaseWrapperImpl(scriptEngine: ScriptEngineValidate, private val surveyJson: String) :

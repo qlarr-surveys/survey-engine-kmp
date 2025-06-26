@@ -1,11 +1,11 @@
 package com.qlarr.surveyengine.context.assemble
 
-import com.qlarr.surveyengine.common.buildScriptEngine
 import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.model.SurveyLang
 import com.qlarr.surveyengine.context.nestedComponents
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.*
+import com.qlarr.surveyengine.scriptengine.getValidate
 import com.qlarr.surveyengine.usecase.wrapToSurvey
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -30,7 +30,7 @@ class ContextBuilderTest {
                 )
             )
         )
-        val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), getValidate())
         contextManager.validate()
         assertTrue(contextManager.components[0].instructionList[0].errors[0] is InstructionError.ScriptError)
         assertEquals(
@@ -57,7 +57,7 @@ class ContextBuilderTest {
                 )
             )
         )
-        val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), getValidate())
         contextManager.validate()
         assertTrue(contextManager.components[0].instructionList[0].errors[0] is InstructionError.ScriptError)
         assertEquals(
@@ -85,7 +85,7 @@ class ContextBuilderTest {
                 )
             ), groups = listOf(Group("G1"))
         )
-        val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), getValidate())
         contextManager.validate()
         assertTrue(contextManager.components[0].instructionList[0].errors[0] is InstructionError.ScriptError)
         assertEquals(
@@ -145,7 +145,7 @@ class ContextBuilderTest {
                 Group("G2", groupType = GroupType.END, questions = listOf(Question("Q10")))
             )
         )
-        val contextManager = ContextBuilder(mutableListOf(Survey), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(Survey), getValidate())
         contextManager.validate()
 
         assertEquals(
@@ -167,7 +167,7 @@ class ContextBuilderTest {
                 SimpleState("2", ReservedCode.ConditionalRelevance)
             )
         )
-        val contextManager = ContextBuilder(mutableListOf(QUESTION), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(QUESTION), getValidate())
         contextManager.validate()
     }
 
@@ -177,7 +177,7 @@ class ContextBuilderTest {
         val G1Q1 = Question("Q1", listOf(SimpleState("Q2.value", ReservedCode.Value, isActive = true)))
         val G1Q2 = Question("Q2", listOf(SimpleState("Q1.value", ReservedCode.Value, isActive = true)))
         val G1 = Group("G1", listOf(SimpleState("", ReservedCode.Value)), listOf(G1Q1, G1Q2))
-        val contextManager = ContextBuilder(mutableListOf(G1.wrapToSurvey()), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(G1.wrapToSurvey()), getValidate())
         contextManager.validate()
 
         assertTrue(contextManager.components[0].children[0].children[0].instructionList[0].errors[0] is InstructionError.ForwardDependency)
@@ -194,7 +194,7 @@ class ContextBuilderTest {
             instructionList = listOf(ParentRelevance(children = listOf(listOf("A1"))))
         )
         val G1 = Group("G1", questions = listOf(Q1))
-        val contextManager = ContextBuilder(mutableListOf(G1.wrapToSurvey()), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(G1.wrapToSurvey()), getValidate())
         contextManager.validate()
         assertTrue(contextManager.components[0].children[0].children[0].children[0].instructionList[0].errors[0] is InstructionError.ForwardDependency)
 
@@ -273,7 +273,7 @@ class ContextBuilderTest {
             )
         )
 
-        val contextManager = ContextBuilder(mutableListOf(Survey), buildScriptEngine())
+        val contextManager = ContextBuilder(mutableListOf(Survey), getValidate())
         contextManager.validate()
         val allSkip = contextManager.components.nestedComponents()
             .map { it.instructionList.filterIsInstance<SkipInstruction>() }

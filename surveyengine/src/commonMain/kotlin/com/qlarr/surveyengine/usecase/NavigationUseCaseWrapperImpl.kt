@@ -6,6 +6,7 @@ import com.qlarr.surveyengine.model.exposed.NavigationDirection
 import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.model.exposed.NavigationMode
 import com.qlarr.surveyengine.model.exposed.SurveyMode
+import com.qlarr.surveyengine.scriptengine.ScriptEngineNavigate
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 

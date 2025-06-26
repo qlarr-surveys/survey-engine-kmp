@@ -1,9 +1,10 @@
 package com.qlarr.surveyengine.context.execute
 
-import com.qlarr.surveyengine.ext.jsonValueToObject
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.exposed.TypedValue
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.jsonObject
 
 internal class ContextExecutor {
     fun processNavigationValues(navigationValues: String): Pair<MutableMap<Dependency, JsonElement>, Map<Dependent, JsonElement>> {

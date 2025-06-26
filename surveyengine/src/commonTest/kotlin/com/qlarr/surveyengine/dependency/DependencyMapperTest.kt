@@ -1,10 +1,10 @@
 package com.qlarr.surveyengine.dependency
 
-import com.qlarr.surveyengine.common.buildScriptEngine
 import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.model.SurveyLang
 import com.qlarr.surveyengine.context.assemble.ContextBuilder
 import com.qlarr.surveyengine.model.*
+import com.qlarr.surveyengine.scriptengine.getValidate
 import kotlin.test.assertEquals
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -132,12 +132,12 @@ class DependencyMapperTest {
     )
 
 
-    private var contextBuilder: ContextBuilder = ContextBuilder(scriptEngine = buildScriptEngine())
+    private var contextBuilder: ContextBuilder = ContextBuilder(scriptEngine = getValidate())
     private lateinit var dependencyMapper: DependencyMapper
 
     @BeforeTest
     fun setup() {
-        contextBuilder = ContextBuilder(mutableListOf(GROUP_G1, GROUP_G2, GROUP_G3, GROUP_G4), buildScriptEngine())
+        contextBuilder = ContextBuilder(mutableListOf(GROUP_G1, GROUP_G2, GROUP_G3, GROUP_G4), getValidate())
         dependencyMapper = DependencyMapper(contextBuilder.sanitizedNestedComponents)
     }
 

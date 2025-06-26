@@ -37,7 +37,6 @@ class RuntimeScriptKtTest {
                 )
             )
         )
-        println(kabaka)
     }
 
 }

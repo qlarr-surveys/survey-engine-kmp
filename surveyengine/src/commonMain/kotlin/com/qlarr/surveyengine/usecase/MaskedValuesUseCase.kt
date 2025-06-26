@@ -10,6 +10,7 @@ import com.qlarr.surveyengine.ext.*
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.navigate.allInOne
 import com.qlarr.surveyengine.navigate.componentsInCurrentNav
+import com.qlarr.surveyengine.scriptengine.ScriptEngineNavigate
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.jsonObject
 

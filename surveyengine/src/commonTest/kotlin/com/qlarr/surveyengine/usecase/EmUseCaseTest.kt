@@ -1,8 +1,8 @@
 package com.qlarr.surveyengine.usecase
 
-import com.qlarr.surveyengine.common.buildScriptEngine
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.SimpleState
+import com.qlarr.surveyengine.scriptengine.getValidate
 import kotlin.test.assertEquals
 import kotlin.test.Test
 import kotlin.test.assertTrue
@@ -15,7 +15,7 @@ class EmUseCaseTest {
             code = "Q1",
             instructionList = listOf(SimpleState(";;;getdaSD dasd", ReservedCode.Value, isActive = true))
         ).wrapToSurvey()
-        val survey = ValidationUseCaseImpl(buildScriptEngine(), questionComponent).validate(false).survey
+        val survey = ValidationUseCaseImpl(getValidate(), questionComponent).validate(false).survey
 
         assertTrue(survey.groups[0].questions[0].instructionList[0].errors[0] is InstructionError.ScriptError)
     }
@@ -31,7 +31,7 @@ class EmUseCaseTest {
             instructionList = listOf(SimpleState("Q1.value", ReservedCode.Value, isActive = true))
         )
         val component = Group("G1", questions = listOf(questionComponent1, questionComponent2)).wrapToSurvey()
-        val survey = ValidationUseCaseImpl(buildScriptEngine(), component).validate(false).survey
+        val survey = ValidationUseCaseImpl(getValidate(), component).validate(false).survey
         assertEquals(
             InstructionError.ForwardDependency(
                 Dependency("Q2", ReservedCode.Value)
