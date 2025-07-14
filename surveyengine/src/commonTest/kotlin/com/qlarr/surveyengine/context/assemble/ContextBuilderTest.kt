@@ -1,15 +1,14 @@
 package com.qlarr.surveyengine.context.assemble
 
-import com.qlarr.surveyengine.model.ReservedCode
-import com.qlarr.surveyengine.model.SurveyLang
 import com.qlarr.surveyengine.context.nestedComponents
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.*
+import com.qlarr.surveyengine.model.exposed.ReturnType
 import com.qlarr.surveyengine.scriptengine.getValidate
 import com.qlarr.surveyengine.usecase.wrapToSurvey
+import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
-import kotlin.test.Test
 
 @Suppress("LocalVariableName")
 class ContextBuilderTest {
@@ -38,6 +37,33 @@ class ContextBuilderTest {
             contextManager.components[0].children[1].instructionList[0].errors[0]
         )
 
+    }
+
+    @Test
+    fun bindComponentUnit_will_add_validation_to_match_enum() {
+
+        val SURVEY_TITLE_INVALID_SCRIPT = Survey(
+            groups = listOf(
+                Group(
+                    "G1", questions = listOf(
+                        Question(
+                            code = "Q1",
+                            instructionList = listOf(
+                                SimpleState(
+                                    text = "",
+                                    reservedCode = ReservedCode.Value,
+                                    returnType = ReturnType.Enum(setOf("A1", "A2", "A3"))
+                                )
+                            )
+                        )
+                    )
+                ),
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), getValidate())
+        contextManager.validate()
+        val component = contextManager.components[0].children[0].children[0]
+        println(component)
     }
 
 
@@ -130,15 +156,17 @@ class ContextBuilderTest {
                 )
             )
         )
-        val QUESTION_FOUR = Question("Q4", listOf(
-            SkipInstruction(
-                skipToComponent = "G2",
-                code = "skip_to_G2",
-                toEnd = true,
-                isActive = false,
-                condition = "true"
+        val QUESTION_FOUR = Question(
+            "Q4", listOf(
+                SkipInstruction(
+                    skipToComponent = "G2",
+                    code = "skip_to_G2",
+                    toEnd = true,
+                    isActive = false,
+                    condition = "true"
+                )
             )
-        ))
+        )
         val Survey = Survey(
             groups = listOf(
                 Group("G1", questions = listOf(QUESTION_ONE, QUESTION_TWO, QUESTION_THREE, QUESTION_FOUR)),

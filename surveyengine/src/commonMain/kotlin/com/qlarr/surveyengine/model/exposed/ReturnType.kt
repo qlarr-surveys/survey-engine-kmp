@@ -1,32 +1,48 @@
 package com.qlarr.surveyengine.model.exposed
 
+import com.qlarr.surveyengine.model.adapters.ReturnTypeSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
 
+@Suppress("SERIALIZER_TYPE_INCOMPATIBLE")
 @OptIn(ExperimentalJsExport::class)
 @JsExport
-@Serializable
-enum class ReturnType {
-    BOOLEAN, STRING, INT, DOUBLE, LIST, MAP, DATE, FILE;
+@Serializable(with = ReturnTypeSerializer::class)
+sealed class ReturnType {
+    @Serializable(with = ReturnTypeSerializer::class)
+    data object Boolean : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data object String : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data object Int : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data object Double : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data object List : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data object Map : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data object Date : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data object File : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data class Enum(val values: Set<kotlin.String>) : ReturnType()
 
-
-    fun defaultTextValue(): String {
+    fun defaultTextValue(): kotlin.String {
         return when (this) {
-            LIST -> "[]"
-            STRING -> ""
-            BOOLEAN -> "false"
-            DATE -> "1970-01-01 00:00:00"
-            INT, DOUBLE -> "0"
-            MAP -> "{}"
-            FILE -> "{\"filename\":\"\",\"stored_filename\":\"\",\"size\":0,\"type\":\"\"}"
-        }
-    }
+            List -> "[]"
+            is Enum,
+            String -> ""
 
-    companion object{
-        fun fromString(text:String) = entries.first { it.name.lowercase() == text }
+            Boolean -> "false"
+            Date -> "1970-01-01 00:00:00"
+            Int, Double -> "0"
+            Map -> "{}"
+            File -> "{\"filename\":\"\",\"stored_filename\":\"\",\"size\":0,\"type\":\"\"}"
+        }
     }
 }
 

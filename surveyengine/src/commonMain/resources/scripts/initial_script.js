@@ -11,7 +11,7 @@ function navigate(navigationInput) {
     valuesKeys.forEach(function(key) {
         var value = navigationInput.values[key]
         var names = key.split('.')
-        qlarrVariables[names[0]][names[1]] = verifyValue(names[1], value.returnType.toLowerCase(), value.value)
+        qlarrVariables[names[0]][names[1]] = verifyValue(names[1], value.returnType, value.value)
     });
 
     navigationInput.sequence.forEach(function(systemInstruction, index) {
@@ -19,21 +19,21 @@ function navigate(navigationInput) {
         // Then we run active instructions
         // Or Defaults if they don't have value already
         if (instruction.isActive) {
-            qlarrVariables[systemInstruction.componentCode][instruction.code] = runInstruction(instruction.code, instruction.text, instruction.returnType.toLowerCase())
+            qlarrVariables[systemInstruction.componentCode][instruction.code] = runInstruction(instruction.code, instruction.text, instruction.returnType)
         } else if (instruction.text != null && typeof qlarrVariables[systemInstruction.componentCode][instruction.code] === 'undefined') {
-            if (instruction.returnType.toLowerCase() == "string") {
+            if ((typeof instruction.returnType === 'string' && instruction.returnType.toLowerCase() == "string") || instruction.returnType.type?.toLowerCase() == "enum") {
                 var text = "\"" + instruction.text + "\""
             } else {
                 var text = instruction.text
             }
             if (text.length == 0) {
-                qlarrVariables[systemInstruction.componentCode][instruction.code] = defaultValue(instruction.code, instruction.returnType.toLowerCase());
+                qlarrVariables[systemInstruction.componentCode][instruction.code] = defaultValue(instruction.code, instruction.returnType);
             } else {
                 try {
                     qlarrVariables[systemInstruction.componentCode][instruction.code] = JSON.parse(text)
                 } catch (e) {
                     print("error: " + e)
-                    qlarrVariables[systemInstruction.componentCode][instruction.code] = defaultValue(instruction.code, instruction.returnType.toLowerCase());
+                    qlarrVariables[systemInstruction.componentCode][instruction.code] = defaultValue(instruction.code, instruction.returnType);
                 }
             }
 
@@ -46,33 +46,35 @@ function navigate(navigationInput) {
     return JSON.stringify(qlarrVariables);
 }
 
-function verifyValue(code, returnTypeName, value) {
-    if (isCorrectReturnType(returnTypeName, value)) {
+function verifyValue(code, returnType, value) {
+    if (isCorrectReturnType(returnType, value)) {
         return value;
     } else {
-        return defaultValue(code, returnTypeName);
+        return defaultValue(code, returnType);
     }
 }
 
-function runInstruction(code, instructionText, returnTypeName) {
+function runInstruction(code, instructionText, returnType) {
+    const returnTypeName = typeof returnType == "object" ? returnType.type?.toLowerCase() || "" : returnType?.toLowerCase()
     try {
         if (returnTypeName != "map" && returnTypeName != "file") {
             var value = eval(instructionText);
         } else {
             eval("var value = " + instructionText + ";");
         }
-        if (isCorrectReturnType(returnTypeName, value)) {
+        if (isCorrectReturnType(returnType, value)) {
             return value;
         } else {
-            return defaultValue(code, returnTypeName);
+            return defaultValue(code, returnType);
         }
     } catch (e) {
         //print(e)
-        return defaultValue(code, returnTypeName);
+        return defaultValue(code, returnType);
     }
 }
 
-function isCorrectReturnType(returnTypeName, value) {
+function isCorrectReturnType(returnType, value) {
+    const returnTypeName = typeof returnType == "object" ? returnType.type?.toLowerCase() || "" : returnType?.toLowerCase()
     switch (returnTypeName) {
         case "boolean":
             return typeof value === "boolean";
@@ -109,7 +111,8 @@ function isCorrectReturnType(returnTypeName, value) {
     return false;
 }
 
-function defaultValue(code, returnTypeName) {
+function defaultValue(code, returnType) {
+    const returnTypeName = typeof returnType == "object" ? returnType.type?.toLowerCase() || "" : returnType?.toLowerCase()
     if (code == "value") {
         return undefined;
     } else if (code == "relevance" || code == "conditional_relevance" || code == "validity") {
@@ -122,6 +125,7 @@ function defaultValue(code, returnTypeName) {
         case "date":
             return "1970-01-01 00:00:00";
             break;
+        case "enum":
         case "string":
             return "";
             break;

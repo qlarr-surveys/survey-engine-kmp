@@ -41,7 +41,7 @@ internal class ContextBuilder(
                     validationInput.componentInstruction.instruction.run {
                         put(
                             "script",
-                            JsonPrimitive(if (returnType == ReturnType.STRING && !isActive) "\"$text\"" else text)
+                            JsonPrimitive(if (returnType == ReturnType.String && !isActive) "\"$text\"" else text)
                         )
                     }
                     putJsonArray("allowedVariables") {

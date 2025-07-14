@@ -1,9 +1,8 @@
 package com.qlarr.surveyengine.context
 
-import com.qlarr.surveyengine.model.ReservedCode
-import com.qlarr.surveyengine.model.exposed.ReturnType
 import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.*
+import com.qlarr.surveyengine.model.exposed.ReturnType
 
 fun Survey.nestedComponents(): List<ChildlessComponent> {
     return mutableListOf<ChildlessComponent>().apply {
@@ -77,6 +76,24 @@ fun SurveyComponent.hasActiveValidationRules() =
                 && it.isActive
     }
 
+fun SurveyComponent.hasEnumRule() =
+    instructionList.filterNoErrors().any {
+        it is Instruction.State
+                && it.reservedCode is ReservedCode.Value
+                && it.returnType is ReturnType.Enum
+    }
+
+fun SurveyComponent.enumValues(): String =
+    (instructionList.filterNoErrors()
+        .filterIsInstance<Instruction.State>()
+        .first {
+            it.reservedCode is ReservedCode.Value
+                    && it.returnType is ReturnType.Enum
+        }.returnType as ReturnType.Enum).values.joinToString(
+        separator = ",",
+        transform = { "\"$it\"" }
+    )
+
 fun SurveyComponent.getActiveValidationRules() =
     instructionList.filterNoErrors()
         .filterIsInstance<Instruction.State>().filter {
@@ -106,9 +123,9 @@ fun SurveyComponent.removeStateIfNotActive(
 ): SurveyComponent {
     return duplicate(
         instructionList = instructionList
-            .filter { 
-                it.code != reservedCode.code || 
-                (it as? Instruction.SimpleState)?.isActive != false 
+            .filter {
+                it.code != reservedCode.code ||
+                        (it as? Instruction.SimpleState)?.isActive != false
             }
     )
 }
@@ -140,13 +157,13 @@ fun SurveyComponent.addErrorToInstruction(
 
 fun List<SurveyComponent>.indexableCodes(): List<String> {
     return mapNotNull {
-            if (it.noErrors() && it.hasUniqueCode())
-                mutableListOf(it.code)
-                    .apply {
-                        addAll(it.children.indexableCodes())
-                    }
-            else
-                null
-        }
+        if (it.noErrors() && it.hasUniqueCode())
+            mutableListOf(it.code)
+                .apply {
+                    addAll(it.children.indexableCodes())
+                }
+        else
+            null
+    }
         .flatten()
 }

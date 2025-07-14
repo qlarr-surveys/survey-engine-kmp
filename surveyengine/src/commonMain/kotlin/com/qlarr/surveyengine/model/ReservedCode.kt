@@ -88,13 +88,13 @@ sealed class ReservedCode(
 
     fun defaultReturnType(): ReturnType {
         return when (this) {
-            is Order, is Priority -> ReturnType.INT
-            is Meta, RelevanceMap, ValidityMap -> ReturnType.MAP
-            is BeforeNavigation, AfterNavigation -> ReturnType.LIST
-            is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.STRING
+            is Order, is Priority -> ReturnType.Int
+            is Meta, RelevanceMap, ValidityMap -> ReturnType.Map
+            is BeforeNavigation, AfterNavigation -> ReturnType.List
+            is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
-            is HasPrevious, is HasNext -> ReturnType.BOOLEAN
+            is HasPrevious, is HasNext -> ReturnType.Boolean
         }
     }
 

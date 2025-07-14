@@ -4,6 +4,7 @@ import com.qlarr.surveyengine.context.*
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.ParentRelevance
 import com.qlarr.surveyengine.model.ReservedCode.*
+import com.qlarr.surveyengine.model.exposed.ReturnType
 
 internal fun MutableList<SurveyComponent>.addPreviousNextInstruction() {
     if (size == 1 && get(0) is Survey) {
@@ -242,7 +243,7 @@ internal fun MutableList<SurveyComponent>.addValidityInstructions() {
 private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): SurveyComponent {
     val qualifiedCode = uniqueCode(parentCode)
     var validationText = ""
-    val returnComponent =
+    var returnComponent =
         duplicate(
             children = if (children.isNotEmpty()) children.map { it.addValidityInstructions(qualifiedCode) } else listOf())
     // we do not add validity instructions to End Groups
@@ -256,8 +257,16 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
                 }.validity)"
             })
     } else if (this is Question || this is Answer) {
-        if (hasActiveValidationRules()) {
-            val validationRules = getActiveValidationRules()
+        if (hasEnumRule() && enumValues().isNotEmpty()) {
+            returnComponent = insertOrOverrideState(
+                reservedCode = ValidationRule(code = "validation_enum"),
+                text = "QlarrScripts.isNotVoid(${qualifiedCode}.value) && ${enumValues()}.indexOf(${qualifiedCode}.value) == -1",
+                isActive = true,
+                returnType = ReturnType.Boolean
+            )
+        }
+        if (returnComponent.hasActiveValidationRules()) {
+            val validationRules = returnComponent.getActiveValidationRules()
             validationText = validationRules.joinToString(
                 prefix = if (validationRules.size > 1) "(" else "",
                 postfix = if (validationRules.size > 1) ")" else "",
@@ -314,6 +323,7 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
                     .addOrder(index)
                     .removeState(Prioritised)
                     .removeState(ChildrenRelevance)
+                    .removeState(ValidationRule("validation_enum"))
                     .removeState(ModeRelevance)
                     .removeState(NotSkipped)
                     .insertOrOverrideState(Priority, index.toString(), false)

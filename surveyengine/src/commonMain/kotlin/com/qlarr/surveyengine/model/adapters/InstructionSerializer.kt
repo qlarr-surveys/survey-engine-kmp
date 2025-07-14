@@ -1,13 +1,13 @@
 package com.qlarr.surveyengine.model.adapters
 
-import kotlinx.serialization.*
-import kotlinx.serialization.encoding.*
-import kotlinx.serialization.json.*
 import com.qlarr.surveyengine.ext.VALID_REFERENCE_INSTRUCTION_PATTERN
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.*
 import com.qlarr.surveyengine.model.exposed.ReturnType
+import kotlinx.serialization.*
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.encoding.*
+import kotlinx.serialization.json.*
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializer(forClass = Instruction::class)
@@ -30,7 +30,10 @@ object InstructionSerializer : KSerializer<Instruction> {
                 }
 
                 is PriorityGroups -> {
-                    put("priorities", json.encodeToJsonElement(ListSerializer(serializer<PriorityGroup>()), value.priorities))
+                    put(
+                        "priorities",
+                        json.encodeToJsonElement(ListSerializer(serializer<PriorityGroup>()), value.priorities)
+                    )
                 }
 
                 is ParentRelevance -> {
@@ -41,7 +44,7 @@ object InstructionSerializer : KSerializer<Instruction> {
 
                 is State -> {
                     put("text", value.text)
-                    put("returnType", value.returnType.name.lowercase())
+                    put("returnType", json.encodeToJsonElement(serializer<ReturnType>(), value.returnType))
                     put("isActive", value.isActive)
 
                     if (value is SkipInstruction) {
@@ -85,17 +88,8 @@ object InstructionSerializer : KSerializer<Instruction> {
         val skipToComponent = jsonElement["skipToComponent"]?.jsonPrimitive?.contentOrNull ?: ""
         val toEnd = jsonElement["toEnd"]?.jsonPrimitive?.booleanOrNull ?: false
 
-        val returnType = jsonElement["returnType"]?.let { returnTypeElement ->
-            when {
-                returnTypeElement.jsonPrimitive.isString -> {
-                    ReturnType.fromString(returnTypeElement.jsonPrimitive.content)
-                }
-                returnTypeElement is JsonObject -> {
-                    val name = returnTypeElement["name"]?.jsonPrimitive?.contentOrNull?.lowercase() ?: ""
-                    ReturnType.fromString(name)
-                }
-                else -> null
-            }
+        val returnType: ReturnType? = jsonElement["returnType"]?.let { returnTypeElement ->
+            json.decodeFromJsonElement(serializer(),returnTypeElement)
         }
 
         // Extract specialized fields

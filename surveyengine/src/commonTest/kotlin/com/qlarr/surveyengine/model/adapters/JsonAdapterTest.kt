@@ -54,12 +54,6 @@ class JsonAdapterTest {
         instructionList = listOf(SimpleState("", Value))
     )
 
-    private val G3_TEXT =
-        "{\"code\":\"G3\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\"," +
-                "\"isActive\":false}],\"questions\":[{\"code\":\"Q5\",\"instructionList\":[{\"code\":\"value\"," +
-                "\"text\":\"\",\"returnType\":\"string\",\"isActive\":false}],\"answers\":[],\"errors\":[]}," +
-                "{\"code\":\"Q6\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\"," +
-                "\"isActive\":false}],\"answers\":[],\"errors\":[]}],\"groupType\":\"GROUP\",\"errors\":[]}"
     private val G3 = Group(
         code = "G3",
         instructionList = listOf(SimpleState("", Value)),
@@ -144,15 +138,20 @@ class JsonAdapterTest {
 
     @Test
     fun serialises_and_deserialises_return_type() {
-        val file = ReturnType.FILE
+        val file = ReturnType.File
         assertEquals(file, jsonMapper.decodeFromString<ReturnType>(jsonMapper.encodeToString(file)))
+    }
+
+    @Test
+    fun serialises_and_deserialises_return_type_enum() {
+        val enum = ReturnType.Enum(setOf("A1","A2","A3"))
+        assertEquals(enum, jsonMapper.decodeFromString<ReturnType>(jsonMapper.encodeToString(enum)))
     }
 
 
     @Test
     fun serialises_and_deserialises_reserved_code() {
         val reservedCode: ReservedCode = ValidationRule("validation_required")
-        val string = jsonMapper.encodeToString(reservedCode)
         assertEquals(
             reservedCode,
             jsonMapper.decodeFromString<ReservedCode>(jsonMapper.encodeToString(reservedCode))
@@ -172,8 +171,8 @@ class JsonAdapterTest {
         // Create a ValidationJsonOutput with meaningful test data
         val validationJsonOutput = ValidationJsonOutput(
             schema = listOf(
-                ResponseField("Q1", ColumnName.VALUE, ReturnType.STRING),
-                ResponseField("Q2", ColumnName.ORDER, ReturnType.INT)
+                ResponseField("Q1", ColumnName.VALUE, ReturnType.String),
+                ResponseField("Q2", ColumnName.ORDER, ReturnType.Int)
             ),
             impactMap = mapOf(
                 Dependency("Q1", Value) to listOf(
@@ -199,14 +198,6 @@ class JsonAdapterTest {
 
         // Test serializing
         val jsonString = jsonMapper.encodeToString(validationJsonOutput)
-
-        // Create a new instance for comparison
-        val newJsonObject = jsonMapper.parseToJsonElement(
-            "{\"code\":\"G3\"," +
-                    "\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]," +
-                    "\"children\":[{\"code\":\"Q5\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]},{\"code\":\"Q6\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"isActive\":false,\"returnType\":\"String\"}]}]}"
-        ).jsonObject
-
 
         // Verify schema, impactMap, componentIndexList, script, and skipMap are correctly serialized
         val deserializedOutput = jsonMapper.decodeFromString<ValidationJsonOutput>(jsonString)
