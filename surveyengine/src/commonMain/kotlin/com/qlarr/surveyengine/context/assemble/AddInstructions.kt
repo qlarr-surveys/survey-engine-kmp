@@ -260,7 +260,7 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
         if (hasEnumRule() && enumValues().isNotEmpty()) {
             returnComponent = insertOrOverrideState(
                 reservedCode = ValidationRule(code = "validation_enum"),
-                text = "QlarrScripts.isNotVoid(${qualifiedCode}.value) && ${enumValues()}.indexOf(${qualifiedCode}.value) == -1",
+                text = "QlarrScripts.isNotVoid(${qualifiedCode}.value) && [${enumValues()}].indexOf(${qualifiedCode}.value) == -1",
                 isActive = true,
                 returnType = ReturnType.Boolean
             )
