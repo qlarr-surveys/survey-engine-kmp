@@ -91,6 +91,7 @@ function isCorrectReturnType(returnType, value) {
         case "list":
             return Array.isArray(value);
             break;
+        case "enum":
         case "string":
             return typeof value === "string";
             break;
