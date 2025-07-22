@@ -59,6 +59,15 @@ QlarrScripts = {
             return " & "
         }
     },
+    stripTags: function(string) {
+        if (!string) {
+            return string
+        } else {
+            return string.replace(/<[^>]*>?/gm, "")
+                .replace("\n", "")
+                .replace("&nbsp;", "")
+        }
+    },
     safeAccess: function(obj, prop) {
         if (Object.prototype.hasOwnProperty.call(obj, prop)) {
             return obj[prop];
