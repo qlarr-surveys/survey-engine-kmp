@@ -71,39 +71,46 @@ private fun List<SurveyComponent>.randomizeChildren(
     getLabel: (String) -> String
 ): Map<Dependency, Int> {
     val mutableMap = mutableMapOf<Dependency, Int>()
-    val indices = randomGroup.codes.map { item ->
-        indexOfFirst { surveyComponent ->
+    val order = linkedMapOf<String, Int>()
+    randomGroup.codes.forEach { item ->
+        order[item] = 1 + indexOfFirst { surveyComponent ->
             surveyComponent.code == item
         }
     }
-    val orders = if (randomGroup.randomOption == ALPHA) {
-        // For ALPHA, sort the codes first, then get their indices
-        randomGroup.codes
-            .sortedBy { code ->
+    val random: Map<String, Int> = when (randomGroup.randomOption) {
+        ALPHA -> {
+            val sortedKeys = order.keys.sortedBy { code ->
                 val qualifiedCode = if (code.isUniqueCode()) code else parentCode + code
                 getLabel(qualifiedCode)
             }
-            .map { sortedCode ->
-                indexOfFirst { it.code == sortedCode } + 1
+            val sortedValues = order.values.sorted()
+
+            sortedKeys.zip(sortedValues).toMap(linkedMapOf())
+        }
+
+        RANDOM -> {
+            val sortedKeys = order.keys
+            val sortedValues = order.values.shuffled()
+            sortedKeys.zip(sortedValues).toMap(linkedMapOf())
+        }
+        FLIP -> {
+            val sortedKeys = order.keys
+            val sortedValues = order.values.apply {
+                if (pendulumDirection == FlipDirection.DESCENDING){
+                    reversed()
+                }
             }
-    } else {
-        randomGroup.codes.map { item ->
-            indexOfFirst { it.code == item } + 1
-        }.toMutableList().apply {
-            if (randomGroup.randomOption == RANDOM) {
-                shuffle()
-            } else if (randomGroup.randomOption == FLIP && pendulumDirection == FlipDirection.DESCENDING) {
-                reverse()
-            }
+            sortedKeys.zip(sortedValues).toMap(linkedMapOf())
         }
     }
 
-    indices.forEachIndexed { index, i ->
-        val order = orders[index]
-        val component = get(i)
+
+    random.forEach { entry ->
+        val component = first { it.code == entry.key }
         val code = component.uniqueCode(parentCode)
-        mutableMap[Dependency(code, Order)] = order
+        mutableMap[Dependency(code, Order)] = entry.value
     }
+
     return mutableMap
 }
 
