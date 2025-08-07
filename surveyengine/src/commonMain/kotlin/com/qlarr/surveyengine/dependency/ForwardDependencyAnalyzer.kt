@@ -93,6 +93,12 @@ internal class ForwardDependencyAnalyzer(
                                 instruction,
                                 InstructionError.SkipToEndOfEndGroup
                             )
+                    } else if ( instruction.disqualify && instruction.skipToComponent != endGroupCode) {
+                        returnComponent =
+                            returnComponent.addErrorToInstruction(
+                                instruction,
+                                InstructionError.DisqualifyNotToEnd
+                            )
                     }
                 }
             returnComponent.duplicate(

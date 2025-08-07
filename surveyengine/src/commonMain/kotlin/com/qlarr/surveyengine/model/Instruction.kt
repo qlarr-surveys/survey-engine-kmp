@@ -171,6 +171,7 @@ sealed class Instruction {
     data class SkipInstruction(
         val skipToComponent: String = "",
         val toEnd: Boolean = false,
+        val disqualify: Boolean = false,
         val condition: String = "true",
         override val code: String = "skip_to_$skipToComponent",
         override val text: String = condition,

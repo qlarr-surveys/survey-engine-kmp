@@ -80,9 +80,8 @@ internal class ContextBuilder(
             val newComponent = surveyComponent.validateInstructions()
             components[index] = newComponent
         }
-        components.apply {
-            addStateToAllComponents()
-        }
+        components.addStateToAllComponents()
+
 
         components.forEachIndexed { index, surveyComponent ->
             val newComponent = surveyComponent.validateReferences(sanitizedNestedComponents)
@@ -94,6 +93,7 @@ internal class ContextBuilder(
             components, dependencyMapper.dependencyMap
         ).validateForwardDependencies()
             .validateSkipDestinations()
+        components.addDisqualifyInstruction(sanitizedNestedComponents)
         componentIndexList = components.componentIndices()
 
         sanitizedNestedComponents.let { sanitisedComponents ->
@@ -137,6 +137,7 @@ internal class ContextBuilder(
         }.toMutableList()
         components.replaceInstruction("")
         components.apply {
+            addDisqualifyInstruction(components.sanitizedNestedComponents())
             addPreviousNextInstruction()
             addPrioritisedInstruction("")
             skipMap = addNotSkippedInstructions(componentIndexList)

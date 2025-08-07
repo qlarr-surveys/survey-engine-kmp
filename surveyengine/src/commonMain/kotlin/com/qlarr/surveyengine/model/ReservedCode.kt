@@ -60,6 +60,14 @@ sealed class ReservedCode(
     @Serializable(with = ReservedCodeSerializer::class)
     data class Skip(override val code: String) : ReservedCode(code, executionOrder = 7, true, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
+    data object Disqualified : ReservedCode(
+        "disqualified",
+        executionOrder = 8,
+        isAccessible = false,
+        accessibleByChildren = false,
+        isRuntime = true
+    )
+    @Serializable(with = ReservedCodeSerializer::class)
     data object MaskedValue : ReservedCode("masked_value", isAccessible = true, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
     data object RelevanceMap : ReservedCode("relevance_map", executionOrder = 8)
@@ -94,7 +102,7 @@ sealed class ReservedCode(
             is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
-            is HasPrevious, is HasNext -> ReturnType.Boolean
+            is Disqualified,  is HasPrevious, is HasNext -> ReturnType.Boolean
         }
     }
 
@@ -144,6 +152,7 @@ fun String.toReservedCode(): ReservedCode {
         this == "label" -> ReservedCode.Label
         this == "in_current_navigation" -> ReservedCode.InCurrentNavigation
         this == "before_navigation" -> ReservedCode.BeforeNavigation
+        this == "disqualified" -> ReservedCode.Disqualified
         this == "after_navigation" -> ReservedCode.AfterNavigation
         this == "relevance_map" -> ReservedCode.RelevanceMap
         this == "validity_map" -> ReservedCode.ValidityMap
@@ -170,6 +179,7 @@ fun String.isReservedCode(): Boolean {
         "validity",
         "has_previous",
         "has_next",
+        "disqualified",
         "masked_value",
         "relevance_map",
         "validity_map",

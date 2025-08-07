@@ -199,6 +199,83 @@ class ContextBuilderTest {
         contextManager.validate()
     }
 
+    @Test
+    fun constructs_disqualify_instruction() {
+        val Survey = Survey(
+            groups = listOf(
+                Group(
+                    code = "G1",
+                    questions = listOf(
+                        Question(
+                            code = "Q1",
+                            instructionList = listOf(
+                                SimpleState(text = "", ReservedCode.Value)
+                            )
+
+                        ),
+                        Question(
+                            "Q2",
+                            instructionList = listOf(
+                                SkipInstruction(
+                                    text = "Q1.value > 3",
+                                    skipToComponent = "Gend",
+                                    disqualify = true
+                                )
+                            )
+                        ),
+                        Question(
+                            "Q3",
+                            instructionList = listOf(
+                                SkipInstruction(
+                                    text = "Q1.value <8 ",
+                                    skipToComponent = "Gend",
+                                    disqualify = true
+                                )
+                            )
+                        ),
+                    )
+                ),
+                Group(
+                    code = "G2",
+                    questions = listOf(
+                        Question(
+                            code = "Q4",
+                            instructionList = listOf(
+                                SkipInstruction(
+                                    text = "Q1.value != 0 ",
+                                    skipToComponent = "Gend",
+                                    toEnd = true,
+                                    disqualify = true
+                                )
+                            )
+                        ),
+                        Question(
+                            code = "Q5",
+                            instructionList = listOf(
+                                SkipInstruction(
+                                    text = "eval(window)",
+                                    skipToComponent = "Gend",
+                                    disqualify = true
+                                )
+                            )
+                        ),
+                        Question("Q6"),
+                    )
+                ),
+                Group(
+                    "Gend",
+                    questions = listOf(Question("Qend")),
+                    groupType = GroupType.END
+                ),
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(Survey), getValidate())
+        contextManager.validate()
+        assertEquals("Q1.value > 3 && Q1.value <8 ", (contextManager.components[0].instructionList.firstOrNull {
+            it is SimpleState && it.reservedCode == ReservedCode.Disqualified
+        }!! as SimpleState).text)
+    }
+
 
     @Test
     fun fwd_dependency_errors_are_flagged() {
@@ -229,7 +306,7 @@ class ContextBuilderTest {
     }
 
     @Test
-    fun dependsency_error_analyzer_analyzes_circular_relevance_to_own_parent_dependency() {
+    fun validates_skip_references() {
 
         val Survey = Survey(
             instructionList = listOf(RandomGroups(groups = listOf(listOf("G2", "G3")))),

@@ -95,9 +95,11 @@ private fun List<SurveyComponent>.randomizeChildren(
         }
         FLIP -> {
             val sortedKeys = order.keys
-            val sortedValues = order.values.apply {
+            val sortedValues = order.values.let {
                 if (pendulumDirection == FlipDirection.DESCENDING){
-                    reversed()
+                    it.reversed()
+                } else {
+                    it
                 }
             }
             sortedKeys.zip(sortedValues).toMap(linkedMapOf())

@@ -154,7 +154,7 @@ class RandomGroupExtKtTest {
         for (i in 0 until 20) {
             set.add(originalList.randomizeChildren(getLabel = getARLabel).orderValues(listOf("Q1A1", "Q1A2", "Q1A3")))
         }
-        assertEquals(setOf(listOf(3, 1, 2)), set)
+        assertEquals(setOf(listOf(2, 3, 1)), set)
     }
 
 

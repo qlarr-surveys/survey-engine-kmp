@@ -51,6 +51,7 @@ object InstructionSerializer : KSerializer<Instruction> {
                         put("skipToComponent", value.skipToComponent)
                         put("condition", value.condition)
                         put("toEnd", value.toEnd)
+                        put("disqualify", value.disqualify)
                     }
                 }
             }
@@ -87,6 +88,7 @@ object InstructionSerializer : KSerializer<Instruction> {
         val isActive = jsonElement["isActive"]?.jsonPrimitive?.booleanOrNull
         val skipToComponent = jsonElement["skipToComponent"]?.jsonPrimitive?.contentOrNull ?: ""
         val toEnd = jsonElement["toEnd"]?.jsonPrimitive?.booleanOrNull ?: false
+        val disqualify = jsonElement["disqualify"]?.jsonPrimitive?.booleanOrNull ?: false
 
         val returnType: ReturnType? = jsonElement["returnType"]?.let { returnTypeElement ->
             json.decodeFromJsonElement(serializer(),returnTypeElement)
@@ -117,6 +119,7 @@ object InstructionSerializer : KSerializer<Instruction> {
                     code = code,
                     skipToComponent = skipToComponent,
                     toEnd = toEnd,
+                    disqualify = disqualify,
                     condition = nonNullableInput,
                     text = text ?: nonNullableInput,
                     isActive = isActive ?: reservedCode.defaultIsActive(),

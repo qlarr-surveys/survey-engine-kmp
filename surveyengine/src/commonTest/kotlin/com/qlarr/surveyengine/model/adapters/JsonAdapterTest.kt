@@ -61,13 +61,14 @@ class JsonAdapterTest {
     )
     private val COMPONENT_List = listOf(G3)
 
+    private val DISQUALIFY_NOT_TO_END = InstructionError.DisqualifyNotToEnd
     private val RG_DUPLICATE = InstructionError.DuplicateRandomGroupItems(listOf())
     private val RG_NOT_CHILD = InstructionError.RandomGroupItemNotChild(listOf("A1", "A2"))
 
     private val SCRIPT_FAILURE_ERR = ScriptError(message = "error message", start = 5, end = 120)
     private val FWD_DEPENDENCY_ERR = InstructionError.ForwardDependency(Dependency("G1Q1", Value))
     private val List_ERR = listOf(SCRIPT_FAILURE_ERR, FWD_DEPENDENCY_ERR)
-    private val List_ERR_1 = listOf(RG_DUPLICATE, RG_NOT_CHILD)
+    private val List_ERR_1 = listOf(RG_DUPLICATE, RG_NOT_CHILD, DISQUALIFY_NOT_TO_END)
 
     private val NAV_INDEX_G1 = NavigationIndex.Group("G1")
     private val NAV_INDEX_Q1 = NavigationIndex.Question("Q1")

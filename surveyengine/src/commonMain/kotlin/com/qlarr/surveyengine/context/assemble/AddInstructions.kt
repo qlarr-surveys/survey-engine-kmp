@@ -295,6 +295,30 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
     }
 }
 
+internal fun MutableList<SurveyComponent>.addDisqualifyInstruction(
+    sanitizedNestedComponents: List<ChildlessComponent>
+) {
+    val survey = this[0]
+    val text = sanitizedNestedComponents.map { component ->
+        component.instructionList
+            .filterIsInstance<Instruction.SkipInstruction>()
+            .filter { it.noErrors() && it.disqualify }
+    }.flatten().joinToString(
+        separator = " && ", transform = { it.text }
+    )
+    if (text.isNotEmpty()) {
+        this[0] = survey.replaceOrAddInstruction(
+            Instruction.SimpleState(
+                text = text,
+                reservedCode = Disqualified,
+                generated = true,
+                returnType = ReturnType.Boolean,
+                isActive = true,
+            )
+        )
+    }
+}
+
 internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
     forEachIndexed { index, surveyComponent ->
         if (surveyComponent.hasErrors()) {
@@ -305,6 +329,7 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
                 surveyComponent
                     .replaceOrAddInstruction(Instruction.SimpleState("en", Lang))
                     .insertOrOverrideState(Mode, "mixed", false)
+                    .insertOrOverrideState(Disqualified, "false", false)
                     .insertOrOverrideState(RelevanceMap, "{}", false)
                     .insertOrOverrideState(ValidityMap, "{}", false)
                     .insertOrOverrideState(BeforeNavigation, "[]", false)
