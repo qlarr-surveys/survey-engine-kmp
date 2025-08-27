@@ -28,35 +28,17 @@ interface ValidationUseCaseWrapper {
                 })
                 put("groupType", "GROUP")
                 put("questions", buildJsonArray {
-                    add(buildJsonObject {
-                        put("content", buildJsonObject {
-                            put("en", buildJsonObject {
-                                put("label", "Sample Text Question")
-                            })
-                        })
-                        put("code", "Q1")
-                        put("type", "text_display")
-                    })
                 })
             })
             add(buildJsonObject {
                 put("content", buildJsonObject {
                     put("en", buildJsonObject {
-                        put("label", "End Page")
+                        put("label", "Thank you for taking the time to complete this survey.")
                     })
                 })
                 put("code", "G2")
                 put("groupType", "END")
                 put("questions", buildJsonArray {
-                    add(buildJsonObject {
-                        put("content", buildJsonObject {
-                            put("en", buildJsonObject {
-                                put("label", "Bye Question")
-                            })
-                        })
-                        put("code", "Q2")
-                        put("type", "text_display")
-                    })
                 })
             })
         }

@@ -63,8 +63,13 @@ internal fun List<SurveyComponent>.getSchema(
             returnList.add(ResponseField(code, ColumnName.ORDER, ReturnType.Int))
         if (prioritisedChildrenCodes.contains(component.code))
             returnList.add(ResponseField(code, ColumnName.PRIORITY, ReturnType.Int))
-        if (component.code.matches(Regex(VALID_QUESTION_CODE)) || component.code.matches(Regex(VALID_ANSWER_CODE))) {
-            component.instructionList.firstOrNull { it is Instruction.State && it.reservedCode == ReservedCode.Value }
+        if (component.code.matches(Regex(VALID_QUESTION_CODE)) ||
+            component.code.matches(Regex(VALID_ANSWER_CODE))
+        ) {
+            component.instructionList
+                .firstOrNull {
+                    it is Instruction.State && it.reservedCode == ReservedCode.Value
+                }
                 ?.let {
                     returnList.add(
                         ResponseField(

@@ -31,9 +31,9 @@ class ValidationUseCaseImpl(scriptEngine: ScriptEngineValidate, survey: Survey) 
             contextManager.components.correctInstruction(parents.reversed(), dependency.componentCode.splitToComponentCodes().last(), dependency.reservedCode, instructionText)
         }
         return ValidationOutput(
-            contextManager.components[0] as Survey,
-            dependencyMapper.impactMap.toStringImpactMap(),
-            contextManager.components.getSchema(),
+            survey = contextManager.components[0] as Survey,
+            impactMap = dependencyMapper.impactMap.toStringImpactMap(),
+            schema = contextManager.components.getSchema(),
             script = contextManager.sanitizedNestedComponents.runtimeScript(dependencyMapper.dependencyMap),
             componentIndexList = contextManager.componentIndexList,
             skipMap = contextManager.skipMap

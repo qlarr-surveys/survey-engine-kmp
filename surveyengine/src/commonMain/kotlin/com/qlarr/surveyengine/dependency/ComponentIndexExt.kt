@@ -15,7 +15,7 @@ fun List<SurveyComponent>.componentIndices(
     val returnList = mutableListOf<ComponentIndex>()
     val indices = indices(parentRandomInstruction)
     forEachIndexed { index, surveyComponent ->
-        if (surveyComponent.noErrors()) {
+        if (surveyComponent is Survey || surveyComponent.noErrors()) {
             val code = surveyComponent.uniqueCode(parentIndex?.code ?: "")
             val hasUniqueCode = surveyComponent.hasUniqueCode()
             val componentIndex = ComponentIndex(

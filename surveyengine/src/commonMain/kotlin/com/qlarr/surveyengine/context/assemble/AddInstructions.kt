@@ -46,7 +46,7 @@ internal fun MutableList<SurveyComponent>.addPreviousNextInstruction() {
 
 internal fun MutableList<SurveyComponent>.addNotSkippedInstructions(componentIndexList: List<ComponentIndex>)
         : Map<String, List<NotSkippedInstructionManifesto>> {
-    if (size == 1 && get(0) is Survey) {
+    if (size == 1 && get(0) is Survey && get(0).noErrors()) {
         val map = (get(0) as Survey).nestedComponents().skipManifesto(componentIndexList)
         val newList = addSkipInstructions(map)
         clear()

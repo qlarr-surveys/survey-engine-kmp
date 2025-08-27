@@ -12,10 +12,10 @@ internal fun SurveyComponent.validateInstructions(): SurveyComponent {
     var validatedComponent = duplicate()
 
     validatedComponent = validatedComponent
-            .addInstructionDuplicateCodes()
-            .validateRandomGroupInstruction()
-            .validatePriorityGroupInstruction()
-            .validateParentRelevanceInstruction()
+        .addInstructionDuplicateCodes()
+        .validateRandomGroupInstruction()
+        .validatePriorityGroupInstruction()
+        .validateParentRelevanceInstruction()
 
     val newChildren = mutableListOf<SurveyComponent>()
     validatedComponent.children.forEach {
@@ -36,7 +36,7 @@ internal fun SurveyComponent.validateReferences(sanitizedNestedComponents: List<
 
     var validatedComponent = duplicate()
     validatedComponent = validatedComponent
-            .validateReferenceInstructions(sanitizedNestedComponents)
+        .validateReferenceInstructions(sanitizedNestedComponents)
 
     val newChildren = mutableListOf<SurveyComponent>()
     validatedComponent.children.forEach {
@@ -67,11 +67,12 @@ private fun SurveyComponent.validateReferenceInstructions(sanitizedNestedCompone
                         newInstruction = newInstruction.addError(InstructionError.InvalidReference(dependency, false))
                     } else {
                         val referencedInstruction = referencedComponent
-                                .instructionList
-                                .filterIsInstance<Instruction.State>()
-                                .firstOrNull { it.reservedCode == reservedCode.toReservedCode() }
+                            .instructionList
+                            .filterIsInstance<Instruction.State>()
+                            .firstOrNull { it.reservedCode == reservedCode.toReservedCode() }
                         if (referencedInstruction == null) {
-                            newInstruction = newInstruction.addError(InstructionError.InvalidReference(dependency, false))
+                            newInstruction =
+                                newInstruction.addError(InstructionError.InvalidReference(dependency, false))
                         }
                     }
                 }
@@ -87,7 +88,7 @@ private fun SurveyComponent.addInstructionDuplicateCodes(): SurveyComponent {
     val newInstructions = instructionList.toMutableList()
     instructionList.forEachIndexed { index, instruction ->
         if (instructionList.count { it.code == instruction.code } > 1
-                && instructionList.indexOfFirst { it.code == instruction.code } != index) {
+            && instructionList.indexOfFirst { it.code == instruction.code } != index) {
             newInstructions[index] = instruction.addError(InstructionError.DuplicateInstructionCode)
         }
     }
@@ -99,14 +100,14 @@ private fun SurveyComponent.validateParentRelevanceInstruction(): SurveyComponen
     instructionList.forEachIndexed { index, instruction ->
         if (instruction is Instruction.ParentRelevance && instruction.noErrors()) {
             instruction.children
-                    .flatten().distinct()
-                    .filter { code ->
-                        children.all { it.code != code }
-                    }.let {
-                        if (it.isNotEmpty()) {
-                            newInstructions[index] = instruction.addError(InstructionError.InvalidChildReferences(it))
-                        }
+                .flatten().distinct()
+                .filter { code ->
+                    children.all { it.code != code }
+                }.let {
+                    if (it.isNotEmpty()) {
+                        newInstructions[index] = instruction.addError(InstructionError.InvalidChildReferences(it))
                     }
+                }
         }
     }
     return duplicate(instructionList = newInstructions)
@@ -122,7 +123,7 @@ fun List<SurveyComponent>.validateDuplicates(parentCode: String = ""): List<Surv
     duplicateCodes.forEach { duplicateCode ->
         returnList.forEachIndexed { index, webComponent ->
             if (webComponent.code == duplicateCode
-                    && indexOfFirst { it.code == webComponent.code } != index
+                && indexOfFirst { it.code == webComponent.code } != index
             )
                 returnList[index] = webComponent.addError(ComponentError.DUPLICATE_CODE)
         }
@@ -146,7 +147,7 @@ fun List<SurveyComponent>.validateEmptyParents(): List<SurveyComponent> {
     val returnList = toMutableList()
 
     forEachIndexed { index, surveyComponent ->
-        if (surveyComponent is Survey || surveyComponent is Group) {
+        if (surveyComponent is Survey || (surveyComponent is Group && surveyComponent.groupType != GroupType.END)) {
             var newComponent = surveyComponent.duplicate()
             if (surveyComponent.children.count { it.noErrors() && (it as? Group)?.groupType != GroupType.END } == 0) {
                 newComponent = newComponent.addError(ComponentError.EMPTY_PARENT)
@@ -196,15 +197,15 @@ internal fun SurveyComponent.validateNoValueInEndGroup(): SurveyComponent {
         }
     }
     instructionList
-            .filterNoErrors()
-            .filterIsInstance<Instruction.SimpleState>()
-            .firstOrNull {
-                it.reservedCode == ReservedCode.Value
+        .filterNoErrors()
+        .filterIsInstance<Instruction.SimpleState>()
+        .firstOrNull {
+            it.reservedCode == ReservedCode.Value
 //                || it.reservedCode == ReservedCode.Validity
-            }
-            ?.let {
-                newInstructions[newInstructions.indexOf(it)] = it.addError(InstructionError.InvalidInstructionInEndGroup)
-            }
+        }
+        ?.let {
+            newInstructions[newInstructions.indexOf(it)] = it.addError(InstructionError.InvalidInstructionInEndGroup)
+        }
     val newChildren = children.map { it.validateNoValueInEndGroup() }
 
     return duplicate(instructionList = newInstructions, children = newChildren)
@@ -244,8 +245,8 @@ private fun SurveyComponent.addDuplicateErrorsToChildren(duplicateCodes: List<St
         val newChildren = returnElement.children.toMutableList()
         newChildren.forEachIndexed { index, surveyComponent ->
             if (surveyComponent.code == duplicateCodes[1]
-                    && (newChildren.count { it.code == surveyComponent.code } == 1
-                            || newChildren.indexOfFirst { it.code == surveyComponent.code } != index)
+                && (newChildren.count { it.code == surveyComponent.code } == 1
+                        || newChildren.indexOfFirst { it.code == surveyComponent.code } != index)
             ) {
                 newChildren[index] = surveyComponent.addError(ComponentError.DUPLICATE_CODE)
             }
