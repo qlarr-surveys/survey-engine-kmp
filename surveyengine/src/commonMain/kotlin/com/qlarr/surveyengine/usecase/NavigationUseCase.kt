@@ -4,6 +4,7 @@ import com.qlarr.surveyengine.context.execute.*
 import com.qlarr.surveyengine.context.instructionsMap
 import com.qlarr.surveyengine.context.nestedComponents
 import com.qlarr.surveyengine.dependency.DependencyMapper
+import com.qlarr.surveyengine.dependency.toDependent
 import com.qlarr.surveyengine.ext.*
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.RandomOption
@@ -32,7 +33,7 @@ class NavigationUseCaseImp(
     private val skipInvalid: Boolean,
     private val surveyMode: SurveyMode
 ) : NavigationUseCase {
-    private val values = stringValues.withDependencyKeys()
+    private val values = stringValues.withDependencyKeys(validationOutput.schema)
     private val startupRandomValues = mutableMapOf<Dependency, Int>()
     private val contextExecutor = ContextExecutor()
     private var survey = validationOutput.survey.sanitize()
@@ -48,7 +49,6 @@ class NavigationUseCaseImp(
         return processNavigationResult(scriptResult)
     }
 
-    @Suppress("UNCHECKED_CAST")
     override fun getNavigationScript(): String {
         val alphaSorted = mutableMapOf<Dependency, Int>()
         if (navigationDirection == NavigationDirection.Start) {
@@ -141,9 +141,9 @@ class NavigationUseCaseImp(
                 values.keys.contains(it.toDependency())
         }.map { it.toDependency() }.toSet()
 
-        val toSave:Map<Dependency,JsonElement> = stateBindings.apply {
+        val toSave: Map<Dependent, JsonElement> = formatBindings + stateBindings.apply {
             putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
-        }.filterBindings(dependenciesToSave)
+        }.filterStateToSave(dependenciesToSave)
 
         return NavigationOutput(
             reducedSurvey = reducedSurvey,
@@ -171,13 +171,51 @@ private fun Map<Dependency, JsonElement>.filterBindings(dependencies: Set<Depend
     return filterKeys { dependencies.contains(it) }
 }
 
+private fun Map<Dependency, JsonElement>.filterStateToSave(
+    dependencies: Set<Dependency>
+): Map<Dependent, JsonElement> {
+    return filterKeys {
+        when (it.reservedCode) {
+            ReservedCode.AfterNavigation,
+            ReservedCode.BeforeNavigation,
+            ReservedCode.ChildrenRelevance,
+            ReservedCode.ConditionalRelevance,
+            ReservedCode.HasNext,
+            ReservedCode.HasPrevious,
+            ReservedCode.InCurrentNavigation,
+            ReservedCode.Label,
+            ReservedCode.Lang,
+            ReservedCode.Meta,
+            ReservedCode.ModeRelevance,
+            ReservedCode.NotSkipped,
+            ReservedCode.Prioritised,
+            ReservedCode.RelevanceMap,
+            ReservedCode.ShowErrors,
+            is ReservedCode.Skip,
+            is ReservedCode.ValidationRule,
+            ReservedCode.Validity,
+            ReservedCode.ValidityMap -> false
+
+            ReservedCode.Mode,
+            ReservedCode.Disqualified,
+            ReservedCode.Value -> true
+
+            ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean
+            ReservedCode.MaskedValue -> this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]
+
+            Order,
+            Priority -> dependencies.contains(it)
+        }
+    }.mapKeys { it.key.toDependent() }
+}
+
 
 data class NavigationOutput(
     val orderedSurvey: Survey = Survey(),
     val reducedSurvey: Survey = Survey(),
     val contextComponents: List<ChildlessComponent> = listOf(),
     val stateBindings: Map<Dependency, JsonElement> = mapOf(),
-    val toSave: Map<Dependency, JsonElement> = mapOf(),
+    val toSave: Map<Dependent, JsonElement> = mapOf(),
     val dependencyMapBundle: DependencyMapBundle = DependencyMapBundle(mapOf(), mapOf()),
     val navigationIndex: NavigationIndex,
     val formatBindings: Map<Dependent, JsonElement> = mapOf()

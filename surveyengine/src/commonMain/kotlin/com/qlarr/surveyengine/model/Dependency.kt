@@ -40,6 +40,7 @@ data class Dependent(val componentCode: String, val instructionCode: String) : C
 }
 
 fun ResponseField.toDependency() = Dependency(componentCode, columnName.toReservedCode())
+fun ResponseField.toDependent() = Dependent(componentCode, columnName.name.lowercase())
 
 fun ColumnName.toReservedCode(): ReservedCode = when (this) {
     ColumnName.VALUE -> ReservedCode.Value
