@@ -24,16 +24,6 @@ internal data class ValidationJsonOutput(
         componentIndexList = componentIndexList,
         skipMap = skipMap
     )
-
-    fun surveyNavigationData(): SurveyNavigationData {
-        return SurveyNavigationData(
-            allowJump = survey["allowJump"]?.jsonPrimitive?.booleanOrNull ?: true,
-            allowPrevious = survey["allowPrevious"]?.jsonPrimitive?.booleanOrNull ?: true,
-            skipInvalid = survey["skipInvalid"]?.jsonPrimitive?.booleanOrNull ?: true,
-            allowIncomplete = survey["allowIncomplete"]?.jsonPrimitive?.booleanOrNull ?: true,
-            navigationMode = NavigationMode.fromString(survey["navigationMode"]?.jsonPrimitive?.contentOrNull)
-        )
-    }
 }
 
 fun JsonObject.defaultLang(): String =
@@ -63,10 +53,3 @@ fun JsonObject.availableLangByCode(code: String?): SurveyLang {
     }
 }
 
-data class SurveyNavigationData(
-    val navigationMode: NavigationMode = NavigationMode.GROUP_BY_GROUP,
-    val allowPrevious: Boolean = true,
-    val skipInvalid: Boolean = true,
-    val allowIncomplete: Boolean = true,
-    val allowJump: Boolean = true
-)

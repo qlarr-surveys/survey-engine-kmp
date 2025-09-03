@@ -14,7 +14,7 @@ internal class NavigationUseCaseWrapperImpl(
     private val lang: String? = null,
     processedSurvey: String,
     values: Map<String, JsonElement> = mapOf(),
-    navigationMode: NavigationMode? = null,
+    navigationMode: NavigationMode,
     val navigationIndex: NavigationIndex? = null,
     val navigationDirection: NavigationDirection = NavigationDirection.Start,
     skipInvalid: Boolean,
@@ -30,13 +30,7 @@ internal class NavigationUseCaseWrapperImpl(
         validationJsonOutput.survey,
         values,
         navigationIndex, navigationDirection,
-        navigationMode = when (navigationIndex) {
-            is NavigationIndex.Group -> NavigationMode.GROUP_BY_GROUP
-            is NavigationIndex.Groups -> NavigationMode.ALL_IN_ONE
-            is NavigationIndex.Question -> NavigationMode.QUESTION_BY_QUESTION
-            is NavigationIndex.End -> null
-            null -> null
-        } ?: navigationMode ?: validationJsonOutput.surveyNavigationData().navigationMode,
+        navigationMode = navigationMode,
         lang ?: validationJsonOutput.survey.defaultLang(),
         skipInvalid,
         surveyMode

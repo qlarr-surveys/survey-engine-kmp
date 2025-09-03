@@ -7,7 +7,10 @@ import com.qlarr.surveyengine.model.ReservedCode.*
 import com.qlarr.surveyengine.model.exposed.NavigationDirection
 import com.qlarr.surveyengine.model.exposed.NavigationIndex
 import com.qlarr.surveyengine.model.exposed.NavigationMode
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.boolean
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonPrimitive
 
 
 fun Survey.navigate(
@@ -19,7 +22,7 @@ fun Survey.navigate(
     currentIndexValid: Boolean = true,
 ): NavigationIndex {
     val newNavigationIndex = when (navigationDirection) {
-        is NavigationDirection.Resume, is NavigationDirection.ChangeLange -> navigationIndex!!
+        is NavigationDirection.Resume -> currentRelevant(navigationIndex!!, navigationMode, navigationBindings)
         NavigationDirection.Start -> firstRelevant(navigationMode, navigationBindings)
         is NavigationDirection.Next -> nextRelevant(navigationIndex!!, navigationMode, navigationBindings)
         is NavigationDirection.Jump -> navigationDirection.navigationIndex
@@ -150,7 +153,7 @@ fun List<SurveyComponent>.indexableCodesRemoveDeprioritised(bindings: Map<Depend
         if (it.noErrors() && it.hasUniqueCode()
             && (it !is Group || it.groupType != GroupType.END)
             && (!bindings.keys.contains(Dependency(it.code, Prioritised))
-            || bindings[Dependency(it.code, Prioritised)]!!.jsonPrimitive.boolean)
+                    || bindings[Dependency(it.code, Prioritised)]!!.jsonPrimitive.boolean)
         )
             mutableListOf(it.code)
                 .apply {
@@ -201,6 +204,51 @@ private fun Survey.firstInvalid(
         NavigationMode.QUESTION_BY_QUESTION -> {
             val firstRelevantGroup = groups.first { orderRelevanceBindings.isInvalid(it.code) }
             return NavigationIndex.Question(firstRelevantGroup.questions.first { orderRelevanceBindings.isInvalid(it.code) }.code)
+        }
+    }
+}
+
+private fun Survey.currentRelevant(
+    navigationIndex: NavigationIndex,
+    navigationMode: NavigationMode,
+    orderRelevanceBindings: Map<Dependency, JsonElement>
+): NavigationIndex {
+    val indexNavMode = navigationIndex.navigationMode()
+    return if (navigationIndex is NavigationIndex.End || indexNavMode == navigationMode) {
+        return navigationIndex
+    } else when (navigationMode) {
+        NavigationMode.ALL_IN_ONE -> NavigationIndex.Groups(
+            groups
+                .filter { it.groupType != GroupType.END }
+                .map { it.code }
+        )
+
+
+        NavigationMode.GROUP_BY_GROUP -> {
+            if (navigationIndex is NavigationIndex.Question) {
+                NavigationIndex.Group(groups.first {
+                    it.questions.map { it.code }.contains(navigationIndex.questionId)
+                }.code)
+            } else {
+                // it cannot be GROUP_BY_GROUP or END
+                // it has to be All in one
+                NavigationIndex.Group(groups.first { orderRelevanceBindings.isRelevant(it.code) }.code)
+            }
+
+        }
+
+        NavigationMode.QUESTION_BY_QUESTION -> {
+            if (navigationIndex is NavigationIndex.Group) {
+                NavigationIndex.Question(
+                    groups.first { it.code == navigationIndex.groupId }
+                        .questions.first { orderRelevanceBindings.isRelevant(it.code) }.code
+                )
+            } else {
+                // it cannot be GROUP_BY_GROUP or END
+                // it has to be All in one
+                val firstRelevantGroup = groups.first { orderRelevanceBindings.isRelevant(it.code) }
+                return NavigationIndex.Question(firstRelevantGroup.questions.first { orderRelevanceBindings.isRelevant(it.code) }.code)
+            }
         }
     }
 }

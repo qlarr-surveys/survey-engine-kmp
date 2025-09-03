@@ -20,6 +20,14 @@ fun NavigationIndex.stringIndex() = when (this) {
 @Serializable(with = NavigationIndexSerializer::class)
 @JsExport
 sealed class NavigationIndex {
+
+    fun navigationMode(): NavigationMode? = when (this) {
+        is Question -> NavigationMode.QUESTION_BY_QUESTION
+        is End -> null
+        is Group -> NavigationMode.GROUP_BY_GROUP
+        is Groups -> NavigationMode.ALL_IN_ONE
+    }
+
     abstract val name: String
     @Transient
     abstract val showError: Boolean

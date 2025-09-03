@@ -20,7 +20,7 @@ interface NavigationUseCaseWrapper {
             values: String = "{}",
             processedSurvey: String,
             lang: String? = null,
-            navigationMode: NavigationMode? = null,
+            navigationMode: NavigationMode,
             navigationIndex: NavigationIndex? = null,
             navigationDirection: NavigationDirection = NavigationDirection.Start,
             skipInvalid: Boolean,

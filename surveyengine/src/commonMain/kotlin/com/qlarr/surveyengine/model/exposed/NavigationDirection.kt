@@ -37,11 +37,6 @@ sealed class NavigationDirection {
     data object Resume : NavigationDirection() {
         override val name: String = "RESUME"
     }
-
-
-    data object ChangeLange : NavigationDirection() {
-        override val name: String = "CHANGE_LANGE"
-    }
 }
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -87,7 +82,6 @@ object NavigationDirectionSerializer : KSerializer<NavigationDirection> {
             "PREV" -> NavigationDirection.Previous
             "NEXT" -> NavigationDirection.Next
             "RESUME" -> NavigationDirection.Resume
-            "CHANGE_LANGE" -> NavigationDirection.ChangeLange
             "JUMP" -> {
                 val navigationIndex = jsonElement["navigationIndex"]?.let {
                     json.decodeFromJsonElement<NavigationIndex>(it)
