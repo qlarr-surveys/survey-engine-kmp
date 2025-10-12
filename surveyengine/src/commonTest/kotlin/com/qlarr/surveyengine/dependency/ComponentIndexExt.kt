@@ -1,11 +1,8 @@
 package com.qlarr.surveyengine.dependency
 
 import com.qlarr.surveyengine.model.*
-import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.serializer
-import kotlin.test.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 
@@ -203,16 +200,16 @@ class ComponentIndexExt {
         val componentIndices = componentIndices()
         val ordered = componentIndices.toMutableList().sortChildren(
             order = mapOf(
-                Dependency("Q2", ReservedCode.Order) to 1,
-                Dependency("Q2A2", ReservedCode.Order) to 1,
-                Dependency("Q2A3", ReservedCode.Order) to 2,
-                Dependency("Q2A1", ReservedCode.Order) to 3,
-                Dependency("Q1", ReservedCode.Order) to 2,
-                Dependency("G1", ReservedCode.Order) to 2,
-                Dependency("Gfood", ReservedCode.Order) to 1
+                "Q2.order" to 1,
+                "Q2A2.order" to 1,
+                "Q2A3.order" to 2,
+                "Q2A1.order" to 3,
+                "Q1.order" to 2,
+                "G1.order" to 2,
+                "Gfood.order" to 1
             )
         ).map { it.code }
-        assertEquals(ordered.size,componentIndices.size)
+        assertEquals(ordered.size, componentIndices.size)
         assertTrue(ordered.indexOf("Q2A3") < ordered.indexOf("Q1"))
         assertTrue(ordered.indexOf("Q2A3") < ordered.indexOf("Q2A1"))
         assertTrue(ordered.indexOf("Q2") < ordered.indexOf("Q1"))

@@ -14,7 +14,7 @@ data class ComponentIndex(
 )
 
 fun MutableList<ComponentIndex>.sortChildren(
-    order: Map<Dependency, Any>
+    order: Map<String, Any>
 ): MutableList<ComponentIndex> {
     val component = first()
     val children = component.children
@@ -22,7 +22,7 @@ fun MutableList<ComponentIndex>.sortChildren(
         return this
     }
     val sortedChildren = children.sortedBy {
-        order[Dependency(it, ReservedCode.Order)] as? Int ?: (children.indexOf(it) + 1)
+        order["$it.order"] as? Int ?: (children.indexOf(it) + 1)
     }
     return mutableListOf<ComponentIndex>().apply {
         add(component)
