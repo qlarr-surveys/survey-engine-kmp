@@ -12,3 +12,35 @@ data class ComponentIndex(
     val prioritisedSiblings: Set<String> = setOf(),
     val dependencies: Set<ReservedCode> = setOf()
 )
+
+fun MutableList<ComponentIndex>.sortChildren(
+    order: Map<Dependency, Any>
+): MutableList<ComponentIndex> {
+    val component = first()
+    val children = component.children
+    if (children.isEmpty()){
+        return this
+    }
+    val sortedChildren = children.sortedBy {
+        order[Dependency(it, ReservedCode.Order)] as? Int ?: (children.indexOf(it) + 1)
+    }
+    return mutableListOf<ComponentIndex>().apply {
+        add(component)
+        sortedChildren.map {  child ->
+            val isLast = children.indexOf(child) == children.size - 1
+            addAll(
+                this@sortChildren.subList(
+                    fromIndex = this@sortChildren.indexOfFirst { it.code == child },
+                    toIndex = if (isLast) {
+                        this@sortChildren.size
+
+                    } else {
+                        this@sortChildren.indexOfFirst { item ->
+                            children.contains(item.code) && children.indexOf(item.code) > children.indexOf(child)
+                        }
+                    }
+                ).sortChildren(order)
+            )
+        }
+    }
+}

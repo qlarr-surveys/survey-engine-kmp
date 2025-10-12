@@ -6,6 +6,7 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.serializer
 import kotlin.test.assertEquals
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 
 expect fun componentIndices(): List<ComponentIndex>
@@ -193,6 +194,29 @@ class ComponentIndexExt {
                 .toMutableList().apply { remove("G5") },
             componentIndices().accessibleDependencies("G5").componentCodes()
         )
+
+
+    }
+
+    @Test
+    fun testSortComponentIndex() {
+        val componentIndices = componentIndices()
+        val ordered = componentIndices.toMutableList().sortChildren(
+            order = mapOf(
+                Dependency("Q2", ReservedCode.Order) to 1,
+                Dependency("Q2A2", ReservedCode.Order) to 1,
+                Dependency("Q2A3", ReservedCode.Order) to 2,
+                Dependency("Q2A1", ReservedCode.Order) to 3,
+                Dependency("Q1", ReservedCode.Order) to 2,
+                Dependency("G1", ReservedCode.Order) to 2,
+                Dependency("Gfood", ReservedCode.Order) to 1
+            )
+        ).map { it.code }
+        assertEquals(ordered.size,componentIndices.size)
+        assertTrue(ordered.indexOf("Q2A3") < ordered.indexOf("Q1"))
+        assertTrue(ordered.indexOf("Q2A3") < ordered.indexOf("Q2A1"))
+        assertTrue(ordered.indexOf("Q2") < ordered.indexOf("Q1"))
+        assertTrue(ordered.indexOf("Gfood") < ordered.indexOf("G1"))
 
 
     }
