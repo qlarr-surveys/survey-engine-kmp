@@ -105,6 +105,17 @@ sealed class ReservedCode(
             is Disqualified,  is HasPrevious, is HasNext -> ReturnType.Boolean
         }
     }
+    fun validReturnType(returnType: ReturnType): Boolean {
+        return when (this) {
+            is Order, is Priority -> returnType == ReturnType.Int
+            is Meta, RelevanceMap, ValidityMap -> returnType == ReturnType.Map
+            is BeforeNavigation, AfterNavigation -> returnType is ReturnType.List
+            is Lang, is Mode, is Value, is MaskedValue, is Label -> returnType == ReturnType.String
+            is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
+            is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
+            is Disqualified,  is HasPrevious, is HasNext -> returnType == ReturnType.Boolean
+        }
+    }
 
 
     fun defaultIsActive(): Boolean {

@@ -127,7 +127,7 @@ sealed class Instruction {
             get() = reservedCode.code
 
         fun validate() {
-            if (reservedCode != ReservedCode.Value && returnType != reservedCode.defaultReturnType()) {
+            if (reservedCode != ReservedCode.Value && !reservedCode.validReturnType(returnType)) {
                 throw IllegalArgumentException("invalid ReturnType:$returnType for $reservedCode")
             }
         }
