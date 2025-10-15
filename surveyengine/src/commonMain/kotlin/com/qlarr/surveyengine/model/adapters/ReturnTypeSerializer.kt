@@ -14,41 +14,44 @@ import kotlinx.serialization.json.*
 object ReturnTypeSerializer : KSerializer<ReturnType> {
     override fun serialize(encoder: Encoder, value: ReturnType) {
         val jsonElement = when (value) {
-            is ReturnType.Boolean -> {
+            ReturnType.Boolean -> {
                 JsonPrimitive("boolean")
             }
 
-            is ReturnType.String -> {
+            ReturnType.String -> {
                 JsonPrimitive("string")
             }
 
-            is ReturnType.Int -> {
+            ReturnType.Int -> {
                 JsonPrimitive("int")
             }
 
-            is ReturnType.Double -> {
+            ReturnType.Double -> {
                 JsonPrimitive("double")
             }
 
-            is ReturnType.List -> {
-                JsonPrimitive("list")
-            }
-
-            is ReturnType.Map -> {
+            ReturnType.Map -> {
                 JsonPrimitive("map")
             }
 
-            is ReturnType.Date -> {
+            ReturnType.Date -> {
                 JsonPrimitive("date")
             }
 
-            is ReturnType.File -> {
+            ReturnType.File -> {
                 JsonPrimitive("file")
             }
 
             is ReturnType.Enum -> {
                 buildJsonObject {
                     put("type", "enum")
+                    put("values", JsonArray(value.values.map { JsonPrimitive(it) }))
+                }
+            }
+
+            is ReturnType.List -> {
+                buildJsonObject {
+                    put("type", "list")
                     put("values", JsonArray(value.values.map { JsonPrimitive(it) }))
                 }
             }
@@ -73,7 +76,6 @@ object ReturnTypeSerializer : KSerializer<ReturnType> {
                     "string" -> ReturnType.String
                     "int" -> ReturnType.Int
                     "double" -> ReturnType.Double
-                    "list" -> ReturnType.List
                     "map" -> ReturnType.Map
                     "date" -> ReturnType.Date
                     "file" -> ReturnType.File
@@ -85,6 +87,12 @@ object ReturnTypeSerializer : KSerializer<ReturnType> {
                 val type = jsonElement["type"]?.jsonPrimitive?.content
                 when (type) {
                     "enum" -> {
+                        val values = jsonElement["values"]?.jsonArray?.map { it.jsonPrimitive.content }
+                            ?: throw SerializationException("Missing 'values' field for enum type")
+                        ReturnType.Enum(values.toSet())
+                    }
+
+                    "list" -> {
                         val values = jsonElement["values"]?.jsonArray?.map { it.jsonPrimitive.content }
                             ?: throw SerializationException("Missing 'values' field for enum type")
                         ReturnType.Enum(values.toSet())

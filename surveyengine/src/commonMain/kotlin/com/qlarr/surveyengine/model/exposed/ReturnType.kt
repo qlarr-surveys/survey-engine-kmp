@@ -21,8 +21,6 @@ sealed class ReturnType {
     @Serializable(with = ReturnTypeSerializer::class)
     data object Double : ReturnType()
     @Serializable(with = ReturnTypeSerializer::class)
-    data object List : ReturnType()
-    @Serializable(with = ReturnTypeSerializer::class)
     data object Map : ReturnType()
     @Serializable(with = ReturnTypeSerializer::class)
     data object Date : ReturnType()
@@ -30,10 +28,12 @@ sealed class ReturnType {
     data object File : ReturnType()
     @Serializable(with = ReturnTypeSerializer::class)
     data class Enum(val values: Set<kotlin.String>) : ReturnType()
+    @Serializable(with = ReturnTypeSerializer::class)
+    data class List(val values: Set<kotlin.String>) : ReturnType()
 
     fun defaultTextValue(): kotlin.String {
         return when (this) {
-            List -> "[]"
+            is List -> "[]"
             is Enum,
             String -> ""
 

@@ -147,6 +147,8 @@ class JsonAdapterTest {
     fun serialises_and_deserialises_return_type_enum() {
         val enum = ReturnType.Enum(setOf("A1","A2","A3"))
         assertEquals(enum, jsonMapper.decodeFromString<ReturnType>(jsonMapper.encodeToString(enum)))
+        val list = ReturnType.List(setOf("A1","A2","A3"))
+        assertEquals(enum, jsonMapper.decodeFromString<ReturnType>(jsonMapper.encodeToString(list)))
     }
 
 

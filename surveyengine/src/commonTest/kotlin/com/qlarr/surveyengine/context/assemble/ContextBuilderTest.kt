@@ -62,8 +62,57 @@ class ContextBuilderTest {
         )
         val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), getValidate())
         contextManager.validate()
-        val component = contextManager.components[0].children[0].children[0]
-        println(component)
+        val validationList = contextManager.components[0].children[0].children[0].instructionList
+            .filterIsInstance<SimpleState>()
+            .first {
+                it.reservedCode is ReservedCode.ValidationRule
+            }
+        assertEquals(
+            expected = "QlarrScripts.isNotVoid(Q1.value) && [\"A1\",\"A2\",\"A3\"].indexOf(Q1.value) == -1",
+            actual = validationList.text
+        )
+        assertEquals(
+            expected = "validation_enum",
+            actual = validationList.code
+        )
+    }
+
+    @Test
+    fun bindComponentUnit_will_add_validation_to_match_a_list() {
+
+        val SURVEY_TITLE_INVALID_SCRIPT = Survey(
+            groups = listOf(
+                Group(
+                    "G1", questions = listOf(
+                        Question(
+                            code = "Q1",
+                            instructionList = listOf(
+                                SimpleState(
+                                    text = "",
+                                    reservedCode = ReservedCode.Value,
+                                    returnType = ReturnType.List(setOf("A1", "A2", "A3"))
+                                )
+                            )
+                        )
+                    )
+                ),
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(SURVEY_TITLE_INVALID_SCRIPT), getValidate())
+        contextManager.validate()
+        val validationList = contextManager.components[0].children[0].children[0].instructionList
+            .filterIsInstance<SimpleState>()
+            .first {
+                it.reservedCode is ReservedCode.ValidationRule
+            }
+        assertEquals(
+            expected = "QlarrScripts.isNotVoid(Q1.value) && !Q1.value.every(element => [\"A1\",\"A2\",\"A3\"].includes(element))",
+            actual = validationList.text
+        )
+        assertEquals(
+            expected = "validation_list",
+            actual = validationList.code
+        )
     }
 
 

@@ -265,6 +265,14 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
                 returnType = ReturnType.Boolean
             )
         }
+        if (hasListRule() && listValues().isNotEmpty()) {
+            returnComponent = insertOrOverrideState(
+                reservedCode = ValidationRule(code = "validation_list"),
+                text = "QlarrScripts.isNotVoid(${qualifiedCode}.value) && !${qualifiedCode}.value.every(element => [${listValues()}].includes(element))",
+                isActive = true,
+                returnType = ReturnType.Boolean
+            )
+        }
         if (returnComponent.hasActiveValidationRules()) {
             val validationRules = returnComponent.getActiveValidationRules()
             validationText = validationRules.joinToString(

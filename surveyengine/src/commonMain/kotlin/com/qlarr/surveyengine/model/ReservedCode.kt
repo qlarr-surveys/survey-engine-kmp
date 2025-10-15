@@ -98,7 +98,7 @@ sealed class ReservedCode(
         return when (this) {
             is Order, is Priority -> ReturnType.Int
             is Meta, RelevanceMap, ValidityMap -> ReturnType.Map
-            is BeforeNavigation, AfterNavigation -> ReturnType.List
+            is BeforeNavigation, AfterNavigation -> ReturnType.List(emptySet())
             is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,

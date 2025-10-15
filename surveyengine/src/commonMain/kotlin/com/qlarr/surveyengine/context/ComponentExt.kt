@@ -83,6 +83,13 @@ fun SurveyComponent.hasEnumRule() =
                 && it.returnType is ReturnType.Enum
     }
 
+fun SurveyComponent.hasListRule() =
+    instructionList.filterNoErrors().any {
+        it is Instruction.State
+                && it.reservedCode is ReservedCode.Value
+                && it.returnType is ReturnType.List
+    }
+
 fun SurveyComponent.enumValues(): String =
     (instructionList.filterNoErrors()
         .filterIsInstance<Instruction.State>()
@@ -90,6 +97,17 @@ fun SurveyComponent.enumValues(): String =
             it.reservedCode is ReservedCode.Value
                     && it.returnType is ReturnType.Enum
         }.returnType as ReturnType.Enum).values.joinToString(
+        separator = ",",
+        transform = { "\"$it\"" }
+    )
+
+fun SurveyComponent.listValues(): String =
+    (instructionList.filterNoErrors()
+        .filterIsInstance<Instruction.State>()
+        .first {
+            it.reservedCode is ReservedCode.Value
+                    && it.returnType is ReturnType.List
+        }.returnType as ReturnType.List).values.joinToString(
         separator = ",",
         transform = { "\"$it\"" }
     )
