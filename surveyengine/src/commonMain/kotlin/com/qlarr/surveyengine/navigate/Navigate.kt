@@ -1,7 +1,6 @@
 package com.qlarr.surveyengine.navigate
 
 import com.qlarr.surveyengine.context.indexableCodes
-import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.ReservedCode.*
 import com.qlarr.surveyengine.model.exposed.NavigationDirection
@@ -94,8 +93,9 @@ fun Survey.navBefore(navigationIndex: NavigationIndex, bindings: Map<Dependency,
     val indexableCodes = children.indexableCodesRemoveDeprioritised(bindings)
     return when (navigationIndex) {
         is NavigationIndex.Groups -> {
-            val minIndex = navigationIndex.groupIds.minOfOrNull { indexableCodes.indexOf(it) }!!
-            indexableCodes.filterIndexed { index, _ -> index < minIndex }
+            navigationIndex.groupIds.minOfOrNull { indexableCodes.indexOf(it) }?.let { indexCode ->
+                indexableCodes.filterIndexed { index, _ -> index < indexCode }
+            } ?: emptyList()
         }
 
         is NavigationIndex.Group -> {
@@ -118,7 +118,8 @@ fun Survey.navAfter(navigationIndex: NavigationIndex, bindings: Map<Dependency, 
     val indexableCodes = children.indexableCodesRemoveDeprioritised(bindings)
     return when (navigationIndex) {
         is NavigationIndex.Groups -> {
-            val lastGroupIndex = navigationIndex.groupIds.maxOfOrNull { indexableCodes.indexOf(it) }!!
+            val lastGroupIndex =
+                navigationIndex.groupIds.maxOfOrNull { indexableCodes.indexOf(it) } ?: return emptyList()
             val nextGroupIndex =
                 indexableCodes.indexOfFirst { code -> code.startsWith("G") && indexableCodes.indexOf(code) > lastGroupIndex }
             if (nextGroupIndex == -1) {
@@ -167,7 +168,12 @@ fun List<SurveyComponent>.indexableCodesRemoveDeprioritised(bindings: Map<Depend
 
 
 fun Survey.allInOne(): NavigationIndex {
-    return NavigationIndex.Groups(groups.filter { it.groupType != GroupType.END }.map { it.code })
+    val groupCodes = groups.filter { it.groupType != GroupType.END }.map { it.code }
+    return if (groupCodes.isNotEmpty()) {
+        NavigationIndex.Groups(groupCodes)
+    } else {
+        NavigationIndex.End(groups.first { it.groupType == GroupType.END }.code)
+    }
 }
 
 private fun Survey.firstRelevant(
@@ -247,7 +253,11 @@ private fun Survey.currentRelevant(
                 // it cannot be GROUP_BY_GROUP or END
                 // it has to be All in one
                 val firstRelevantGroup = groups.first { orderRelevanceBindings.isRelevant(it.code) }
-                return NavigationIndex.Question(firstRelevantGroup.questions.first { orderRelevanceBindings.isRelevant(it.code) }.code)
+                return NavigationIndex.Question(firstRelevantGroup.questions.first {
+                    orderRelevanceBindings.isRelevant(
+                        it.code
+                    )
+                }.code)
             }
         }
     }

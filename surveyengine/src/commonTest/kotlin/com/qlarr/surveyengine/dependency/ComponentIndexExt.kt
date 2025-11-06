@@ -196,6 +196,13 @@ class ComponentIndexExt {
     }
 
     @Test
+    fun testParents() {
+        val componentIndices = componentIndices()
+        val parents = componentIndices.parents("Q1AgenderAmale")
+        assertEquals(listOf("G1", "Q1", "Agender"), parents)
+    }
+
+    @Test
     fun testSortComponentIndex() {
         val componentIndices = componentIndices()
         val ordered = componentIndices.toMutableList().sortChildren(

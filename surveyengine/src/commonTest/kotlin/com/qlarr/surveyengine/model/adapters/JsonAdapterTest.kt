@@ -36,9 +36,10 @@ class JsonAdapterTest {
     )
 
     private val REF_EQ = Reference(
-        "reference_label",
-        listOf("Q1.label"),
-        lang = SurveyLang.EN.code
+        code = "reference_label",
+        references = listOf("Q1.label"),
+        contentPath = emptyList(),
+         lang = SurveyLang.EN.code
     )
 
     private val QUESTION = Question("Q2", listOf(SimpleState("true", ConditionalRelevance)))
@@ -148,7 +149,7 @@ class JsonAdapterTest {
         val enum = ReturnType.Enum(setOf("A1","A2","A3"))
         assertEquals(enum, jsonMapper.decodeFromString<ReturnType>(jsonMapper.encodeToString(enum)))
         val list = ReturnType.List(setOf("A1","A2","A3"))
-        assertEquals(enum, jsonMapper.decodeFromString<ReturnType>(jsonMapper.encodeToString(list)))
+        assertEquals(list, jsonMapper.decodeFromString<ReturnType>(jsonMapper.encodeToString(list)))
     }
 
 

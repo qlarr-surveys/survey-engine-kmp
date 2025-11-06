@@ -156,6 +156,7 @@ class ContextBuilderTest {
                         "Q1Alast_name.value",
                         "Q1Afirst_name.value"
                     ),
+                    emptyList(),
                     SurveyLang.EN.code
                 )
             ), groups = listOf(Group("G1"))

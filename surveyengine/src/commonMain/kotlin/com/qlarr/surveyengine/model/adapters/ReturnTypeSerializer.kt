@@ -84,8 +84,7 @@ object ReturnTypeSerializer : KSerializer<ReturnType> {
             }
 
             is JsonObject -> {
-                val type = jsonElement["type"]?.jsonPrimitive?.content
-                when (type) {
+                when (val type = jsonElement["type"]?.jsonPrimitive?.content) {
                     "enum" -> {
                         val values = jsonElement["values"]?.jsonArray?.map { it.jsonPrimitive.content }
                             ?: throw SerializationException("Missing 'values' field for enum type")

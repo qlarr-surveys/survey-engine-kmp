@@ -4,7 +4,7 @@ import kotlinx.serialization.json.jsonObject
 import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.model.SurveyLang
 import com.qlarr.surveyengine.model.jsonMapper
-import com.qlarr.surveyengine.ext.copyErrorsToJSON
+import com.qlarr.surveyengine.ext.copyComponentsToJson
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.SimpleState
 import kotlin.test.assertEquals
@@ -21,7 +21,7 @@ class CopyToJSONTest {
         val jsonObject = jsonMapper.parseToJsonElement("{\"code\":\"Survey\"}").jsonObject
         assertEquals(
             "{\"code\":\"Survey\",\"qualifiedCode\":\"Survey\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\",\"isActive\":false}],\"errors\":[\"DUPLICATE_CODE\"]}",
-            component.copyErrorsToJSON(jsonObject).toString()
+            component.copyComponentsToJson(jsonObject).toString()
         )
     }
 
@@ -45,8 +45,8 @@ class CopyToJSONTest {
         )
         val jsonObject = jsonMapper.parseToJsonElement("{\"code\":\"Survey\"}").jsonObject
         assertEquals(
-            "{\"code\":\"Survey\",\"qualifiedCode\":\"Survey\",\"instructionList\":[{\"code\":\"reference_1\",\"references\":[],\"lang\":\"en\",\"errors\":[{\"name\":\"ScriptError\",\"message\":\"parse error\",\"start\":0,\"end\":10}]}]}",
-            component.copyErrorsToJSON(jsonObject).toString()
+            "{\"code\":\"Survey\",\"qualifiedCode\":\"Survey\",\"instructionList\":[{\"code\":\"reference_1\",\"references\":[],\"contentPath\":[],\"lang\":\"en\",\"errors\":[{\"name\":\"ScriptError\",\"message\":\"parse error\",\"start\":0,\"end\":10}]}]}",
+            component.copyComponentsToJson(jsonObject).toString()
         )
     }
 
@@ -59,7 +59,7 @@ class CopyToJSONTest {
             jsonMapper.parseToJsonElement("{\"code\":\"Survey\",\"instructionList\":[{\"code\":\"conditional_relevance\",\"text\":\"false\",\"isActive\":false,\"returnType\":\"Boolean\"}]}").jsonObject
         assertEquals(
             "{\"code\":\"Survey\",\"instructionList\":[{\"code\":\"value\",\"text\":\"\",\"returnType\":\"string\",\"isActive\":false}],\"qualifiedCode\":\"Survey\"}",
-            component.copyErrorsToJSON(jsonObject).toString()
+            component.copyComponentsToJson(jsonObject).toString()
         )
     }
 
@@ -70,7 +70,7 @@ class CopyToJSONTest {
             errors = listOf(ComponentError.DUPLICATE_CODE)
         )
         val jsonObject = jsonMapper.parseToJsonElement("{\"code\":\"Survey\",\"foo\":\"bar\"}").jsonObject
-        assertEquals("bar", component.copyErrorsToJSON(jsonObject)["foo"].toString().replace("\"", ""))
+        assertEquals("bar", component.copyComponentsToJson(jsonObject)["foo"].toString().replace("\"", ""))
     }
 
     @Test
@@ -85,7 +85,7 @@ class CopyToJSONTest {
             jsonMapper.parseToJsonElement("{\"code\":\"Survey\",\"groups\":[{\"code\":\"G1\"},{\"code\":\"G2\"},{\"code\":\"G3\"}]}").jsonObject
         assertEquals(
             "{\"code\":\"Survey\",\"groups\":[{\"code\":\"G1\",\"qualifiedCode\":\"G1\",\"instructionList\":[{\"code\":\"value\",\"text\":\"G1\",\"returnType\":\"string\",\"isActive\":false}]},{\"code\":\"G2\",\"qualifiedCode\":\"G2\",\"instructionList\":[{\"code\":\"value\",\"text\":\"G2\",\"returnType\":\"string\",\"isActive\":false}]}],\"qualifiedCode\":\"Survey\"}",
-            component.copyErrorsToJSON(jsonObject).toString()
+            component.copyComponentsToJson(jsonObject).toString()
         )
     }
 

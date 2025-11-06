@@ -15,8 +15,8 @@ interface ValidationUseCaseWrapper {
     fun validate(): String
 
     companion object {
-        fun create(scriptEngine: ScriptEngineValidate, surveyJson: String): ValidationUseCaseWrapper =
-            ValidationUseCaseWrapperImpl(scriptEngine, surveyJson)
+        fun create(surveyJson: String): ValidationUseCaseWrapper =
+            ValidationUseCaseWrapperImpl(surveyJson)
 
         private fun groups(surveyName: String) = buildJsonArray {
             add(buildJsonObject {

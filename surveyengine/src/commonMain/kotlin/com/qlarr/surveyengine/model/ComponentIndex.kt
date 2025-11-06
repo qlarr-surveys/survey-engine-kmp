@@ -1,5 +1,6 @@
 package com.qlarr.surveyengine.model
 
+import com.qlarr.surveyengine.ext.splitToComponentCodes
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -11,14 +12,29 @@ data class ComponentIndex(
     val maxIndex: Int,
     val prioritisedSiblings: Set<String> = setOf(),
     val dependencies: Set<ReservedCode> = setOf()
-)
+) {
+    fun hasSkip() = dependencies.any { it is ReservedCode.Skip }
+}
+
+fun List<ComponentIndex>.parents(code: String): List<String> {
+    return if (code == "Survey") {
+        emptyList()
+    } else {
+        val parent = first { it.code == code }.parent!!
+        if (parent == "Survey"){
+            emptyList()
+        } else {
+            parents(parent) + listOf(parent.splitToComponentCodes().last())
+        }
+    }
+}
 
 fun MutableList<ComponentIndex>.sortChildren(
     order: Map<String, Any>
 ): MutableList<ComponentIndex> {
     val component = first()
     val children = component.children
-    if (children.isEmpty()){
+    if (children.isEmpty()) {
         return this
     }
     val sortedChildren = children.sortedBy {
@@ -26,21 +42,24 @@ fun MutableList<ComponentIndex>.sortChildren(
     }
     return mutableListOf<ComponentIndex>().apply {
         add(component)
-        sortedChildren.map {  child ->
+        sortedChildren.map { child ->
             val isLast = children.indexOf(child) == children.size - 1
-            addAll(
-                this@sortChildren.subList(
-                    fromIndex = this@sortChildren.indexOfFirst { it.code == child },
-                    toIndex = if (isLast) {
-                        this@sortChildren.size
+            val fromIndex = this@sortChildren.indexOfFirst { it.code == child }
+            if (fromIndex >= 0) {
+                addAll(
+                    this@sortChildren.subList(
+                        fromIndex = fromIndex,
+                        toIndex = if (isLast) {
+                            this@sortChildren.size
 
-                    } else {
-                        this@sortChildren.indexOfFirst { item ->
-                            children.contains(item.code) && children.indexOf(item.code) > children.indexOf(child)
+                        } else {
+                            this@sortChildren.indexOfFirst { item ->
+                                children.contains(item.code) && children.indexOf(item.code) > children.indexOf(child)
+                            }
                         }
-                    }
-                ).sortChildren(order)
-            )
+                    ).sortChildren(order)
+                )
+            }
         }
     }
 }

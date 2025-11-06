@@ -150,7 +150,7 @@ class ReduceTest {
                 Question(
                     code = "Q1",
                     instructionList = listOf(
-                        Instruction.Reference("reference_1", listOf("Q1A1.label"), SurveyLang.EN.code),
+                        Instruction.Reference("reference_1", listOf("Q1A1.label"), emptyList(),SurveyLang.EN.code),
                         SimpleState("(Q1A1.value=='S3') ? 'S1' : 'S3'", ReservedCode.Value, isActive = true)
                     ),
                     answers = listOf(
@@ -162,7 +162,7 @@ class ReduceTest {
                 ), Question(
                     code = "Q2",
                     instructionList = listOf(
-                        Instruction.Reference("reference_1", listOf("Q1A2.label"), SurveyLang.EN.code),
+                        Instruction.Reference("reference_1", listOf("Q1A2.label"), emptyList(),SurveyLang.EN.code),
                         SimpleState("(Q2A1.value=='S3') ? 'S1' : 'S3'", ReservedCode.Value, isActive = true)
                     ),
                     answers = listOf(
@@ -182,7 +182,7 @@ class ReduceTest {
                             Question(
                                 code = "Q2",
                                 instructionList = listOf(
-                                    Instruction.Reference("reference_1", listOf("Q1A2.label"), SurveyLang.EN.code),
+                                    Instruction.Reference("reference_1", listOf("Q1A2.label"), emptyList(),SurveyLang.EN.code),
                                     SimpleState("(Q2A1.value=='S3') ? 'S1' : 'S3'", ReservedCode.Value, isActive = true)
                                 ),
                                 answers = listOf(
@@ -206,7 +206,7 @@ class ReduceTest {
                 Question(
                     code = "Q1",
                     instructionList = listOf(
-                        Instruction.Reference("reference_1", listOf("Q1A1.label"), SurveyLang.EN.code),
+                        Instruction.Reference("reference_1", listOf("Q1A1.label"),emptyList(), SurveyLang.EN.code),
                         SimpleState("(Q1A1.value=='S3') ? 'S1' : 'S3'", ReservedCode.Value, isActive = true)
                     ),
                     answers = listOf(
@@ -218,7 +218,7 @@ class ReduceTest {
                 ), Question(
                     code = "Q2",
                     instructionList = listOf(
-                        Instruction.Reference("reference_1", listOf("Q1A2.label"), SurveyLang.EN.code),
+                        Instruction.Reference("reference_1", listOf("Q1A2.label"),emptyList(), SurveyLang.EN.code),
                         SimpleState("(Q2A1.value=='S3') ? 'S1' : 'S3'", ReservedCode.Value, isActive = true)
                     ),
                     answers = listOf(
@@ -238,7 +238,7 @@ class ReduceTest {
                             Question(
                                 code = "Q1",
                                 instructionList = listOf(
-                                    Instruction.Reference("reference_1", listOf("Q1A1.label"), SurveyLang.EN.code),
+                                    Instruction.Reference("reference_1", listOf("Q1A1.label"),emptyList(), SurveyLang.EN.code),
                                     SimpleState("(Q1A1.value=='S3') ? 'S1' : 'S3'", ReservedCode.Value, isActive = true)
                                 ),
                                 answers = listOf(
@@ -250,7 +250,7 @@ class ReduceTest {
                             ), Question(
                                 code = "Q2",
                                 instructionList = listOf(
-                                    Instruction.Reference("reference_1", listOf("Q1A2.label"), SurveyLang.EN.code),
+                                    Instruction.Reference("reference_1", listOf("Q1A2.label"),emptyList(), SurveyLang.EN.code),
                                     SimpleState("(Q2A1.value=='S3') ? 'S1' : 'S3'", ReservedCode.Value, isActive = true)
                                 ),
                                 answers = listOf(

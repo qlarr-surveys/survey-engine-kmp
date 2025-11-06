@@ -1,0 +1,605 @@
+{
+  "survey": {
+    "groups": [
+      {
+        "questions": [
+          {
+            "answers": [
+              {
+                "code": "A1",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "0",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "0",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "content": {
+                  "en": {
+                    "label": "1"
+                  }
+                },
+                "qualifiedCode": "Q408hutA1"
+              },
+              {
+                "code": "A2",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "1",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "1",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "content": {
+                  "en": {
+                    "label": "2"
+                  }
+                },
+                "qualifiedCode": "Q408hutA2"
+              },
+              {
+                "code": "A3",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "2",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "2",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "content": {
+                  "en": {
+                    "label": "3"
+                  }
+                },
+                "qualifiedCode": "Q408hutA3"
+              }
+            ],
+            "code": "Q408hut",
+            "type": "scq",
+            "instructionList": [
+              {
+                "code": "value",
+                "text": "",
+                "returnType": {
+                  "type": "enum",
+                  "values": [
+                    "A1",
+                    "A2",
+                    "A3"
+                  ]
+                },
+                "isActive": false
+              },
+              {
+                "code": "masked_value",
+                "text": "Q408hut.value ? QlarrScripts.safeAccess({\"A1\": QlarrScripts.stripTags(Q408hutA1.label),\"A2\": QlarrScripts.stripTags(Q408hutA2.label),\"A3\": QlarrScripts.stripTags(Q408hutA3.label)},Q408hut.value) : ''",
+                "returnType": "string",
+                "isActive": true
+              },
+              {
+                "code": "label",
+                "text": "",
+                "returnType": "string",
+                "isActive": false
+              },
+              {
+                "code": "relevance",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "validity",
+                "text": "!Q408hut.validation_enum",
+                "returnType": "boolean",
+                "isActive": true
+              },
+              {
+                "code": "in_current_navigation",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "priority",
+                "text": "0",
+                "returnType": "int",
+                "isActive": false
+              },
+              {
+                "code": "skip_to_on_A1",
+                "text": "Q408hut.value == \"A1\"",
+                "returnType": "boolean",
+                "isActive": true,
+                "skipToComponent": "G2",
+                "condition": "Q408hut.value == \"A1\"",
+                "toEnd": false,
+                "disqualify": false
+              },
+              {
+                "code": "order",
+                "text": "0",
+                "returnType": "int",
+                "isActive": false
+              },
+              {
+                "code": "validation_enum",
+                "text": "QlarrScripts.isNotVoid(Q408hut.value) && [\"A1\",\"A2\",\"A3\"].indexOf(Q408hut.value) == -1",
+                "returnType": "boolean",
+                "isActive": true
+              }
+            ],
+            "content": {
+              "en": {
+                "label": "<p>1,2,3</p>"
+              }
+            },
+            "designErrors": [],
+            "qualifiedCode": "Q408hut"
+          }
+        ],
+        "code": "G1",
+        "content": {
+          "en": {
+            "label": "skippidy"
+          }
+        },
+        "groupType": "GROUP",
+        "instructionList": [
+          {
+            "code": "label",
+            "text": "",
+            "returnType": "string",
+            "isActive": false
+          },
+          {
+            "code": "relevance",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "validity",
+            "text": "(!Q408hut.in_current_navigation || !Q408hut.relevance || Q408hut.validity)",
+            "returnType": "boolean",
+            "isActive": true
+          },
+          {
+            "code": "in_current_navigation",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "priority",
+            "text": "0",
+            "returnType": "int",
+            "isActive": false
+          },
+          {
+            "code": "order",
+            "text": "0",
+            "returnType": "int",
+            "isActive": false
+          }
+        ],
+        "qualifiedCode": "G1"
+      },
+      {
+        "code": "G2",
+        "content": {
+          "en": {
+            "label": "Thank you for taking the time to complete this survey."
+          }
+        },
+        "groupType": "END",
+        "instructionList": [
+          {
+            "code": "label",
+            "text": "",
+            "returnType": "string",
+            "isActive": false
+          },
+          {
+            "code": "relevance",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "validity",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "in_current_navigation",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "priority",
+            "text": "1",
+            "returnType": "int",
+            "isActive": false
+          },
+          {
+            "code": "order",
+            "text": "1",
+            "returnType": "int",
+            "isActive": false
+          }
+        ],
+        "qualifiedCode": "G2"
+      }
+    ],
+    "code": "Survey",
+    "defaultLang": {
+      "code": "en",
+      "name": "English"
+    },
+    "navigationMode": "group_by_group",
+    "allowPrevious": true,
+    "skipInvalid": true,
+    "allowIncomplete": true,
+    "allowJump": true,
+    "instructionList": [
+      {
+        "code": "lang",
+        "text": "en",
+        "returnType": "string",
+        "isActive": false
+      },
+      {
+        "code": "mode",
+        "text": "mixed",
+        "returnType": "string",
+        "isActive": false
+      },
+      {
+        "code": "disqualified",
+        "text": "false",
+        "returnType": "boolean",
+        "isActive": false
+      },
+      {
+        "code": "relevance_map",
+        "text": "{G1: G1.relevance,Q408hut: Q408hut.relevance,G2: G2.relevance}",
+        "returnType": "map",
+        "isActive": true
+      },
+      {
+        "code": "validity_map",
+        "text": "{G1: G1.validity,Q408hut: Q408hut.validity,G2: G2.validity}",
+        "returnType": "map",
+        "isActive": true
+      },
+      {
+        "code": "before_navigation",
+        "text": "[]",
+        "returnType": "list",
+        "isActive": false
+      },
+      {
+        "code": "after_navigation",
+        "text": "[]",
+        "returnType": "list",
+        "isActive": false
+      },
+      {
+        "code": "has_previous",
+        "text": "(function(){if(!Survey.before_navigation||!Survey.relevance_map){return false;}for(var i=0;i<Survey.before_navigation.length;i++){if(Survey.relevance_map[Survey.before_navigation[i]]){return true}}return false;})()",
+        "returnType": "boolean",
+        "isActive": true
+      },
+      {
+        "code": "has_next",
+        "text": "(function(){if(!Survey.after_navigation||!Survey.relevance_map){return false;}for(var i=0;i<Survey.after_navigation.length;i++){if(Survey.relevance_map[Survey.after_navigation[i]]){return true}}return false;})()",
+        "returnType": "boolean",
+        "isActive": true
+      },
+      {
+        "code": "validity",
+        "text": "(!G1.in_current_navigation || !G1.relevance || G1.validity) && (!G2.in_current_navigation || !G2.relevance || G2.validity)",
+        "returnType": "boolean",
+        "isActive": true
+      }
+    ],
+    "qualifiedCode": "Survey"
+  },
+  "schema": [
+    {
+      "componentCode": "Q408hut",
+      "columnName": "VALUE",
+      "dataType": {
+        "type": "enum",
+        "values": [
+          "A1",
+          "A2",
+          "A3"
+        ]
+      }
+    }
+  ],
+  "impactMap": {
+    "G2.validity": [
+      "Survey.validity_map",
+      "Survey.validity"
+    ],
+    "G1.relevance": [
+      "Survey.relevance_map",
+      "Survey.validity"
+    ],
+    "G1.validity": [
+      "Survey.validity_map",
+      "Survey.validity"
+    ],
+    "Q408hut.validity": [
+      "G1.validity",
+      "Survey.validity_map"
+    ],
+    "Q408hut.in_current_navigation": [
+      "G1.validity"
+    ],
+    "G2.in_current_navigation": [
+      "Survey.validity"
+    ],
+    "G1.in_current_navigation": [
+      "Survey.validity"
+    ],
+    "Q408hut.relevance": [
+      "G1.validity",
+      "Survey.relevance_map"
+    ],
+    "Q408hutA2.label": [
+      "Q408hut.masked_value"
+    ],
+    "Q408hutA1.label": [
+      "Q408hut.masked_value"
+    ],
+    "G2.relevance": [
+      "Survey.relevance_map",
+      "Survey.validity"
+    ],
+    "Survey.before_navigation": [
+      "Survey.has_previous"
+    ],
+    "Q408hutA3.label": [
+      "Q408hut.masked_value"
+    ],
+    "Survey.after_navigation": [
+      "Survey.has_next"
+    ],
+    "Q408hut.validation_enum": [
+      "Q408hut.validity"
+    ],
+    "Survey.relevance_map": [
+      "Survey.has_previous",
+      "Survey.has_next"
+    ],
+    "Q408hut.value": [
+      "Q408hut.masked_value",
+      "Q408hut.validation_enum",
+      "Q408hut.skip_to_on_A1"
+    ]
+  },
+  "componentIndexList": [
+    {
+      "code": "Survey",
+      "parent": null,
+      "children": [
+        "G1",
+        "G2"
+      ],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "validity",
+        "mode",
+        "lang"
+      ]
+    },
+    {
+      "code": "G1",
+      "parent": "Survey",
+      "children": [
+        "Q408hut"
+      ],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q408hut",
+      "parent": "G1",
+      "children": [
+        "Q408hutA1",
+        "Q408hutA2",
+        "Q408hutA3"
+      ],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "masked_value",
+        "validity",
+        "skip_to_on_A1",
+        "priority",
+        "value",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q408hutA1",
+      "parent": "Q408hut",
+      "children": [],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q408hutA2",
+      "parent": "Q408hut",
+      "children": [],
+      "minIndex": 1,
+      "maxIndex": 1,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q408hutA3",
+      "parent": "Q408hut",
+      "children": [],
+      "minIndex": 2,
+      "maxIndex": 2,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "G2",
+      "parent": "Survey",
+      "children": [],
+      "minIndex": 1,
+      "maxIndex": 1,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    }
+  ],
+  "skipMap": {},
+  "script": "qlarrRuntime = {\n\tSurvey : {\n\t\trelevance_map: function(state) {return {G1: state.G1.relevance,Q408hut: state.Q408hut.relevance,G2: state.G2.relevance};},\n\t\tvalidity_map: function(state) {return {G1: state.G1.validity,Q408hut: state.Q408hut.validity,G2: state.G2.validity};},\n\t\thas_previous: function(state) {return (function(){if(!state.Survey.before_navigation||!state.Survey.relevance_map){return false;}for(var i=0;i<state.Survey.before_navigation.length;i++){if(state.Survey.relevance_map[state.Survey.before_navigation[i]]){return true}}return false;})();},\n\t\thas_next: function(state) {return (function(){if(!state.Survey.after_navigation||!state.Survey.relevance_map){return false;}for(var i=0;i<state.Survey.after_navigation.length;i++){if(state.Survey.relevance_map[state.Survey.after_navigation[i]]){return true}}return false;})();},\n\t\tvalidity: function(state) {return (!state.G1.in_current_navigation || !state.G1.relevance || state.G1.validity) && (!state.G2.in_current_navigation || !state.G2.relevance || state.G2.validity);}\n\t},\n\tG1 : {\n\t\tvalidity: function(state) {return (!state.Q408hut.in_current_navigation || !state.Q408hut.relevance || state.Q408hut.validity);}\n\t},\n\tQ408hut : {\n\t\tmasked_value: function(state) {return state.Q408hut.value ? QlarrScripts.safeAccess({\"A1\": QlarrScripts.stripTags(state.Q408hutA1.label),\"A2\": QlarrScripts.stripTags(state.Q408hutA2.label),\"A3\": QlarrScripts.stripTags(state.Q408hutA3.label)},state.Q408hut.value) : '';},\n\t\tvalidity: function(state) {return !state.Q408hut.validation_enum;},\n\t\tskip_to_on_A1: function(state) {return state.Q408hut.value == \"A1\";},\n\t\tvalidation_enum: function(state) {return QlarrScripts.isNotVoid(state.Q408hut.value) && [\"A1\",\"A2\",\"A3\"].indexOf(state.Q408hut.value) == -1;}\n\t},\n\n}"
+}

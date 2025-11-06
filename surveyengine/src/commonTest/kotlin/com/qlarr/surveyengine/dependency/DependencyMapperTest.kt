@@ -119,7 +119,7 @@ class DependencyMapperTest {
         instructionList = listOf(
             Instruction.SimpleState("", ReservedCode.Value),
             Instruction.SimpleState("Q8.value!=''", ReservedCode.ConditionalRelevance),
-            Instruction.Reference("reference_label", listOf("Q4.label"), SurveyLang.EN.code)
+            Instruction.Reference("reference_label", listOf("Q4.label"), emptyList(),SurveyLang.EN.code)
         )
     )
 

@@ -4,7 +4,6 @@ package com.qlarr.surveyengine.model
 
 import com.qlarr.surveyengine.ext.VALID_REFERENCE_INSTRUCTION_PATTERN
 import com.qlarr.surveyengine.ext.VALID_REFERENCE_PREFIX
-import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.Instruction.*
 import com.qlarr.surveyengine.model.adapters.InstructionSerializer
 import com.qlarr.surveyengine.model.exposed.ReturnType
@@ -24,6 +23,7 @@ sealed class Instruction {
     data class Reference(
         override val code: String,
         val references: List<String>,
+        val contentPath: List<String> = emptyList(),
         val lang: String,
         override val errors: List<InstructionError> = listOf()
     ) : Instruction() {
@@ -175,7 +175,7 @@ sealed class Instruction {
         val condition: String = "true",
         override val code: String = "skip_to_$skipToComponent",
         override val text: String = condition,
-        override val reservedCode: ReservedCode = ReservedCode.Skip(code),
+        override val reservedCode: ReservedCode.Skip = ReservedCode.Skip(code),
         override val isActive: Boolean = reservedCode.defaultIsActive(),
         override val errors: List<InstructionError> = listOf()
     ) : State(reservedCode = reservedCode, text = condition, returnType = ReturnType.Boolean, generated = false) {
@@ -192,7 +192,7 @@ sealed class Instruction {
             errors = validatedInstruction.errors
         )
 
-        override fun withValidatedText(validatedText: String) = copy(condition = validatedText)
+        override fun withValidatedText(validatedText: String) = copy(condition = validatedText, text = validatedText)
 
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })

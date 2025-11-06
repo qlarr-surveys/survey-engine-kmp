@@ -69,6 +69,98 @@ internal fun JsonObject.copyToJSON(
     }
 }
 
+private fun JsonObject.changeContent(
+    path: List<String>,
+    elementFrom: String,
+    elementTo: String
+): JsonObject  {
+    val key = path.first()
+    if (path.size == 1) {
+        return JsonObject(toMutableMap().apply {
+
+            val value = get(key)!!.jsonPrimitive.content
+
+            put(key, JsonPrimitive(value.replace(elementFrom,elementTo)))
+        })
+    }
+    return JsonObject(toMutableMap().apply {
+        val value = get(key)!!.jsonObject
+        put(key,value.changeContent(path.drop(1),elementFrom, elementTo))
+    })
+}
+
+fun JsonObject.changeContent(
+    componentPath: List<String>,
+    contentPath: List<String>,
+    from: String,
+    to: String
+): JsonObject {
+
+    if (componentPath.isEmpty() || componentPath.size == 1 && componentPath.first() == "Survey") {
+        return changeContent(contentPath, from, to)
+    }
+
+    // Get the children array name based on current node's code
+    val childrenName = this["code"]!!.jsonPrimitive.content.childrenName()
+
+    // Find the child with the next code in the path
+    val childrenArray = this[childrenName] as? JsonArray
+        ?: throw IllegalStateException("No children found")
+
+    val targetChildCode = componentPath.first()
+    val index = childrenArray.indexOfFirst {
+        it.jsonObject["code"]!!.jsonPrimitive.content == targetChildCode
+    }
+    return JsonObject(toMutableMap().apply {
+        put(childrenName, JsonArray(childrenArray.toMutableList().apply {
+            set(
+                index, childrenArray[index].jsonObject.changeContent(
+                    componentPath = componentPath.drop(1),
+                    contentPath = contentPath,
+                    from = from,
+                    to = to
+                )
+            )
+
+        }))
+    })
+}
+
+fun JsonObject.changeCode(
+    componentPath: List<String>,
+    to: String
+): JsonObject {
+
+    if (componentPath.isEmpty() || componentPath.size == 1 && componentPath.first() == "Survey") {
+        return JsonObject(toMutableMap().apply {
+            put("code", JsonPrimitive(to))
+        })
+    }
+
+    // Get the children array name based on current node's code
+    val childrenName = this["code"]!!.jsonPrimitive.content.childrenName()
+
+    // Find the child with the next code in the path
+    val childrenArray = this[childrenName] as? JsonArray
+        ?: throw IllegalStateException("No children found")
+
+    val targetChildCode = componentPath.first()
+    val index = childrenArray.indexOfFirst {
+        it.jsonObject["code"]!!.jsonPrimitive.content == targetChildCode
+    }
+    return JsonObject(toMutableMap().apply {
+        put(childrenName, JsonArray(childrenArray.toMutableList().apply {
+            set(
+                index, childrenArray[index].jsonObject.changeCode(
+                    componentPath = componentPath.drop(1),
+                    to = to
+                )
+            )
+
+        }))
+    })
+}
+
 internal fun JsonObject.copyReducedToJSON(
     sortedSurveyComponent: SurveyComponent,
     reducedSurveyComponent: SurveyComponent?,
@@ -300,7 +392,7 @@ private fun JsonArray.getByCode(code: String): JsonObject {
     throw IllegalStateException("Child with corresponding code not found")
 }
 
-internal fun SurveyComponent.copyErrorsToJSON(surveyDef: JsonObject, parentCode: String = ""): JsonObject {
+internal fun SurveyComponent.copyComponentsToJson(surveyDef: JsonObject, parentCode: String = ""): JsonObject {
     if (!surveyDef.containsKey("code") || code != surveyDef["code"]?.jsonPrimitive?.content) {
         throw IllegalStateException("copyErrorsToJSON: copying into a JsonObject with different code: $code")
     }
@@ -331,7 +423,7 @@ internal fun SurveyComponent.copyErrorsToJSON(surveyDef: JsonObject, parentCode:
         val newChildren = buildJsonArray {
             children.filter { it.elementType == childType }.forEachIndexed { index, surveyComponent ->
                 val jsonChild = jsonChildren.getOrNull(index)?.jsonObject ?: buildJsonObject {}
-                add(surveyComponent.copyErrorsToJSON(jsonChild, qualifiedCode))
+                add(surveyComponent.copyComponentsToJson(jsonChild, qualifiedCode))
             }
         }
 

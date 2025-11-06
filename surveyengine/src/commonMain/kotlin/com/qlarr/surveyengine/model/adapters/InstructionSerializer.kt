@@ -6,7 +6,8 @@ import com.qlarr.surveyengine.model.Instruction.*
 import com.qlarr.surveyengine.model.exposed.ReturnType
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -22,6 +23,7 @@ object InstructionSerializer : KSerializer<Instruction> {
             when (value) {
                 is Reference -> {
                     put("references", JsonArray(value.references.map { JsonPrimitive(it) }))
+                    put("contentPath", JsonArray(value.contentPath.map { JsonPrimitive(it) }))
                     put("lang", value.lang)
                 }
 
@@ -91,11 +93,12 @@ object InstructionSerializer : KSerializer<Instruction> {
         val disqualify = jsonElement["disqualify"]?.jsonPrimitive?.booleanOrNull ?: false
 
         val returnType: ReturnType? = jsonElement["returnType"]?.let { returnTypeElement ->
-            json.decodeFromJsonElement(serializer(),returnTypeElement)
+            json.decodeFromJsonElement(serializer(), returnTypeElement)
         }
 
         // Extract specialized fields
         val references = jsonElement["references"]?.jsonArray?.map { it.jsonPrimitive.content } ?: listOf()
+        val contentPath = jsonElement["contentPath"]?.jsonArray?.map { it.jsonPrimitive.content } ?: listOf()
 
         val groups = jsonElement["groups"]?.let {
             json.decodeFromJsonElement(ListSerializer(serializer<RandomGroup>()), it)
@@ -140,7 +143,13 @@ object InstructionSerializer : KSerializer<Instruction> {
             }
 
             code.matches(Regex(VALID_REFERENCE_INSTRUCTION_PATTERN)) -> {
-                Reference(code, references, lang!!, errors)
+                Reference(
+                    code = code,
+                    contentPath = contentPath,
+                    references = references,
+                    lang = lang!!,
+                    errors = errors
+                )
             }
 
             code == Instruction.RANDOM_GROUP -> {
