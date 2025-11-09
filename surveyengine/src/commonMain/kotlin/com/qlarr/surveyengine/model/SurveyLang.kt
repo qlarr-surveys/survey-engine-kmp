@@ -11,6 +11,14 @@ data class SurveyLang(val code: String, val name: String) {
         val DE = SurveyLang("de", "Deutsch")
 
         val AR = SurveyLang("ar", "العربية")
+
+        val ES = SurveyLang("es", "Español")
+
+        val PT = SurveyLang("pt", "Português")
+
+        val NL = SurveyLang("nl", "Nederlands")
+
+        val FR = SurveyLang("fr", "Français")
     }
 
 
