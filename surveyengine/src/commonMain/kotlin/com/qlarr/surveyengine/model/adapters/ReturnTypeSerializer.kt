@@ -76,6 +76,8 @@ object ReturnTypeSerializer : KSerializer<ReturnType> {
                     "string" -> ReturnType.String
                     "int" -> ReturnType.Int
                     "double" -> ReturnType.Double
+                    "list" -> ReturnType.List(emptySet())
+                    "enum" -> ReturnType.Enum(emptySet())
                     "map" -> ReturnType.Map
                     "date" -> ReturnType.Date
                     "file" -> ReturnType.File
