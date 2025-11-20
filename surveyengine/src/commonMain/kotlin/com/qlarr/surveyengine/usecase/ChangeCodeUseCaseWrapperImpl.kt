@@ -72,7 +72,7 @@ internal fun ValidationJsonOutput.changeCode(from: String, to: String): Validati
     }
 
 
-    return copy(survey = surveyComponent.copyComponentsToJson(surveyJson).changeCode(pathToComponent, to))
+    return copy(survey = surveyComponent.copyComponentsToJson(surveyJson).changeCode(pathToComponent, to.splitToComponentCodes().last()))
 }
 
 private fun SurveyComponent.changeSkipInstruction(
