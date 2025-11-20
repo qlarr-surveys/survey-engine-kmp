@@ -30,11 +30,22 @@ internal fun ValidationJsonOutput.changeCode(from: String, to: String): Validati
 
     val pathToComponentParent = componentIndex.parents(from)
     val pathToComponent = pathToComponentParent + from.splitToComponentCodes().last()
-    surveyComponent = surveyComponent.changeRandomInstruction(
-        path = pathToComponentParent,
+
+    var parent = surveyComponent.get(pathToComponentParent)
+
+    parent = parent.changeRandomInstruction(
         from = from.splitToComponentCodes().last(),
         to = to.splitToComponentCodes().last(),
-    ) as Survey
+    ).actOnEnumOrList(
+        from = from.splitToComponentCodes().last(),
+        to = to.splitToComponentCodes().last(),
+    )
+
+    val pathToGrandParent = if (pathToComponentParent.isEmpty()) { emptyList<String>()
+    } else {
+        pathToComponentParent.take(pathToComponentParent.size - 1)
+    }
+    surveyComponent = surveyComponent.replace(pathToGrandParent, parent) as Survey
 
     var surveyJson = survey
 
@@ -72,7 +83,10 @@ internal fun ValidationJsonOutput.changeCode(from: String, to: String): Validati
     }
 
 
-    return copy(survey = surveyComponent.copyComponentsToJson(surveyJson).changeCode(pathToComponent, to.splitToComponentCodes().last()))
+    return copy(
+        survey = surveyComponent.copyComponentsToJson(surveyJson)
+            .changeCode(pathToComponent, to.splitToComponentCodes().last())
+    )
 }
 
 private fun SurveyComponent.changeSkipInstruction(
@@ -166,41 +180,100 @@ private fun SurveyComponent.changeInstruction(
     )
 }
 
-
-private fun SurveyComponent.changeRandomInstruction(
+private fun SurveyComponent.get(
     path: List<String>,
+): SurveyComponent {
+    return if (path.isEmpty()) {
+        this
+    } else {
+        children.first { child ->
+            child.code == path.first()
+        }.get(path.drop(1))
+    }
+}
+
+private fun SurveyComponent.replace(
+    path: List<String>,
+    component: SurveyComponent
+): SurveyComponent {
+    return if (path.isEmpty()) {
+        duplicate(
+            children = children.map {
+                if (it.code == component.code){
+                    component
+                } else {
+                    it
+                }
+            }
+        )
+    } else {
+        duplicate(
+            children = children.map {
+                if (it.code == path.first()){
+                    it.replace(path.drop(1), component)
+                } else {
+                    it
+                }
+            }
+        )
+    }
+}
+
+
+private fun SurveyComponent.actOnEnumOrList(
     from: String,
     to: String,
 ): SurveyComponent {
-    return if (path.isEmpty()) {
-        val modifiedInstructionList = instructionList.map { instruction ->
-            if (instruction is Instruction.RandomGroups) {
-                instruction.copy(
-                    groups = instruction.groups.map { randomGroup ->
-                        randomGroup.copy(
-                            codes = randomGroup.codes.map {
-                                if (it == from) to else it
-                            }
-                        )
-                    }
-                )
-            } else {
-                instruction
-            }
-        }
-        duplicate(instructionList = modifiedInstructionList)
-    } else {
-        val newChildren = children.map { child ->
-            if (child.code == path.first()) {
-                child.changeRandomInstruction(path.drop(1), from, to)
-            } else {
-                child
-            }
-        }
-
-        duplicate(
-            children = newChildren
-        )
+    val shouldProcess = instructionList.any { it is Instruction.SimpleState && it.returnType.containsChildCode(from) }
+    if (!shouldProcess) {
+        return this
     }
+    val modifiedInstructionList = instructionList.map { instruction ->
+        if (instruction is Instruction.SimpleState && instruction.returnType.containsChildCode(from)) {
+            instruction.copy(
+                returnType = instruction.returnType.replaceChildCode(from, to)
+            )
+        } else if (instruction is Instruction.SimpleState) {
+            instruction.copy(text = instruction.text.replaceWholeWord(from, to))
+        } else {
+            instruction
+        }
+    }
+    return duplicate(instructionList = modifiedInstructionList)
+}
+
+fun String.replaceWholeWord(
+    from: String,
+    to: String
+): String {
+
+    // Use word boundary \b to ensure it's not adjacent to alphanumeric or underscore
+    val pattern = Regex("\\b$from\\b")
+
+    // Replace all occurrences
+    return pattern.replace(this, to)
+}
+
+
+private fun SurveyComponent.changeRandomInstruction(
+    from: String,
+    to: String,
+): SurveyComponent {
+    val modifiedInstructionList = instructionList.map { instruction ->
+        if (instruction is Instruction.RandomGroups) {
+            instruction.copy(
+                groups = instruction.groups.map { randomGroup ->
+                    randomGroup.copy(
+                        codes = randomGroup.codes.map {
+                            if (it == from) to else it
+                        }
+                    )
+                }
+            )
+        } else {
+            instruction
+        }
+    }
+    return duplicate(instructionList = modifiedInstructionList)
 
 }

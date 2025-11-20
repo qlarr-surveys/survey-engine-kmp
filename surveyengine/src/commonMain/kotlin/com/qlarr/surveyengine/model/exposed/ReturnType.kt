@@ -14,20 +14,28 @@ import kotlin.js.JsExport
 sealed class ReturnType {
     @Serializable(with = ReturnTypeSerializer::class)
     data object Boolean : ReturnType()
+
     @Serializable(with = ReturnTypeSerializer::class)
     data object String : ReturnType()
+
     @Serializable(with = ReturnTypeSerializer::class)
     data object Int : ReturnType()
+
     @Serializable(with = ReturnTypeSerializer::class)
     data object Double : ReturnType()
+
     @Serializable(with = ReturnTypeSerializer::class)
     data object Map : ReturnType()
+
     @Serializable(with = ReturnTypeSerializer::class)
     data object Date : ReturnType()
+
     @Serializable(with = ReturnTypeSerializer::class)
     data object File : ReturnType()
+
     @Serializable(with = ReturnTypeSerializer::class)
     data class Enum(val values: Set<kotlin.String>) : ReturnType()
+
     @Serializable(with = ReturnTypeSerializer::class)
     data class List(val values: Set<kotlin.String>) : ReturnType()
 
@@ -44,6 +52,18 @@ sealed class ReturnType {
             File -> "{\"filename\":\"\",\"stored_filename\":\"\",\"size\":0,\"type\":\"\"}"
         }
     }
+
+    fun containsChildCode(childCode: kotlin.String) =
+        (this is Enum && values.contains(childCode)) || (this is List && values.contains(childCode))
+
+    fun replaceChildCode(childCode: kotlin.String, newCode: kotlin.String) =
+        if (this is Enum && values.contains(childCode)) {
+            Enum(values.map { if (it == childCode) newCode else it }.toSet())
+        } else if (this is List && values.contains(childCode)) {
+            List(values.map { if (it == childCode) newCode else it }.toSet())
+        } else {
+            this
+        }
 }
 
 @Serializable

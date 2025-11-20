@@ -47,7 +47,14 @@ class ChangeCodeUseCaseWrapperImplTest {
     @Test
     fun changeCodeWithAnswers() {
         val input = loadFromResources("validationJsonOutput_2.json")
-        ChangeCodeUseCaseWrapper.create(input).changeCode("Q408hutA2", "Q408hutAone")
+        val beforeCount = countWordOccurrences(input, "A2")
+        val beforeNoCount = countWordOccurrences(input, "Aone")
+        val output = ChangeCodeUseCaseWrapper.create(input).changeCode("Q408hutA2", "Q408hutAone")
+        val afterCount = countWordOccurrences(output, "Aone")
+        val afterNoCount = countWordOccurrences(output, "A2")
+        assertEquals(beforeCount, afterCount)
+        assertEquals(beforeNoCount, afterNoCount)
+
     }
 
     private fun countWordOccurrences(text: String, word: String): Int {
