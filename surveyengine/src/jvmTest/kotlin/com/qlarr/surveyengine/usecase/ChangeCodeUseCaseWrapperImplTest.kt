@@ -58,7 +58,7 @@ class ChangeCodeUseCaseWrapperImplTest {
     }
 
     private fun countWordOccurrences(text: String, word: String): Int {
-        val regex = "\\b${Regex.escape(word)}\\b".toRegex(RegexOption.IGNORE_CASE)
+        val regex = Regex.escape(word).toRegex(RegexOption.IGNORE_CASE)
         return regex.findAll(text).count()
     }
 }

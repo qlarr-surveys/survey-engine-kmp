@@ -37,7 +37,7 @@ class JsonAdapterTest {
 
     private val REF_EQ = Reference(
         code = "reference_label",
-        references = listOf("Q1.label"),
+        text = "Q1.label",
         contentPath = emptyList(),
          lang = SurveyLang.EN.code
     )

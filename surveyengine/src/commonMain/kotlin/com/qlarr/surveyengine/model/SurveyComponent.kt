@@ -67,7 +67,7 @@ sealed class SurveyComponent(
     fun withValidatedInstruction(validatedInstruction: Instruction.RunnableInstruction): SurveyComponent {
         val newList = instructionList.toMutableList()
         val index = instructionList.indexOfFirst { it.code == validatedInstruction.code }
-        val newInstruction = (newList[index] as Instruction.State)
+        val newInstruction = (newList[index] as Instruction.IsRunnable)
             .withValidatedInstruction(validatedInstruction)
         newList[index] = newInstruction
         return duplicate(instructionList = newList)

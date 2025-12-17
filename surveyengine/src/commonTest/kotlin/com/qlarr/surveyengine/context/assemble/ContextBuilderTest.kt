@@ -24,7 +24,7 @@ class ContextBuilderTest {
                 Group("G1", questions = listOf(Question("Q1"))),
                 Group(
                     "G2", questions = listOf(Question("Q2")), instructionList = listOf(
-                        Reference("reference_en_desc", references = listOf("G1.kabaka"), lang = SurveyLang.EN.code)
+                        Reference("reference_en_desc", text = "G1.kabaka", lang = SurveyLang.EN.code)
                     )
                 )
             )
@@ -33,7 +33,7 @@ class ContextBuilderTest {
         contextManager.validate()
         assertTrue(contextManager.components[0].instructionList[0].errors[0] is InstructionError.ScriptError)
         assertEquals(
-            InstructionError.InvalidReference("G1.kabaka", false),
+            InstructionError.ScriptError("unIdentified: G1.kabaka", start=0, end=9),
             contextManager.components[0].children[1].instructionList[0].errors[0]
         )
 
@@ -127,7 +127,7 @@ class ContextBuilderTest {
                 Group("G1"),
                 Group(
                     "G2", questions = listOf(Question("Q1")), instructionList = listOf(
-                        Reference("reference_en_desc", references = listOf("G1.kabaka"), lang = SurveyLang.EN.code)
+                        Reference("reference_en_desc", text = "G1.kabaka", lang = SurveyLang.EN.code)
                     )
                 )
             )
@@ -136,7 +136,7 @@ class ContextBuilderTest {
         contextManager.validate()
         assertTrue(contextManager.components[0].instructionList[0].errors[0] is InstructionError.ScriptError)
         assertEquals(
-            InstructionError.InvalidReference("G1.kabaka", true),
+            InstructionError.ScriptError("unIdentified: G1.kabaka", 0, 9),
             contextManager.components[0].children[1].instructionList[0].errors[0]
         )
 
@@ -150,12 +150,7 @@ class ContextBuilderTest {
                 SimpleState(";;toksdfen.firstName++ > 'Wawa'", ReservedCode.Value, isActive = true),
                 Reference(
                     "reference_1",
-                    listOf(
-                        "Q1Afirst_name.validity",
-                        "Q1Alast_name.validity",
-                        "Q1Alast_name.value",
-                        "Q1Afirst_name.value"
-                    ),
+                    text = "Q1Afirst_name.validity",
                     emptyList(),
                     SurveyLang.EN.code
                 )
@@ -165,20 +160,8 @@ class ContextBuilderTest {
         contextManager.validate()
         assertTrue(contextManager.components[0].instructionList[0].errors[0] is InstructionError.ScriptError)
         assertEquals(
-            InstructionError.InvalidReference("Q1Afirst_name.validity", true),
+            InstructionError.ScriptError("unIdentified: Q1Afirst_name.validity", 0, 22),
             contextManager.components[0].instructionList[1].errors[0]
-        )
-        assertEquals(
-            InstructionError.InvalidReference("Q1Alast_name.validity", true),
-            contextManager.components[0].instructionList[1].errors[1]
-        )
-        assertEquals(
-            InstructionError.InvalidReference("Q1Alast_name.value", true),
-            contextManager.components[0].instructionList[1].errors[2]
-        )
-        assertEquals(
-            InstructionError.InvalidReference("Q1Afirst_name.value", true),
-            contextManager.components[0].instructionList[1].errors[3]
         )
 
     }

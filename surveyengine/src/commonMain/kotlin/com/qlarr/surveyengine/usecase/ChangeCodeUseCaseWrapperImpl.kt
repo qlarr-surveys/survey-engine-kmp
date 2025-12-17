@@ -136,11 +136,7 @@ private fun SurveyComponent.changeInstruction(
             when (instruction) {
                 is Instruction.Reference -> {
                     onSurveyJsonModified(surveyJson.changeContent(fullPath, instruction.contentPath, from, to))
-                    val newReferences = instruction.references.map { reference ->
-                        reference.replace(from, to)
-                    }
-                    instruction.copy(references = newReferences)
-
+                    instruction.withValidatedText(instruction.text.replace(from, to))
                 }
 
                 is Instruction.State -> {

@@ -57,7 +57,7 @@ fun State.stateRuntimeScript(componentCode: String, dependencyMap: DependencyMap
 }
 
 fun Instruction.Reference.formatRuntimeScript(componentCode: String, dependencyMap: DependencyMap): String {
-    var finalText = text()
+    var finalText = text
     dependencyMap[Dependent(componentCode, code)]?.forEach {
         val dependencyCode = "${it.componentCode}.${it.reservedCode.code}"
         val newDependencyCode = "state.$dependencyCode"

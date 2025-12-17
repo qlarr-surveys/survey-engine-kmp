@@ -22,9 +22,9 @@ object InstructionSerializer : KSerializer<Instruction> {
 
             when (value) {
                 is Reference -> {
-                    put("references", JsonArray(value.references.map { JsonPrimitive(it) }))
                     put("contentPath", JsonArray(value.contentPath.map { JsonPrimitive(it) }))
                     put("lang", value.lang)
+                    put("text", value.text)
                 }
 
                 is RandomGroups -> {
@@ -97,7 +97,6 @@ object InstructionSerializer : KSerializer<Instruction> {
         }
 
         // Extract specialized fields
-        val references = jsonElement["references"]?.jsonArray?.map { it.jsonPrimitive.content } ?: listOf()
         val contentPath = jsonElement["contentPath"]?.jsonArray?.map { it.jsonPrimitive.content } ?: listOf()
 
         val groups = jsonElement["groups"]?.let {
@@ -146,7 +145,7 @@ object InstructionSerializer : KSerializer<Instruction> {
                 Reference(
                     code = code,
                     contentPath = contentPath,
-                    references = references,
+                    text = text ?: returnType?.defaultTextValue() ?: ReturnType.String.defaultTextValue(),
                     lang = lang!!,
                     errors = errors
                 )

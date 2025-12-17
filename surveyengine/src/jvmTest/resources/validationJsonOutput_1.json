@@ -363,9 +363,7 @@
               },
               {
                 "code": "reference_label_en",
-                "references": [
-                  "Q375xtg.masked_value"
-                ],
+                "text": "Q375xtg.masked_value",
                 "contentPath": [
                   "content",
                   "en",
@@ -375,9 +373,7 @@
               },
               {
                 "code": "reference_label_de",
-                "references": [
-                  "Q375xtg.masked_value"
-                ],
+                "text": "Q375xtg.masked_value",
                 "contentPath": [
                   "content",
                   "de",
@@ -404,18 +400,6 @@
               },
               "de": {
                 "label": "<p>Hallo <span class=\"mention\" data-index=\"0\" data-denotation-char=\"\" data-id=\"Q375xtg\" data-instruction=\"Q375xtg.masked_value\" data-value=\"{{Q375xtg:SCQ}}\" data-type=\"SCQ\">﻿<span contenteditable=\"false\">{{Q375xtg:SCQ}}</span>﻿</span> </p>"
-              }
-            },
-            "relevance": {
-              "rule": "show_if",
-              "logic": {
-                "and": [
-                  {
-                    "is_not_empty": {
-                      "var": "Q375xtgAotherAtext"
-                    }
-                  }
-                ]
               }
             },
             "qualifiedCode": "Q510fuv"
@@ -910,5 +894,5 @@
     }
   ],
   "skipMap": {},
-  "script": "qlarrRuntime = {\n\tSurvey : {\n\t\trelevance_map: function(state) {return {G1: state.G1.relevance,Q375xtg: state.Q375xtg.relevance,Q510fuv: state.Q510fuv.relevance,G2: state.G2.relevance};},\n\t\tvalidity_map: function(state) {return {G1: state.G1.validity,Q375xtg: state.Q375xtg.validity,Q510fuv: state.Q510fuv.validity,G2: state.G2.validity};},\n\t\thas_previous: function(state) {return (function(){if(!state.Survey.before_navigation||!state.Survey.relevance_map){return false;}for(var i=0;i<state.Survey.before_navigation.length;i++){if(state.Survey.relevance_map[state.Survey.before_navigation[i]]){return true}}return false;})();},\n\t\thas_next: function(state) {return (function(){if(!state.Survey.after_navigation||!state.Survey.relevance_map){return false;}for(var i=0;i<state.Survey.after_navigation.length;i++){if(state.Survey.relevance_map[state.Survey.after_navigation[i]]){return true}}return false;})();},\n\t\tvalidity: function(state) {return (!state.G1.in_current_navigation || !state.G1.relevance || state.G1.validity) && (!state.G2.in_current_navigation || !state.G2.relevance || state.G2.validity);}\n\t},\n\tG1 : {\n\t\tvalidity: function(state) {return (!state.Q375xtg.in_current_navigation || !state.Q375xtg.relevance || state.Q375xtg.validity) && (!state.Q510fuv.in_current_navigation || !state.Q510fuv.relevance || state.Q510fuv.validity);}\n\t},\n\tQ375xtg : {\n\t\tmasked_value: function(state) {return state.Q375xtg.value ? QlarrScripts.safeAccess({\"A1\": QlarrScripts.stripTags(state.Q375xtgA1.label),\"A2\": QlarrScripts.stripTags(state.Q375xtgA2.label),\"A3\": QlarrScripts.stripTags(state.Q375xtgA3.label),\"Aother\": state.Q375xtgAotherAtext.value},state.Q375xtg.value) : '';},\n\t\tvalidity: function(state) {return !state.Q375xtg.validation_enum;},\n\t\tvalidation_enum: function(state) {return QlarrScripts.isNotVoid(state.Q375xtg.value) && [\"A1\",\"A2\",\"A3\",\"Aother\"].indexOf(state.Q375xtg.value) == -1;}\n\t},\n\tQ375xtgAotherAtext : {\n\t\tconditional_relevance: function(state) {return state.Q375xtg.value === 'Aother';},\n\t\trelevance: function(state) {return state.Q375xtgAotherAtext.conditional_relevance;}\n\t},\n\tQ510fuv : {\n\t\trelevance: function(state) {return state.Q510fuv.conditional_relevance;},\n\t\treference_label_en: function(state) {return {Q375xtg: {masked_value : state.Q375xtg.masked_value}};},\n\t\treference_label_de: function(state) {return {Q375xtg: {masked_value : state.Q375xtg.masked_value}};},\n\t\tconditional_relevance: function(state) {return QlarrScripts.isNotVoid(state.Q375xtgAotherAtext.value);}\n\t},\n\n}"
+  "script": "qlarrRuntime = {\n\tSurvey : {\n\t\trelevance_map: function(state) {return {G1: state.G1.relevance,Q375xtg: state.Q375xtg.relevance,Q510fuv: state.Q510fuv.relevance,G2: state.G2.relevance};},\n\t\tvalidity_map: function(state) {return {G1: state.G1.validity,Q375xtg: state.Q375xtg.validity,Q510fuv: state.Q510fuv.validity,G2: state.G2.validity};},\n\t\thas_previous: function(state) {return (function(){if(!state.Survey.before_navigation||!state.Survey.relevance_map){return false;}for(var i=0;i<state.Survey.before_navigation.length;i++){if(state.Survey.relevance_map[state.Survey.before_navigation[i]]){return true}}return false;})();},\n\t\thas_next: function(state) {return (function(){if(!state.Survey.after_navigation||!state.Survey.relevance_map){return false;}for(var i=0;i<state.Survey.after_navigation.length;i++){if(state.Survey.relevance_map[state.Survey.after_navigation[i]]){return true}}return false;})();},\n\t\tvalidity: function(state) {return (!state.G1.in_current_navigation || !state.G1.relevance || state.G1.validity) && (!state.G2.in_current_navigation || !state.G2.relevance || state.G2.validity);}\n\t},\n\tG1 : {\n\t\tvalidity: function(state) {return (!state.Q375xtg.in_current_navigation || !state.Q375xtg.relevance || state.Q375xtg.validity) && (!state.Q510fuv.in_current_navigation || !state.Q510fuv.relevance || state.Q510fuv.validity);}\n\t},\n\tQ375xtg : {\n\t\tmasked_value: function(state) {return state.Q375xtg.value ? QlarrScripts.safeAccess({\"A1\": QlarrScripts.stripTags(state.Q375xtgA1.label),\"A2\": QlarrScripts.stripTags(state.Q375xtgA2.label),\"A3\": QlarrScripts.stripTags(state.Q375xtgA3.label),\"Aother\": state.Q375xtgAotherAtext.value},state.Q375xtg.value) : '';},\n\t\tvalidity: function(state) {return !state.Q375xtg.validation_enum;},\n\t\tvalidation_enum: function(state) {return QlarrScripts.isNotVoid(state.Q375xtg.value) && [\"A1\",\"A2\",\"A3\",\"Aother\"].indexOf(state.Q375xtg.value) == -1;}\n\t},\n\tQ375xtgAotherAtext : {\n\t\tconditional_relevance: function(state) {return state.Q375xtg.value === 'Aother';},\n\t\trelevance: function(state) {return state.Q375xtgAotherAtext.conditional_relevance;}\n\t},\n\tQ510fuv : {\n\t\trelevance: function(state) {return state.Q510fuv.conditional_relevance;},\n\t\treference_label_en: function(state) {return state.Q375xtg.masked_value;},\n\t\treference_label_de: function(state) {return state.Q375xtg.masked_value;},\n\t\tconditional_relevance: function(state) {return QlarrScripts.isNotVoid(state.Q375xtgAotherAtext.value);}\n\t},\n\n}"
 }

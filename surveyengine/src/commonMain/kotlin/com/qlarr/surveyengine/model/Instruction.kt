@@ -22,31 +22,27 @@ sealed class Instruction {
     @Serializable(with = InstructionSerializer::class)
     data class Reference(
         override val code: String,
-        val references: List<String>,
+        val text: String,
         val contentPath: List<String> = emptyList(),
-        val lang: String,
+        val lang: String?,
         override val errors: List<InstructionError> = listOf()
-    ) : Instruction() {
+    ) : Instruction(), IsRunnable {
         init {
             if (!code.matches(Regex(VALID_REFERENCE_INSTRUCTION_PATTERN))) {
                 throw IllegalArgumentException("Instruction code: $code must start with $VALID_REFERENCE_PREFIX")
             }
         }
 
-        fun text(): String {
-            val grouped = references.map { it.split(".") }.groupBy { it[0] }
-            return grouped.keys.joinToString(separator = ", ", prefix = "{", postfix = "}", transform = { key ->
-                val variables = grouped[key]!!
-                "$key: " + variables.joinToString(separator = ", ", prefix = "{", postfix = "}", transform = { list ->
-                    "${list[1]} : ${list[0]}.${list[1]}"
-                })
-            })
-        }
-
-        fun runnableInstruction() = RunnableInstruction(code, text(), ReturnType.Map, true, errors)
+        override fun runnableInstruction() = RunnableInstruction(code, text, ReturnType.String, true, errors)
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
+         override fun withValidatedInstruction(runnableInstruction: RunnableInstruction) = copy(
+            text = runnableInstruction.text,
+            errors = runnableInstruction.errors
+        )
+
+         fun withValidatedText(validatedText: String) = copy(text = validatedText)
     }
 
 
@@ -122,9 +118,13 @@ sealed class Instruction {
         open val returnType: ReturnType = reservedCode.defaultReturnType(),
         open val isActive: Boolean = reservedCode.defaultIsActive(),
         override val errors: List<InstructionError> = listOf()
-    ) : Instruction() {
+    ) : Instruction(), IsRunnable {
         override val code: String
             get() = reservedCode.code
+
+        fun shouldValidate() = reservedCode.requiresValidation &&
+                !generated &&
+                (isActive || (reservedCode != ReservedCode.Value && text.isNotEmpty()))
 
         fun validate() {
             if (reservedCode != ReservedCode.Value && !reservedCode.validReturnType(returnType)) {
@@ -132,9 +132,9 @@ sealed class Instruction {
             }
         }
 
-        fun runnableInstruction() = RunnableInstruction(code, text, returnType, isActive, errors)
+        override fun runnableInstruction() = RunnableInstruction(code, text, returnType, isActive, errors)
 
-        abstract fun withValidatedInstruction(validatedInstruction: RunnableInstruction): State
+        abstract override fun withValidatedInstruction(runnableInstruction: RunnableInstruction): State
         abstract fun withValidatedText(validatedText: String): State
 
     }
@@ -153,10 +153,10 @@ sealed class Instruction {
             validate()
         }
 
-        override fun withValidatedInstruction(validatedInstruction: RunnableInstruction) = copy(
-            text = validatedInstruction.text,
-            isActive = validatedInstruction.isActive,
-            errors = validatedInstruction.errors
+        override fun withValidatedInstruction(runnableInstruction: RunnableInstruction) = copy(
+            text = runnableInstruction.text,
+            isActive = runnableInstruction.isActive,
+            errors = runnableInstruction.errors
         )
 
         override fun withValidatedText(validatedText: String) = copy(text = validatedText)
@@ -186,11 +186,12 @@ sealed class Instruction {
             }
         }
 
-        override fun withValidatedInstruction(validatedInstruction: RunnableInstruction) = copy(
-            text = validatedInstruction.text,
-            isActive = validatedInstruction.isActive,
-            errors = validatedInstruction.errors
+        override fun withValidatedInstruction(runnableInstruction: RunnableInstruction) = copy(
+            text = runnableInstruction.text,
+            isActive = runnableInstruction.isActive,
+            errors = runnableInstruction.errors
         )
+
 
         override fun withValidatedText(validatedText: String) = copy(condition = validatedText, text = validatedText)
 
@@ -208,6 +209,11 @@ sealed class Instruction {
         val isActive: Boolean,
         val errors: List<InstructionError>
     )
+
+    interface IsRunnable{
+        fun runnableInstruction() : RunnableInstruction
+        fun withValidatedInstruction(runnableInstruction:RunnableInstruction) : Instruction
+    }
 
 
     companion object {
