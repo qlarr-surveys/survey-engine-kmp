@@ -1,6 +1,6 @@
 package com.qlarr.surveyengine.model.adapters
 
-import com.qlarr.surveyengine.ext.VALID_REFERENCE_INSTRUCTION_PATTERN
+import com.qlarr.surveyengine.ext.VALID_FORMAT_INSTRUCTION_PATTERN
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.*
 import com.qlarr.surveyengine.model.exposed.ReturnType
@@ -21,10 +21,10 @@ object InstructionSerializer : KSerializer<Instruction> {
             put("code", value.code)
 
             when (value) {
-                is Reference -> {
-                    put("references", JsonArray(value.references.map { JsonPrimitive(it) }))
+                is Format -> {
                     put("contentPath", JsonArray(value.contentPath.map { JsonPrimitive(it) }))
                     put("lang", value.lang)
+                    put("text", value.text)
                 }
 
                 is RandomGroups -> {
@@ -97,7 +97,6 @@ object InstructionSerializer : KSerializer<Instruction> {
         }
 
         // Extract specialized fields
-        val references = jsonElement["references"]?.jsonArray?.map { it.jsonPrimitive.content } ?: listOf()
         val contentPath = jsonElement["contentPath"]?.jsonArray?.map { it.jsonPrimitive.content } ?: listOf()
 
         val groups = jsonElement["groups"]?.let {
@@ -142,11 +141,11 @@ object InstructionSerializer : KSerializer<Instruction> {
                 )
             }
 
-            code.matches(Regex(VALID_REFERENCE_INSTRUCTION_PATTERN)) -> {
-                Reference(
+            code.matches(Regex(VALID_FORMAT_INSTRUCTION_PATTERN)) -> {
+                Format(
                     code = code,
                     contentPath = contentPath,
-                    references = references,
+                    text = text ?: returnType?.defaultTextValue() ?: ReturnType.String.defaultTextValue(),
                     lang = lang!!,
                     errors = errors
                 )

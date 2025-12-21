@@ -21,7 +21,7 @@ class EmUseCaseTest {
     }
 
     @Test
-    fun fwd_reference_errors_are_reflected() {
+    fun fwd_format_errors_are_reflected() {
         val questionComponent1 = Question(
             code = "Q1",
             instructionList = listOf(SimpleState("Q2.value", ReservedCode.Value, isActive = true))

@@ -134,13 +134,9 @@ private fun SurveyComponent.changeInstruction(
     val modifiedInstructionList = instructionList.map { instruction ->
         if (instruction.code == instructionCode) {
             when (instruction) {
-                is Instruction.Reference -> {
+                is Instruction.Format -> {
                     onSurveyJsonModified(surveyJson.changeContent(fullPath, instruction.contentPath, from, to))
-                    val newReferences = instruction.references.map { reference ->
-                        reference.replace(from, to)
-                    }
-                    instruction.copy(references = newReferences)
-
+                    instruction.withValidatedText(instruction.text.replace(from, to))
                 }
 
                 is Instruction.State -> {

@@ -1,13 +1,11 @@
 package com.qlarr.surveyengine.usecase
 
-import com.qlarr.surveyengine.ext.mapToJsonObject
 import com.qlarr.surveyengine.model.ChildlessComponent
 import com.qlarr.surveyengine.model.Dependent
 import com.qlarr.surveyengine.model.Instruction
 import com.qlarr.surveyengine.model.Instruction.State
 import com.qlarr.surveyengine.model.ReservedCode
 import kotlinx.serialization.json.*
-import kotlinx.serialization.*
 
 internal class StateMachineWriter(scriptInput: ScriptInput) {
     private val bindings = scriptInput.bindings
@@ -33,7 +31,7 @@ internal class StateMachineWriter(scriptInput: ScriptInput) {
         val componentVariables = mutableMapOf<String, JsonElement>()
         val componentDependents = mutableMapOf<String, JsonElement>()
 
-        instructionList.filterIsInstance<Instruction.Reference>().forEach { instruction ->
+        instructionList.filterIsInstance<Instruction.Format>().forEach { instruction ->
             componentVariables[instruction.code] = formatBindings[Dependent(code, instruction.code)]!!
         }
         bindings.filter { it.key.componentCode == code }.forEach {

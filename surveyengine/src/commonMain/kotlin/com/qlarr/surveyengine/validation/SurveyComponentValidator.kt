@@ -29,61 +29,6 @@ internal fun SurveyComponent.validateInstructions(): SurveyComponent {
 }
 
 
-internal fun SurveyComponent.validateReferences(sanitizedNestedComponents: List<ChildlessComponent>): SurveyComponent {
-    if (hasErrors()) {
-        return this
-    }
-
-    var validatedComponent = duplicate()
-    validatedComponent = validatedComponent
-        .validateReferenceInstructions(sanitizedNestedComponents)
-
-    val newChildren = mutableListOf<SurveyComponent>()
-    validatedComponent.children.forEach {
-        val newChild = it.validateReferences(sanitizedNestedComponents)
-        newChildren.add(newChild)
-    }
-    validatedComponent = validatedComponent.duplicate(children = newChildren)
-
-    return validatedComponent
-
-}
-
-private fun SurveyComponent.validateReferenceInstructions(sanitizedNestedComponents: List<ChildlessComponent>): SurveyComponent {
-    val newInstructions = instructionList.toMutableList()
-    instructionList.forEachIndexed { index, instruction ->
-        if (instruction is Instruction.Reference && instruction.noErrors()) {
-            var newInstruction = instruction.copy()
-            val newDependencies = instruction.references.toMutableList()
-            instruction.references.forEach { dependency ->
-                val codes = dependency.split(".")
-                val componentCode = if (codes.isNotEmpty()) codes[0] else ""
-                val referencedComponent = sanitizedNestedComponents.firstOrNull { it.code == componentCode }
-                if (referencedComponent == null) {
-                    newInstruction = newInstruction.addError(InstructionError.InvalidReference(dependency, true))
-                } else {
-                    val reservedCode = if (codes.size >= 2) codes[1] else ""
-                    if (!reservedCode.isReservedCode()) {
-                        newInstruction = newInstruction.addError(InstructionError.InvalidReference(dependency, false))
-                    } else {
-                        val referencedInstruction = referencedComponent
-                            .instructionList
-                            .filterIsInstance<Instruction.State>()
-                            .firstOrNull { it.reservedCode == reservedCode.toReservedCode() }
-                        if (referencedInstruction == null) {
-                            newInstruction =
-                                newInstruction.addError(InstructionError.InvalidReference(dependency, false))
-                        }
-                    }
-                }
-            }
-            newInstructions[index] = newInstruction.copy(references = newDependencies)
-        }
-    }
-    return duplicate(instructionList = newInstructions)
-}
-
-
 private fun SurveyComponent.addInstructionDuplicateCodes(): SurveyComponent {
     val newInstructions = instructionList.toMutableList()
     instructionList.forEachIndexed { index, instruction ->

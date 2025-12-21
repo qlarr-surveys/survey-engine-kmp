@@ -119,7 +119,7 @@ class DependencyMapperTest {
         instructionList = listOf(
             Instruction.SimpleState("", ReservedCode.Value),
             Instruction.SimpleState("Q8.value!=''", ReservedCode.ConditionalRelevance),
-            Instruction.Reference("reference_label", listOf("Q4.label"), emptyList(),SurveyLang.EN.code)
+            Instruction.Format("format_label", "Q4.label", emptyList(),SurveyLang.EN.code)
         )
     )
 
@@ -170,7 +170,7 @@ class DependencyMapperTest {
             ),
             Dependent(
                 componentCode = "Q9",
-                instructionCode = "reference_label"
+                instructionCode = "format_label"
             ) to listOf(Dependency(componentCode = "Q4", reservedCode = ReservedCode.Label)),
 
             Dependent(componentCode = "Q9", instructionCode = "conditional_relevance") to listOf(
@@ -197,7 +197,7 @@ class DependencyMapperTest {
             Dependency("Q1", ReservedCode.Value) to listOf(Dependent("Q2", "conditional_relevance")),
             Dependency("Q2", ReservedCode.ConditionalRelevance) to listOf(Dependent("Q3", "conditional_relevance")),
             Dependency("Q4", ReservedCode.ConditionalRelevance) to listOf(Dependent("Q5A1", "conditional_relevance")),
-            Dependency("Q4", ReservedCode.Label) to listOf(Dependent("Q9", "reference_label")),
+            Dependency("Q4", ReservedCode.Label) to listOf(Dependent("Q9", "format_label")),
             Dependency("Q4", ReservedCode.Value) to listOf(Dependent("Q5", "conditional_relevance")),
             Dependency("Q8", ReservedCode.Value) to listOf(Dependent("Q9", "conditional_relevance"))
         )

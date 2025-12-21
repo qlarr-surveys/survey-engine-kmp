@@ -82,11 +82,6 @@ internal class ContextBuilder(
         }
         components.addStateToAllComponents()
 
-
-        components.forEachIndexed { index, surveyComponent ->
-            val newComponent = surveyComponent.validateReferences(sanitizedNestedComponents)
-            components[index] = newComponent
-        }
         val dependencyMapper = DependencyMapper(sanitizedNestedComponents)
 
         ForwardDependencyAnalyzer(
@@ -100,12 +95,12 @@ internal class ContextBuilder(
             val systemInstructions = sanitisedComponents.map { childlessComponent ->
                 childlessComponent.instructionList
                     .filter {
-                        it is Instruction.State && it.reservedCode.requiresValidation && !it.generated &&
-                                (it.isActive || (it.reservedCode != ReservedCode.Value && it.text.isNotEmpty()))
+                        (it is Instruction.State && it.shouldValidate())
+                                || it is Instruction.Format
                     }.map { instruction ->
                         ComponentInstruction(
                             childlessComponent.code,
-                            (instruction as Instruction.State).runnableInstruction()
+                            (instruction as Instruction.IsRunnable).runnableInstruction()
                         )
                     }
             }.flatten()
