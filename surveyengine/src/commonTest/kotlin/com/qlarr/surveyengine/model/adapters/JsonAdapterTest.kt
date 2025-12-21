@@ -35,8 +35,8 @@ class JsonAdapterTest {
         reservedCode = Value
     )
 
-    private val REF_EQ = Reference(
-        code = "reference_label",
+    private val REF_EQ = Format(
+        code = "format_label",
         text = "Q1.label",
         contentPath = emptyList(),
          lang = SurveyLang.EN.code

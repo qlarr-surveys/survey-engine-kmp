@@ -24,7 +24,7 @@ fun ChildlessComponent.componentRuntimeScript(dependencyMap: DependencyMap): Str
                 it.stateRuntimeScript(code, dependencyMap)
             }
 
-            is Instruction.Reference -> {
+            is Instruction.Format -> {
                 it.formatRuntimeScript(code, dependencyMap)
             }
 
@@ -56,7 +56,7 @@ fun State.stateRuntimeScript(componentCode: String, dependencyMap: DependencyMap
     }
 }
 
-fun Instruction.Reference.formatRuntimeScript(componentCode: String, dependencyMap: DependencyMap): String {
+fun Instruction.Format.formatRuntimeScript(componentCode: String, dependencyMap: DependencyMap): String {
     var finalText = text
     dependencyMap[Dependent(componentCode, code)]?.forEach {
         val dependencyCode = "${it.componentCode}.${it.reservedCode.code}"

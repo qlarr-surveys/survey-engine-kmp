@@ -41,7 +41,7 @@ function navigate(navigationInput) {
     })
     navigationInput.formatInstructions.forEach(function(formatInstruction, index) {
         var instruction = formatInstruction.instruction
-        qlarrVariables[formatInstruction.componentCode][instruction.code] = runInstruction(instruction.code, instruction.text, "Map")
+        qlarrVariables[formatInstruction.componentCode][instruction.code] = runInstruction(instruction.code, instruction.text, "any")
     })
     return JSON.stringify(qlarrVariables);
 }
@@ -76,6 +76,8 @@ function runInstruction(code, instructionText, returnType) {
 function isCorrectReturnType(returnType, value) {
     const returnTypeName = typeof returnType == "object" ? returnType.type?.toLowerCase() || "" : returnType?.toLowerCase()
     switch (returnTypeName) {
+        case "any":
+            return true;
         case "boolean":
             return typeof value === "boolean";
             break;

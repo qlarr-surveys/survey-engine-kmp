@@ -24,7 +24,7 @@ class ContextBuilderTest {
                 Group("G1", questions = listOf(Question("Q1"))),
                 Group(
                     "G2", questions = listOf(Question("Q2")), instructionList = listOf(
-                        Reference("reference_en_desc", text = "G1.kabaka", lang = SurveyLang.EN.code)
+                        Format("format_en_desc", text = "G1.kabaka", lang = SurveyLang.EN.code)
                     )
                 )
             )
@@ -127,7 +127,7 @@ class ContextBuilderTest {
                 Group("G1"),
                 Group(
                     "G2", questions = listOf(Question("Q1")), instructionList = listOf(
-                        Reference("reference_en_desc", text = "G1.kabaka", lang = SurveyLang.EN.code)
+                        Format("format_en_desc", text = "G1.kabaka", lang = SurveyLang.EN.code)
                     )
                 )
             )
@@ -148,8 +148,8 @@ class ContextBuilderTest {
         val SURVEY_TITLE_INVALID_SCRIPT = Survey(
             listOf(
                 SimpleState(";;toksdfen.firstName++ > 'Wawa'", ReservedCode.Value, isActive = true),
-                Reference(
-                    "reference_1",
+                Format(
+                    "format_1",
                     text = "Q1Afirst_name.validity",
                     emptyList(),
                     SurveyLang.EN.code

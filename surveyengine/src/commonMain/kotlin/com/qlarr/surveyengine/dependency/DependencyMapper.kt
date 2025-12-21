@@ -32,10 +32,10 @@ internal class DependencyMapper {
         qualifiedComponents.forEach { component ->
             component
                 .instructionList
-                .filter { it is Instruction.State && it.isActive || it is Instruction.Reference }
+                .filter { it is Instruction.State && it.isActive || it is Instruction.Format }
                 .forEach { instruction ->
                     val text = (instruction as? Instruction.State)?.text
-                        ?: (instruction as Instruction.Reference).text
+                        ?: (instruction as Instruction.Format).text
                     val dependencyList = getDependencyList(qualifiedComponents, text)
                     if (correctCyclicalRelevance) {
                         val cleanedUpDependencies: List<Dependency> =

@@ -96,7 +96,7 @@ internal class ContextBuilder(
                 childlessComponent.instructionList
                     .filter {
                         (it is Instruction.State && it.shouldValidate())
-                                || it is Instruction.Reference
+                                || it is Instruction.Format
                     }.map { instruction ->
                         ComponentInstruction(
                             childlessComponent.code,

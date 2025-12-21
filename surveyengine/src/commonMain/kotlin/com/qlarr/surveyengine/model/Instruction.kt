@@ -2,8 +2,8 @@
 
 package com.qlarr.surveyengine.model
 
-import com.qlarr.surveyengine.ext.VALID_REFERENCE_INSTRUCTION_PATTERN
-import com.qlarr.surveyengine.ext.VALID_REFERENCE_PREFIX
+import com.qlarr.surveyengine.ext.VALID_FORMAT_INSTRUCTION_PATTERN
+import com.qlarr.surveyengine.ext.VALID_FORMAT_PREFIX
 import com.qlarr.surveyengine.model.Instruction.*
 import com.qlarr.surveyengine.model.adapters.InstructionSerializer
 import com.qlarr.surveyengine.model.exposed.ReturnType
@@ -20,7 +20,7 @@ sealed class Instruction {
 
 
     @Serializable(with = InstructionSerializer::class)
-    data class Reference(
+    data class Format(
         override val code: String,
         val text: String,
         val contentPath: List<String> = emptyList(),
@@ -28,8 +28,8 @@ sealed class Instruction {
         override val errors: List<InstructionError> = listOf()
     ) : Instruction(), IsRunnable {
         init {
-            if (!code.matches(Regex(VALID_REFERENCE_INSTRUCTION_PATTERN))) {
-                throw IllegalArgumentException("Instruction code: $code must start with $VALID_REFERENCE_PREFIX")
+            if (!code.matches(Regex(VALID_FORMAT_INSTRUCTION_PATTERN))) {
+                throw IllegalArgumentException("Instruction code: $code must start with $VALID_FORMAT_PREFIX")
             }
         }
 

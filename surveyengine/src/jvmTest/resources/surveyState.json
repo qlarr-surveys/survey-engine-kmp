@@ -279,7 +279,7 @@
     },
     "Qage": {
       "validation_required": true,
-      "reference_label_en": "",
+      "format_label_en": "",
       "not_skipped": true,
       "label": "",
       "validity": false,
@@ -2827,7 +2827,7 @@
       "masked_value": [
         [
           "Qage",
-          "reference_label_en"
+          "format_label_en"
         ]
       ]
     },

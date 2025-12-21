@@ -1,6 +1,6 @@
 package com.qlarr.surveyengine.model.adapters
 
-import com.qlarr.surveyengine.ext.VALID_REFERENCE_INSTRUCTION_PATTERN
+import com.qlarr.surveyengine.ext.VALID_FORMAT_INSTRUCTION_PATTERN
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.*
 import com.qlarr.surveyengine.model.exposed.ReturnType
@@ -21,7 +21,7 @@ object InstructionSerializer : KSerializer<Instruction> {
             put("code", value.code)
 
             when (value) {
-                is Reference -> {
+                is Format -> {
                     put("contentPath", JsonArray(value.contentPath.map { JsonPrimitive(it) }))
                     put("lang", value.lang)
                     put("text", value.text)
@@ -141,8 +141,8 @@ object InstructionSerializer : KSerializer<Instruction> {
                 )
             }
 
-            code.matches(Regex(VALID_REFERENCE_INSTRUCTION_PATTERN)) -> {
-                Reference(
+            code.matches(Regex(VALID_FORMAT_INSTRUCTION_PATTERN)) -> {
+                Format(
                     code = code,
                     contentPath = contentPath,
                     text = text ?: returnType?.defaultTextValue() ?: ReturnType.String.defaultTextValue(),

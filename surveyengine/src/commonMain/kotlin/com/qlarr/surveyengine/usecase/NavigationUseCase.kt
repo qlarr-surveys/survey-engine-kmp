@@ -84,14 +84,14 @@ class NavigationUseCaseImp(
             valueBindings[Dependency(it, ReservedCode.InCurrentNavigation)] = JsonPrimitive(true)
         }
         val sequence = contextRunner.instructionsRefreshSequence()
-        val referenceInstructions = survey.nestedComponents().map { childlessComponent ->
+        val formatInstructions = survey.nestedComponents().map { childlessComponent ->
             childlessComponent.instructionList
-                .filterIsInstance<Instruction.Reference>()
+                .filterIsInstance<Instruction.Format>()
                 .map { instruction ->
                     ComponentInstruction(childlessComponent.code, instruction.runnableInstruction())
                 }
         }.flatten()
-        return contextExecutor.getNavigationScript(instructionsMap, valueBindings, sequence, referenceInstructions)
+        return contextExecutor.getNavigationScript(instructionsMap, valueBindings, sequence, formatInstructions)
     }
 
     override fun processNavigationResult(scriptResult: String): NavigationOutput {

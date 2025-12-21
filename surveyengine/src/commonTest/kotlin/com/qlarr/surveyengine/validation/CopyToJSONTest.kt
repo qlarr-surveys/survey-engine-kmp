@@ -29,8 +29,8 @@ class CopyToJSONTest {
     fun copies_instructions_and_errors2() {
         val component = Survey(
             instructionList = listOf(
-                Instruction.Reference(
-                    "reference_1",
+                Instruction.Format(
+                    "format_1",
                     text = "",
                     lang = SurveyLang.EN.code,
                     errors = listOf(
@@ -45,7 +45,7 @@ class CopyToJSONTest {
         )
         val jsonObject = jsonMapper.parseToJsonElement("{\"code\":\"Survey\"}").jsonObject
         assertEquals(
-            "{\"code\":\"Survey\",\"qualifiedCode\":\"Survey\",\"instructionList\":[{\"code\":\"reference_1\",\"contentPath\":[],\"lang\":\"en\",\"text\":\"\",\"errors\":[{\"name\":\"ScriptError\",\"message\":\"parse error\",\"start\":0,\"end\":10}]}]}",
+            "{\"code\":\"Survey\",\"qualifiedCode\":\"Survey\",\"instructionList\":[{\"code\":\"format_1\",\"contentPath\":[],\"lang\":\"en\",\"text\":\"\",\"errors\":[{\"name\":\"ScriptError\",\"message\":\"parse error\",\"start\":0,\"end\":10}]}]}",
             component.copyComponentsToJson(jsonObject).toString()
         )
     }
