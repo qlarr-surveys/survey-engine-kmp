@@ -205,7 +205,6 @@
                 "returnType": "boolean",
                 "isActive": true,
                 "skipToComponent": "G2",
-                "condition": "Q408hut.value == \"A1\"",
                 "toEnd": false,
                 "disqualify": false
               },

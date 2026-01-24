@@ -51,7 +51,6 @@ object InstructionSerializer : KSerializer<Instruction> {
 
                     if (value is SkipInstruction) {
                         put("skipToComponent", value.skipToComponent)
-                        put("condition", value.condition)
                         put("toEnd", value.toEnd)
                         put("disqualify", value.disqualify)
                     }
@@ -86,7 +85,6 @@ object InstructionSerializer : KSerializer<Instruction> {
         // Extract fields directly from JSON
         val text = jsonElement["text"]?.jsonPrimitive?.contentOrNull
         val lang = jsonElement["lang"]?.jsonPrimitive?.contentOrNull
-        val condition = jsonElement["condition"]?.jsonPrimitive?.contentOrNull
         val isActive = jsonElement["isActive"]?.jsonPrimitive?.booleanOrNull
         val skipToComponent = jsonElement["skipToComponent"]?.jsonPrimitive?.contentOrNull ?: ""
         val toEnd = jsonElement["toEnd"]?.jsonPrimitive?.booleanOrNull ?: false
@@ -114,16 +112,13 @@ object InstructionSerializer : KSerializer<Instruction> {
         return when {
             code.matches(Regex(SKIP_INSTRUCTION_PATTERN)) -> {
                 val reservedCode = code.toReservedCode()
-                val nonNullableInput = condition ?: (returnType?.defaultTextValue() ?: reservedCode.defaultReturnType()
-                    .defaultTextValue())
-
                 SkipInstruction(
                     code = code,
                     skipToComponent = skipToComponent,
                     toEnd = toEnd,
                     disqualify = disqualify,
-                    condition = nonNullableInput,
-                    text = text ?: nonNullableInput,
+                    text = text ?: (returnType?.defaultTextValue() ?: reservedCode.defaultReturnType()
+                        .defaultTextValue()),
                     isActive = isActive ?: reservedCode.defaultIsActive(),
                     errors = errors
                 )
@@ -145,8 +140,8 @@ object InstructionSerializer : KSerializer<Instruction> {
                 Format(
                     code = code,
                     contentPath = contentPath,
-                    text = text ?: returnType?.defaultTextValue() ?: ReturnType.String.defaultTextValue(),
-                    lang = lang!!,
+                    text = text!! ,
+                    lang = lang,
                     errors = errors
                 )
             }

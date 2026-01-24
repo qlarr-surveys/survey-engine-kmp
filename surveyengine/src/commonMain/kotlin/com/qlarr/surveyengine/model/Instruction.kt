@@ -135,7 +135,7 @@ sealed class Instruction {
         override fun runnableInstruction() = RunnableInstruction(code, text, returnType, isActive, errors)
 
         abstract override fun withValidatedInstruction(runnableInstruction: RunnableInstruction): State
-        abstract fun withValidatedText(validatedText: String): State
+        abstract fun withNewText(validatedText: String): State
 
     }
 
@@ -159,7 +159,7 @@ sealed class Instruction {
             errors = runnableInstruction.errors
         )
 
-        override fun withValidatedText(validatedText: String) = copy(text = validatedText)
+        override fun withNewText(validatedText: String) = copy(text = validatedText)
 
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
@@ -172,13 +172,12 @@ sealed class Instruction {
         val skipToComponent: String = "",
         val toEnd: Boolean = false,
         val disqualify: Boolean = false,
-        val condition: String = "true",
         override val code: String = "skip_to_$skipToComponent",
-        override val text: String = condition,
+        override val text: String,
         override val reservedCode: ReservedCode.Skip = ReservedCode.Skip(code),
         override val isActive: Boolean = reservedCode.defaultIsActive(),
         override val errors: List<InstructionError> = listOf()
-    ) : State(reservedCode = reservedCode, text = condition, returnType = ReturnType.Boolean, generated = false) {
+    ) : State(reservedCode = reservedCode, text = text, returnType = ReturnType.Boolean, generated = false) {
         init {
             validate()
             if (!code.matches(Regex(SKIP_INSTRUCTION_PATTERN))) {
@@ -193,7 +192,7 @@ sealed class Instruction {
         )
 
 
-        override fun withValidatedText(validatedText: String) = copy(condition = validatedText, text = validatedText)
+        override fun withNewText(validatedText: String) = copy(text = validatedText)
 
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
