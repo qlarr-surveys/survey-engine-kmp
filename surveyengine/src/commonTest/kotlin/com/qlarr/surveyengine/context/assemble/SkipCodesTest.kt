@@ -12,9 +12,9 @@ class SkipCodesTest {
 
     @Test
     fun test1() {
-        val skipToQ3 = SkipInstruction("Q3")
-        val skipToG1 = SkipInstruction("G1", toEnd = true)
-        val skipToG5 = SkipInstruction("G5")
+        val skipToQ3 = SkipInstruction("Q3", text = "true")
+        val skipToG1 = SkipInstruction("G1", toEnd = true, text = "true")
+        val skipToG5 = SkipInstruction("G5", text = "true")
         val survey = Survey(
             groups = listOf(
                 Group(
@@ -100,7 +100,7 @@ class SkipCodesTest {
                 SkipCodeOutput("Q3", false, false, "", ""),
                 SkipCodeOutput("Q4", false, false, "", ""),
                 SkipCodeOutput("Q5", false, true, "", "Q6"),
-            ), skipCodes("Q2", SkipInstruction("Q6"), componentIndices)
+            ), skipCodes("Q2", SkipInstruction("Q6", text = "true"), componentIndices)
         )
 
         assertEquals(
@@ -110,7 +110,7 @@ class SkipCodesTest {
                 SkipCodeOutput("G4", false, true, "", "G5"),
                 SkipCodeOutput("Q4", false, false, "", ""),
                 SkipCodeOutput("Q5", false, true, "", "Q6"),
-            ), skipCodes("G2", SkipInstruction("Q6"), componentIndices)
+            ), skipCodes("G2", SkipInstruction("Q6", text = "true"), componentIndices)
         )
     }
 

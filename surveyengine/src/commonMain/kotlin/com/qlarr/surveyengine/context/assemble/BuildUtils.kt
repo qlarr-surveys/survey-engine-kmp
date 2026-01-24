@@ -2,7 +2,6 @@ package com.qlarr.surveyengine.context.assemble
 
 import com.qlarr.surveyengine.ext.VALID_ANSWER_CODE
 import com.qlarr.surveyengine.ext.VALID_QUESTION_CODE
-import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.RandomOption.FLIP
 import com.qlarr.surveyengine.model.Instruction.RandomOption.RANDOM
@@ -38,7 +37,7 @@ internal fun MutableList<SurveyComponent>.correctInstruction(
         val index = indexOfFirst { it.code == componentCode }
         val component = get(index)
         val instruction = component.instructionList.first { it.code == reservedCode.code } as Instruction.State
-        val newComponent = component.replaceOrAddInstruction(instruction.withValidatedText(instructionText))
+        val newComponent = component.replaceOrAddInstruction(instruction.withNewText(instructionText))
         set(index, newComponent)
     } else {
         val index = indexOfFirst { it.code == parents.first() }

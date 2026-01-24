@@ -15,7 +15,7 @@ import kotlin.test.assertEquals
 class JsonAdapterTest {
 
     private val SKIP =
-        SkipInstruction(skipToComponent = "Q2", code = "skip_to_q4", condition = "true", isActive = false)
+        SkipInstruction(skipToComponent = "Q2", code = "skip_to_q4", text = "true", isActive = false)
     private val PRIORITY_GROUPS = PriorityGroups(
         priorities = listOf(
             PriorityGroup(listOf(ChildPriority("Q1"), ChildPriority("Q2"))),

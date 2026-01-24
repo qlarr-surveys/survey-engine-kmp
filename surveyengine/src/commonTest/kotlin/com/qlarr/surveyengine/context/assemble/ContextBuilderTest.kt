@@ -33,7 +33,7 @@ class ContextBuilderTest {
         contextManager.validate()
         assertTrue(contextManager.components[0].instructionList[0].errors[0] is InstructionError.ScriptError)
         assertEquals(
-            InstructionError.ScriptError("unIdentified: G1.kabaka", start=0, end=9),
+            InstructionError.ScriptError("unIdentified: G1.kabaka", start = 0, end = 9),
             contextManager.components[0].children[1].instructionList[0].errors[0]
         )
 
@@ -175,7 +175,7 @@ class ContextBuilderTest {
                     skipToComponent = "Q4",
                     code = "skip_to_question_4",
                     isActive = false,
-                    condition = "toksdfen.firstName++ > 'Wawa'"
+                    text = "toksdfen.firstName++ > 'Wawa'"
                 )
             )
         )
@@ -185,7 +185,7 @@ class ContextBuilderTest {
                     skipToComponent = "Q7",
                     code = "skip_to_question_7",
                     isActive = false,
-                    condition = "true"
+                    text = "true"
                 )
             )
         )
@@ -196,7 +196,7 @@ class ContextBuilderTest {
                     code = "skip_to_G2",
                     toEnd = true,
                     isActive = false,
-                    condition = "true"
+                    text = "true"
                 )
             )
         )
@@ -348,7 +348,7 @@ class ContextBuilderTest {
                     "G1",
                     instructionList = listOf(
                         RandomGroups(groups = listOf(listOf("Q1", "Q2"), listOf("Q3", "Q4"))),
-                        SkipInstruction(code = "skip_to_G3_from_G1", skipToComponent = "G3")
+                        SkipInstruction(code = "skip_to_G3_from_G1", skipToComponent = "G3", text = "true")
                     ),
                     questions = listOf(
                         Question(
@@ -356,7 +356,7 @@ class ContextBuilderTest {
                             instructionList = listOf(
                                 SkipInstruction(
                                     code = "skip_to_Q8_from_Q1",
-                                    skipToComponent = "Q8"
+                                    skipToComponent = "Q8", text = "true"
                                 )
                             )
                         ),
@@ -368,8 +368,8 @@ class ContextBuilderTest {
                 Group(
                     "G2",
                     instructionList = listOf(
-                        SkipInstruction(code = "skip_to_G3_from_G2", skipToComponent = "G3"),
-                        SkipInstruction(code = "skip_to_Q11_from_G2", skipToComponent = "Q11")
+                        SkipInstruction(code = "skip_to_G3_from_G2", skipToComponent = "G3", text = "true"),
+                        SkipInstruction(code = "skip_to_Q11_from_G2", skipToComponent = "Q11", text = "true")
 
                     ),
                     questions = listOf(
@@ -378,9 +378,9 @@ class ContextBuilderTest {
                         Question(
                             "Q7",
                             instructionList = listOf(
-                                SkipInstruction(code = "skip_to_G3_from_Q7", skipToComponent = "G3"),
-                                SkipInstruction(code = "skip_to_G4_from_Q7", skipToComponent = "G4"),
-                                SkipInstruction(code = "skip_to_Q11_from_Q7", skipToComponent = "Q11")
+                                SkipInstruction(code = "skip_to_G3_from_Q7", skipToComponent = "G3", text = "true"),
+                                SkipInstruction(code = "skip_to_G4_from_Q7", skipToComponent = "G4", text = "true"),
+                                SkipInstruction(code = "skip_to_Q11_from_Q7", skipToComponent = "Q11", text = "true")
 
                             )
                         )
@@ -402,7 +402,7 @@ class ContextBuilderTest {
                         Question(
                             "Q13",
                             instructionList = listOf(
-                                SkipInstruction(code = "skip_to_G1_from_Q13", skipToComponent = "G1"),
+                                SkipInstruction(code = "skip_to_G1_from_Q13", skipToComponent = "G1", text = "true"),
 
                                 )
                         )

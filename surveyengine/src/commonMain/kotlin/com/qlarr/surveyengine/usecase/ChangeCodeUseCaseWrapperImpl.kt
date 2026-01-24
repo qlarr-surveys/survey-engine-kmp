@@ -140,7 +140,7 @@ private fun SurveyComponent.changeInstruction(
                 }
 
                 is Instruction.State -> {
-                    instruction.withValidatedText(instruction.text.replace(from, to))
+                    instruction.withNewText(instruction.text.replace(from, to))
 
                 }
 
