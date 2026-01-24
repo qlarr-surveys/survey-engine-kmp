@@ -140,7 +140,7 @@ object InstructionSerializer : KSerializer<Instruction> {
                 Format(
                     code = code,
                     contentPath = contentPath,
-                    text = text!! ,
+                    text = text ?: "" ,
                     lang = lang,
                     errors = errors
                 )
