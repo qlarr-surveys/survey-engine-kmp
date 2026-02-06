@@ -1,6 +1,5 @@
 package com.qlarr.surveyengine.context.assemble
 
-import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.*
 import kotlinx.serialization.Serializable

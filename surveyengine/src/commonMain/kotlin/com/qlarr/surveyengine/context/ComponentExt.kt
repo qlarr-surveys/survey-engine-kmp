@@ -1,6 +1,5 @@
 package com.qlarr.surveyengine.context
 
-import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.exposed.ReturnType
 

@@ -1,6 +1,5 @@
 package com.qlarr.surveyengine.validation
 
-import com.qlarr.surveyengine.ext.flatten
 import com.qlarr.surveyengine.ext.getDuplicates
 import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.*
