@@ -37,6 +37,11 @@ sealed class NavigationDirection {
     data object Resume : NavigationDirection() {
         override val name: String = "RESUME"
     }
+
+
+    data object Save : NavigationDirection() {
+        override val name: String = "SAVE"
+    }
 }
 
 @OptIn(ExperimentalSerializationApi::class)

@@ -21,6 +21,7 @@ fun Survey.navigate(
     currentIndexValid: Boolean = true,
 ): NavigationIndex {
     val newNavigationIndex = when (navigationDirection) {
+        is NavigationDirection.Save,
         is NavigationDirection.Resume -> currentRelevant(navigationIndex!!, navigationMode, navigationBindings)
         NavigationDirection.Start -> firstRelevant(navigationMode, navigationBindings)
         is NavigationDirection.Next -> nextRelevant(navigationIndex!!, navigationMode, navigationBindings)
