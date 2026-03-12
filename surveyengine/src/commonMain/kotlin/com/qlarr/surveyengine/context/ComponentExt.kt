@@ -135,17 +135,21 @@ fun SurveyComponent.removeState(
     )
 }
 
-fun SurveyComponent.removeStateIfNotActive(
-    reservedCode: ReservedCode
+fun SurveyComponent.changeToInactiveIfPossible(
 ): SurveyComponent {
     return duplicate(
         instructionList = instructionList
-            .filter {
-                it.code != reservedCode.code ||
-                        (it as? Instruction.SimpleState)?.isActive != false
+            .map {
+               if (it is Instruction.State && it.shouldGoInactive()){
+                   it.toInActive()
+               } else {
+                   it
+               }
             }
     )
 }
+
+
 
 fun SurveyComponent.insertOrOverrideState(
     reservedCode: ReservedCode,

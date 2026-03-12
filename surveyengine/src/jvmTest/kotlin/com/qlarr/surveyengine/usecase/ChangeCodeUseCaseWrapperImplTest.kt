@@ -56,6 +56,15 @@ class ChangeCodeUseCaseWrapperImplTest {
         assertEquals(beforeNoCount, afterNoCount)
 
     }
+    @Test
+    fun changeCodeWithInstructions() {
+        val input = loadFromResources("validationJsonOutput_3.json")
+        val beforeCount = countWordOccurrences(input, "Qas")
+        val output = ChangeCodeUseCaseWrapper.create(input).changeCode("Qas", "Qast")
+        val afterCount = countWordOccurrences(output, "Qast")
+        assertEquals(beforeCount, afterCount)
+
+    }
 
     private fun countWordOccurrences(text: String, word: String): Int {
         val regex = Regex.escape(word).toRegex(RegexOption.IGNORE_CASE)

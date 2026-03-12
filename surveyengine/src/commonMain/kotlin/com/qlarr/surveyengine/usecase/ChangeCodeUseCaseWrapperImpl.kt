@@ -66,7 +66,7 @@ internal fun ValidationJsonOutput.changeCode(from: String, to: String): Validati
 
     }
     keys.forEach { key ->
-        impactMap[key]?.forEach { dependency ->
+        impactMap[key]?.distinct()?.forEach { dependency ->
             val impactedElementCode = dependency.componentCode
             val path = componentIndex.parents(impactedElementCode) + impactedElementCode.splitToComponentCodes().last()
             val instructionCode = dependency.instructionCode
@@ -136,11 +136,11 @@ private fun SurveyComponent.changeInstruction(
             when (instruction) {
                 is Instruction.Format -> {
                     onSurveyJsonModified(surveyJson.changeContent(fullPath, instruction.contentPath, from, to))
-                    instruction.withValidatedText(instruction.text.replace(from, to))
+                    instruction.withValidatedText(instruction.text.replaceComponentCode(from, to))
                 }
 
                 is Instruction.State -> {
-                    instruction.withNewText(instruction.text.replace(from, to))
+                    instruction.withNewText(instruction.text.replaceComponentCode(from, to))
 
                 }
 
@@ -248,6 +248,14 @@ fun String.replaceWholeWord(
 
     // Replace all occurrences
     return pattern.replace(this, to)
+}
+
+fun String.replaceComponentCode(
+    from: String,
+    to: String
+): String {
+    val pattern = Regex("${Regex.escape(from)}(?![a-z_0-9])")
+    return pattern.replace(this, Regex.escapeReplacement(to))
 }
 
 

@@ -37,12 +37,12 @@ sealed class Instruction {
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
-         override fun withValidatedInstruction(runnableInstruction: RunnableInstruction) = copy(
+        override fun withValidatedInstruction(runnableInstruction: RunnableInstruction) = copy(
             text = runnableInstruction.text,
             errors = runnableInstruction.errors
         )
 
-         fun withValidatedText(validatedText: String) = copy(text = validatedText)
+        fun withValidatedText(validatedText: String) = copy(text = validatedText)
     }
 
 
@@ -134,7 +134,20 @@ sealed class Instruction {
 
         override fun runnableInstruction() = RunnableInstruction(code, text, returnType, isActive, errors)
 
+        fun shouldGoInactive(): Boolean = when (returnType) {
+            ReturnType.Boolean -> text.toBooleanStrictOrNull() != null
+            ReturnType.Date -> false
+            ReturnType.Double -> text.toDoubleOrNull() != null
+            is ReturnType.Enum -> false
+            ReturnType.File -> true
+            ReturnType.Int -> text.toIntOrNull() != null
+            is ReturnType.List -> text == "[]"
+            ReturnType.Map -> text == "{}"
+            ReturnType.String -> text.isEmpty() || text.isBlank()
+        }
+
         abstract override fun withValidatedInstruction(runnableInstruction: RunnableInstruction): State
+        abstract fun toInActive(): State
         abstract fun withNewText(validatedText: String): State
 
     }
@@ -158,6 +171,8 @@ sealed class Instruction {
             isActive = runnableInstruction.isActive,
             errors = runnableInstruction.errors
         )
+
+        override fun toInActive() = copy(isActive = false)
 
         override fun withNewText(validatedText: String) = copy(text = validatedText)
 
@@ -194,7 +209,7 @@ sealed class Instruction {
 
         override fun withNewText(validatedText: String) = copy(text = validatedText)
 
-
+        override fun toInActive() = copy(isActive = false)
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
         fun duplicate() = copy()
@@ -209,9 +224,9 @@ sealed class Instruction {
         val errors: List<InstructionError>
     )
 
-    interface IsRunnable{
-        fun runnableInstruction() : RunnableInstruction
-        fun withValidatedInstruction(runnableInstruction:RunnableInstruction) : Instruction
+    interface IsRunnable {
+        fun runnableInstruction(): RunnableInstruction
+        fun withValidatedInstruction(runnableInstruction: RunnableInstruction): Instruction
     }
 
 

@@ -1,0 +1,1117 @@
+{
+  "survey": {
+    "groups": [
+      {
+        "questions": [
+          {
+            "answers": [
+              {
+                "code": "A1",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "0",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "0",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "qualifiedCode": "QasA1"
+              },
+              {
+                "code": "A2",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "1",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "1",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "qualifiedCode": "QasA2"
+              },
+              {
+                "code": "A3",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "2",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "2",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "qualifiedCode": "QasA3"
+              },
+              {
+                "code": "A4",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "3",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "3",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "qualifiedCode": "QasA4"
+              }
+            ],
+            "code": "Qas",
+            "type": "mcq",
+            "instructionList": [
+              {
+                "code": "value",
+                "text": "",
+                "returnType": {
+                  "type": "list",
+                  "values": [
+                    "A1",
+                    "A2",
+                    "A3",
+                    "A4"
+                  ]
+                },
+                "isActive": false
+              },
+              {
+                "code": "masked_value",
+                "text": "QlarrScripts.listStrings((Qas.value || []).map(function(el){return QlarrScripts.safeAccess({\"A1\": QlarrScripts.stripTags(QasA1.label),\"A2\": QlarrScripts.stripTags(QasA2.label),\"A3\": QlarrScripts.stripTags(QasA3.label),\"A4\": QlarrScripts.stripTags(QasA4.label)},el)}), Survey.lang)",
+                "returnType": "string",
+                "isActive": true
+              },
+              {
+                "code": "label",
+                "text": "",
+                "returnType": "string",
+                "isActive": false
+              },
+              {
+                "code": "relevance",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "validity",
+                "text": "!Qas.validation_list",
+                "returnType": "boolean",
+                "isActive": true
+              },
+              {
+                "code": "in_current_navigation",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "priority",
+                "text": "0",
+                "returnType": "int",
+                "isActive": false
+              },
+              {
+                "code": "validation_list",
+                "text": "QlarrScripts.isNotVoid(Qas.value) && !Qas.value.every(element => [\"A1\",\"A2\",\"A3\",\"A4\"].includes(element))",
+                "returnType": "boolean",
+                "isActive": true
+              },
+              {
+                "code": "format_custom_css_1",
+                "contentPath": [
+                  "customCss"
+                ],
+                "lang": "css",
+                "text": "Qas.value?.length ? \"blue\" : \"inherit\""
+              },
+              {
+                "code": "order",
+                "text": "0",
+                "returnType": "int",
+                "isActive": false
+              }
+            ],
+            "designErrors": [],
+            "customCss": "background-color: {{Qas.value?.length ? \"blue\" : \"inherit\"}}",
+            "qualifiedCode": "Qas"
+          },
+          {
+            "answers": [
+              {
+                "code": "A1",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "0",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "0",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "qualifiedCode": "Q085bvlA1"
+              },
+              {
+                "code": "A2",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "1",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "1",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "qualifiedCode": "Q085bvlA2"
+              },
+              {
+                "code": "A3",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "2",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "2",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "qualifiedCode": "Q085bvlA3"
+              },
+              {
+                "code": "Anone",
+                "content": {
+                  "en": {
+                    "label": "<p style=\"margin: 0px;\">None of the above</p>"
+                  }
+                },
+                "type": "none",
+                "instructionList": [
+                  {
+                    "code": "label",
+                    "text": "",
+                    "returnType": "string",
+                    "isActive": false
+                  },
+                  {
+                    "code": "relevance",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "validity",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "in_current_navigation",
+                    "text": "true",
+                    "returnType": "boolean",
+                    "isActive": false
+                  },
+                  {
+                    "code": "priority",
+                    "text": "3",
+                    "returnType": "int",
+                    "isActive": false
+                  },
+                  {
+                    "code": "order",
+                    "text": "3",
+                    "returnType": "int",
+                    "isActive": false
+                  }
+                ],
+                "resources": {},
+                "qualifiedCode": "Q085bvlAnone"
+              }
+            ],
+            "code": "Q085bvl",
+            "type": "scq",
+            "instructionList": [
+              {
+                "code": "value",
+                "text": "",
+                "returnType": {
+                  "type": "enum",
+                  "values": [
+                    "A1",
+                    "A2",
+                    "A3",
+                    "Anone"
+                  ]
+                },
+                "isActive": false
+              },
+              {
+                "code": "masked_value",
+                "text": "Q085bvl.value ? QlarrScripts.safeAccess({\"A1\": QlarrScripts.stripTags(Q085bvlA1.label),\"A2\": QlarrScripts.stripTags(Q085bvlA2.label),\"A3\": QlarrScripts.stripTags(Q085bvlA3.label),\"Anone\": QlarrScripts.stripTags(Q085bvlAnone.label)},Q085bvl.value) : ''",
+                "returnType": "string",
+                "isActive": true
+              },
+              {
+                "code": "label",
+                "text": "",
+                "returnType": "string",
+                "isActive": false
+              },
+              {
+                "code": "relevance",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "validity",
+                "text": "!Q085bvl.validation_enum",
+                "returnType": "boolean",
+                "isActive": true
+              },
+              {
+                "code": "in_current_navigation",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "priority",
+                "text": "1",
+                "returnType": "int",
+                "isActive": false
+              },
+              {
+                "code": "order",
+                "text": "1",
+                "returnType": "int",
+                "isActive": false
+              },
+              {
+                "code": "validation_enum",
+                "text": "QlarrScripts.isNotVoid(Q085bvl.value) && [\"A1\",\"A2\",\"A3\",\"Anone\"].indexOf(Q085bvl.value) == -1",
+                "returnType": "boolean",
+                "isActive": true
+              }
+            ],
+            "designErrors": [],
+            "qualifiedCode": "Q085bvl"
+          },
+          {
+            "code": "Q543nxd",
+            "type": "autocomplete",
+            "instructionList": [
+              {
+                "code": "value",
+                "text": "",
+                "returnType": "string",
+                "isActive": false
+              },
+              {
+                "code": "label",
+                "text": "",
+                "returnType": "string",
+                "isActive": false
+              },
+              {
+                "code": "relevance",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "validity",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "in_current_navigation",
+                "text": "true",
+                "returnType": "boolean",
+                "isActive": false
+              },
+              {
+                "code": "priority",
+                "text": "2",
+                "returnType": "int",
+                "isActive": false
+              },
+              {
+                "code": "order",
+                "text": "2",
+                "returnType": "int",
+                "isActive": false
+              }
+            ],
+            "qualifiedCode": "Q543nxd"
+          }
+        ],
+        "code": "G1",
+        "content": {
+          "en": {
+            "label": "nue"
+          }
+        },
+        "groupType": "GROUP",
+        "instructionList": [
+          {
+            "code": "label",
+            "text": "",
+            "returnType": "string",
+            "isActive": false
+          },
+          {
+            "code": "relevance",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "validity",
+            "text": "(!Qas.in_current_navigation || !Qas.relevance || Qas.validity) && (!Q085bvl.in_current_navigation || !Q085bvl.relevance || Q085bvl.validity) && (!Q543nxd.in_current_navigation || !Q543nxd.relevance || Q543nxd.validity)",
+            "returnType": "boolean",
+            "isActive": true
+          },
+          {
+            "code": "in_current_navigation",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "priority",
+            "text": "0",
+            "returnType": "int",
+            "isActive": false
+          },
+          {
+            "code": "order",
+            "text": "0",
+            "returnType": "int",
+            "isActive": false
+          }
+        ],
+        "qualifiedCode": "G1"
+      },
+      {
+        "code": "G2",
+        "content": {
+          "en": {
+            "label": "Thank you for taking the time to complete this survey."
+          }
+        },
+        "groupType": "END",
+        "instructionList": [
+          {
+            "code": "label",
+            "text": "",
+            "returnType": "string",
+            "isActive": false
+          },
+          {
+            "code": "relevance",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "validity",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "in_current_navigation",
+            "text": "true",
+            "returnType": "boolean",
+            "isActive": false
+          },
+          {
+            "code": "priority",
+            "text": "1",
+            "returnType": "int",
+            "isActive": false
+          },
+          {
+            "code": "order",
+            "text": "1",
+            "returnType": "int",
+            "isActive": false
+          }
+        ],
+        "qualifiedCode": "G2"
+      }
+    ],
+    "code": "Survey",
+    "defaultLang": {
+      "code": "en",
+      "name": "English"
+    },
+    "navigationMode": "group_by_group",
+    "allowPrevious": true,
+    "skipInvalid": true,
+    "allowIncomplete": true,
+    "allowJump": true,
+    "instructionList": [
+      {
+        "code": "lang",
+        "text": "en",
+        "returnType": "string",
+        "isActive": false
+      },
+      {
+        "code": "mode",
+        "text": "mixed",
+        "returnType": "string",
+        "isActive": false
+      },
+      {
+        "code": "disqualified",
+        "text": "false",
+        "returnType": "boolean",
+        "isActive": false
+      },
+      {
+        "code": "relevance_map",
+        "text": "{G1: G1.relevance,Qas: Qas.relevance,Q085bvl: Q085bvl.relevance,Q543nxd: Q543nxd.relevance,G2: G2.relevance}",
+        "returnType": "map",
+        "isActive": true
+      },
+      {
+        "code": "validity_map",
+        "text": "{G1: G1.validity,Qas: Qas.validity,Q085bvl: Q085bvl.validity,Q543nxd: Q543nxd.validity,G2: G2.validity}",
+        "returnType": "map",
+        "isActive": true
+      },
+      {
+        "code": "before_navigation",
+        "text": "[]",
+        "returnType": {
+          "type": "list",
+          "values": []
+        },
+        "isActive": false
+      },
+      {
+        "code": "after_navigation",
+        "text": "[]",
+        "returnType": {
+          "type": "list",
+          "values": []
+        },
+        "isActive": false
+      },
+      {
+        "code": "has_previous",
+        "text": "(function(){if(!Survey.before_navigation||!Survey.relevance_map){return false;}for(var i=0;i<Survey.before_navigation.length;i++){if(Survey.relevance_map[Survey.before_navigation[i]]){return true}}return false;})()",
+        "returnType": "boolean",
+        "isActive": true
+      },
+      {
+        "code": "has_next",
+        "text": "(function(){if(!Survey.after_navigation||!Survey.relevance_map){return false;}for(var i=0;i<Survey.after_navigation.length;i++){if(Survey.relevance_map[Survey.after_navigation[i]]){return true}}return false;})()",
+        "returnType": "boolean",
+        "isActive": true
+      },
+      {
+        "code": "validity",
+        "text": "(!G1.in_current_navigation || !G1.relevance || G1.validity) && (!G2.in_current_navigation || !G2.relevance || G2.validity)",
+        "returnType": "boolean",
+        "isActive": true
+      }
+    ],
+    "qualifiedCode": "Survey"
+  },
+  "schema": [
+    {
+      "componentCode": "Qas",
+      "columnName": "VALUE",
+      "dataType": {
+        "type": "list",
+        "values": [
+          "A1",
+          "A2",
+          "A3",
+          "A4"
+        ]
+      }
+    },
+    {
+      "componentCode": "Q085bvl",
+      "columnName": "VALUE",
+      "dataType": {
+        "type": "enum",
+        "values": [
+          "A1",
+          "A2",
+          "A3",
+          "Anone"
+        ]
+      }
+    },
+    {
+      "componentCode": "Q543nxd",
+      "columnName": "VALUE",
+      "dataType": "string"
+    }
+  ],
+  "impactMap": {
+    "Qas.relevance": [
+      "G1.validity",
+      "Survey.relevance_map"
+    ],
+    "QasA3.label": [
+      "Qas.masked_value"
+    ],
+    "G1.relevance": [
+      "Survey.validity",
+      "Survey.relevance_map"
+    ],
+    "G1.validity": [
+      "Survey.validity",
+      "Survey.validity_map"
+    ],
+    "Qas.validity": [
+      "G1.validity",
+      "Survey.validity_map"
+    ],
+    "QasA1.label": [
+      "Qas.masked_value"
+    ],
+    "G2.in_current_navigation": [
+      "Survey.validity"
+    ],
+    "Q085bvl.in_current_navigation": [
+      "G1.validity"
+    ],
+    "Q543nxd.relevance": [
+      "G1.validity",
+      "Survey.relevance_map"
+    ],
+    "Q085bvlAnone.label": [
+      "Q085bvl.masked_value"
+    ],
+    "Survey.before_navigation": [
+      "Survey.has_previous"
+    ],
+    "Q543nxd.validity": [
+      "G1.validity",
+      "Survey.validity_map"
+    ],
+    "Survey.after_navigation": [
+      "Survey.has_next"
+    ],
+    "Survey.relevance_map": [
+      "Survey.has_previous",
+      "Survey.has_next"
+    ],
+    "Q085bvlA2.label": [
+      "Q085bvl.masked_value"
+    ],
+    "QasA2.label": [
+      "Qas.masked_value"
+    ],
+    "G2.validity": [
+      "Survey.validity",
+      "Survey.validity_map"
+    ],
+    "Q085bvlA3.label": [
+      "Q085bvl.masked_value"
+    ],
+    "Q543nxd.in_current_navigation": [
+      "G1.validity"
+    ],
+    "G1.in_current_navigation": [
+      "Survey.validity"
+    ],
+    "Q085bvl.relevance": [
+      "G1.validity",
+      "Survey.relevance_map"
+    ],
+    "QasA4.label": [
+      "Qas.masked_value"
+    ],
+    "G2.relevance": [
+      "Survey.validity",
+      "Survey.relevance_map"
+    ],
+    "Qas.value": [
+      "Qas.masked_value",
+      "Qas.validation_list",
+      "Qas.format_custom_css_1"
+    ],
+    "Qas.validation_list": [
+      "Qas.validity"
+    ],
+    "Q085bvl.validation_enum": [
+      "Q085bvl.validity"
+    ],
+    "Q085bvl.value": [
+      "Q085bvl.masked_value",
+      "Q085bvl.validation_enum"
+    ],
+    "Q085bvl.validity": [
+      "G1.validity",
+      "Survey.validity_map"
+    ],
+    "Survey.lang": [
+      "Qas.masked_value"
+    ],
+    "Qas.in_current_navigation": [
+      "G1.validity"
+    ],
+    "Q085bvlA1.label": [
+      "Q085bvl.masked_value"
+    ]
+  },
+  "componentIndexList": [
+    {
+      "code": "Survey",
+      "parent": null,
+      "children": [
+        "G1",
+        "G2"
+      ],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "validity",
+        "mode",
+        "lang"
+      ]
+    },
+    {
+      "code": "G1",
+      "parent": "Survey",
+      "children": [
+        "Qas",
+        "Q085bvl",
+        "Q543nxd"
+      ],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Qas",
+      "parent": "G1",
+      "children": [
+        "QasA1",
+        "QasA2",
+        "QasA3",
+        "QasA4"
+      ],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "masked_value",
+        "validity",
+        "priority",
+        "value",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "QasA1",
+      "parent": "Qas",
+      "children": [],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "QasA2",
+      "parent": "Qas",
+      "children": [],
+      "minIndex": 1,
+      "maxIndex": 1,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "QasA3",
+      "parent": "Qas",
+      "children": [],
+      "minIndex": 2,
+      "maxIndex": 2,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "QasA4",
+      "parent": "Qas",
+      "children": [],
+      "minIndex": 3,
+      "maxIndex": 3,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q085bvl",
+      "parent": "G1",
+      "children": [
+        "Q085bvlA1",
+        "Q085bvlA2",
+        "Q085bvlA3",
+        "Q085bvlAnone"
+      ],
+      "minIndex": 1,
+      "maxIndex": 1,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "masked_value",
+        "validity",
+        "priority",
+        "value",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q085bvlA1",
+      "parent": "Q085bvl",
+      "children": [],
+      "minIndex": 0,
+      "maxIndex": 0,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q085bvlA2",
+      "parent": "Q085bvl",
+      "children": [],
+      "minIndex": 1,
+      "maxIndex": 1,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q085bvlA3",
+      "parent": "Q085bvl",
+      "children": [],
+      "minIndex": 2,
+      "maxIndex": 2,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q085bvlAnone",
+      "parent": "Q085bvl",
+      "children": [],
+      "minIndex": 3,
+      "maxIndex": 3,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "Q543nxd",
+      "parent": "G1",
+      "children": [],
+      "minIndex": 2,
+      "maxIndex": 2,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "value",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    },
+    {
+      "code": "G2",
+      "parent": "Survey",
+      "children": [],
+      "minIndex": 1,
+      "maxIndex": 1,
+      "prioritisedSiblings": [],
+      "dependencies": [
+        "order",
+        "validity",
+        "priority",
+        "label",
+        "relevance",
+        "in_current_navigation"
+      ]
+    }
+  ],
+  "skipMap": {},
+  "script": "qlarrRuntime = {\n\tSurvey : {\n\t\trelevance_map: function(state) {return {G1: state.G1.relevance,Qas: state.Qas.relevance,Q085bvl: state.Q085bvl.relevance,Q543nxd: state.Q543nxd.relevance,G2: state.G2.relevance};},\n\t\tvalidity_map: function(state) {return {G1: state.G1.validity,Qas: state.Qas.validity,Q085bvl: state.Q085bvl.validity,Q543nxd: state.Q543nxd.validity,G2: state.G2.validity};},\n\t\thas_previous: function(state) {return (function(){if(!state.Survey.before_navigation||!state.Survey.relevance_map){return false;}for(var i=0;i<state.Survey.before_navigation.length;i++){if(state.Survey.relevance_map[state.Survey.before_navigation[i]]){return true}}return false;})();},\n\t\thas_next: function(state) {return (function(){if(!state.Survey.after_navigation||!state.Survey.relevance_map){return false;}for(var i=0;i<state.Survey.after_navigation.length;i++){if(state.Survey.relevance_map[state.Survey.after_navigation[i]]){return true}}return false;})();},\n\t\tvalidity: function(state) {return (!state.G1.in_current_navigation || !state.G1.relevance || state.G1.validity) && (!state.G2.in_current_navigation || !state.G2.relevance || state.G2.validity);}\n\t},\n\tG1 : {\n\t\tvalidity: function(state) {return (!state.Qas.in_current_navigation || !state.Qas.relevance || state.Qas.validity) && (!state.Q085bvl.in_current_navigation || !state.Q085bvl.relevance || state.Q085bvl.validity) && (!state.Q543nxd.in_current_navigation || !state.Q543nxd.relevance || state.Q543nxd.validity);}\n\t},\n\tQas : {\n\t\tmasked_value: function(state) {return QlarrScripts.listStrings((state.Qas.value || []).map(function(el){return QlarrScripts.safeAccess({\"A1\": QlarrScripts.stripTags(state.QasA1.label),\"A2\": QlarrScripts.stripTags(state.QasA2.label),\"A3\": QlarrScripts.stripTags(state.QasA3.label),\"A4\": QlarrScripts.stripTags(state.QasA4.label)},el)}), state.Survey.lang);},\n\t\tvalidity: function(state) {return !state.Qas.validation_list;},\n\t\tvalidation_list: function(state) {return QlarrScripts.isNotVoid(state.Qas.value) && !state.Qas.value.every(element => [\"A1\",\"A2\",\"A3\",\"A4\"].includes(element));},\n\t\tformat_custom_css_1: function(state) {return state.Qas.value?.length ? \"blue\" : \"inherit\";}\n\t},\n\tQ085bvl : {\n\t\tmasked_value: function(state) {return state.Q085bvl.value ? QlarrScripts.safeAccess({\"A1\": QlarrScripts.stripTags(state.Q085bvlA1.label),\"A2\": QlarrScripts.stripTags(state.Q085bvlA2.label),\"A3\": QlarrScripts.stripTags(state.Q085bvlA3.label),\"Anone\": QlarrScripts.stripTags(state.Q085bvlAnone.label)},state.Q085bvl.value) : '';},\n\t\tvalidity: function(state) {return !state.Q085bvl.validation_enum;},\n\t\tvalidation_enum: function(state) {return QlarrScripts.isNotVoid(state.Q085bvl.value) && [\"A1\",\"A2\",\"A3\",\"Anone\"].indexOf(state.Q085bvl.value) == -1;}\n\t},\n\n}"
+}

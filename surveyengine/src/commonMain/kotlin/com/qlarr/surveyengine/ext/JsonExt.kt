@@ -1,6 +1,7 @@
 package com.qlarr.surveyengine.ext
 
 import com.qlarr.surveyengine.model.*
+import com.qlarr.surveyengine.usecase.replaceComponentCode
 import kotlinx.serialization.json.*
 
 
@@ -73,19 +74,21 @@ private fun JsonObject.changeContent(
     path: List<String>,
     elementFrom: String,
     elementTo: String
-): JsonObject  {
+): JsonObject {
     val key = path.first()
     if (path.size == 1) {
         return JsonObject(toMutableMap().apply {
 
             val value = get(key)!!.jsonPrimitive.content
 
-            put(key, JsonPrimitive(value.replace(elementFrom,elementTo)))
+            put(key, JsonPrimitive(value.replaceComponentCode(elementFrom, elementTo)))
         })
     }
     return JsonObject(toMutableMap().apply {
-        val value = get(key)!!.jsonObject
-        put(key,value.changeContent(path.drop(1),elementFrom, elementTo))
+        val value = get(key)?.jsonObject
+        value?.let {
+            put(key, it.changeContent(path.drop(1), elementFrom, elementTo))
+        }
     })
 }
 

@@ -352,7 +352,7 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
                     .insertOrOverrideState(Relevance, "true", false)
                     .insertOrOverrideState(Validity, "true", false)
                     .insertOrOverrideState(InCurrentNavigation, "true", false)
-                    .removeStateIfNotActive(Order)
+                    .changeToInactiveIfPossible()
                     .addOrder(index)
                     .removeState(Prioritised)
                     .removeState(ChildrenRelevance)
