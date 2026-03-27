@@ -23,6 +23,7 @@ fun Survey.navigate(
     val newNavigationIndex = when (navigationDirection) {
         is NavigationDirection.Save,
         is NavigationDirection.Resume -> currentRelevant(navigationIndex!!, navigationMode, navigationBindings)
+
         NavigationDirection.Start -> firstRelevant(navigationMode, navigationBindings)
         is NavigationDirection.Next -> nextRelevant(navigationIndex!!, navigationMode, navigationBindings)
         is NavigationDirection.Jump -> navigationDirection.navigationIndex
@@ -391,8 +392,11 @@ private fun Survey.getGroup(questionCode: String): Group {
 
 @Suppress("UNCHECKED_CAST")
 internal fun Survey.sortByOrder(orderBindings: Map<Dependency, JsonElement>): Survey {
-    return copy(groups = (groups.toMutableList() as MutableList<SurveyComponent>)
-        .apply { sortByOrder(code, orderBindings) } as List<Group>)
+    val endGroup = groups.lastOrNull { it.groupType == GroupType.END }
+    val groupsWithoutEnd = groups.filter { it.groupType != GroupType.END }
+        .toMutableList() as MutableList<SurveyComponent>
+    groupsWithoutEnd.apply { sortByOrder(code, orderBindings) }
+    return copy(groups = (groupsWithoutEnd as List<Group> + endGroup).filterNotNull())
 }
 
 internal fun MutableList<SurveyComponent>.sortByOrder(
