@@ -4,7 +4,8 @@ import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.usecase.replaceComponentCode
 import kotlinx.serialization.json.*
 
-
+// we have unused methods that are used by external components that import the library
+@Suppress("unused")
 class JsonExt {
 
     companion object {
@@ -214,7 +215,7 @@ internal fun JsonObject.copyReducedToJSON(
     return returnObj
 }
 
-fun JsonObject.addChildren(code: String, state: JsonObject): JsonObject {
+private fun JsonObject.addChildren(code: String, state: JsonObject): JsonObject {
     val returnObj = buildJsonObject {
         this@addChildren["children"]?.jsonArray?.let { childrenNodes ->
             val children = buildJsonArray {
@@ -240,7 +241,7 @@ fun JsonObject.addChildren(code: String, state: JsonObject): JsonObject {
     return returnObj
 }
 
-internal fun JsonObject.flatten(
+private fun JsonObject.flatten(
     parentCode: String = "",
     returnObj: MutableMap<String, JsonElement> = mutableMapOf()
 ): JsonObject {
@@ -431,6 +432,113 @@ internal fun SurveyComponent.copyComponentsToJson(surveyDef: JsonObject, parentC
         }
 
         returnObjectMap[childrenListName] = newChildren
+    }
+
+    return JsonObject(returnObjectMap)
+}
+
+/**
+ * Copies deserialization issues into the survey JSON, attaching them directly to the failed nodes.
+ * For example, an issue at "G1.questions[2]" is added to the question at index 2 in group G1.
+ * For instructionList, failed instructions are reconstructed from jsonFragment and injected back.
+ */
+internal fun JsonObject.copyDeserializationIssues(issues: List<DeserializationIssue>): JsonObject {
+    if (issues.isEmpty()) return this
+
+    val returnObjectMap = this.toMutableMap()
+    val code = this["code"]?.jsonPrimitive?.content
+
+    // Process instructionList - inject failed instructions back with issues attached
+    if (code != null) {
+        val instructionIssues = issues.filter { issue ->
+            issue.path.matches(Regex("instructionList\\[\\d+]"))
+        }
+
+        if (instructionIssues.isNotEmpty()) {
+            val currentInstructions = (this["instructionList"]?.jsonArray?.toMutableList() ?: mutableListOf())
+
+            instructionIssues.forEach { issue ->
+                // Reconstruct the failed instruction from jsonFragment
+                if (issue.instructionJsonFragment.isNotBlank()) {
+                    try {
+                        val failedInstruction = jsonMapper.parseToJsonElement(issue.instructionJsonFragment).jsonObject
+                        val instructionWithIssue = failedInstruction.toMutableMap()
+
+                        // Attach the deserialization issue (without redundant path and fragment)
+                        val simplifiedIssue = issue.simplified()
+                        instructionWithIssue["deserializationIssues"] = buildJsonArray {
+                            add(jsonMapper.encodeToJsonElement(simplifiedIssue))
+                        }
+
+                        currentInstructions.add(JsonObject(instructionWithIssue))
+                    } catch (e: Exception) {
+                        // If we can't parse the fragment, skip it
+                    }
+                }
+            }
+
+            returnObjectMap["instructionList"] = JsonArray(currentInstructions)
+        }
+    }
+
+    // Process children (groups, questions, answers)
+    if (code != null) {
+        val childrenName = code.childrenName()
+        if (this.containsKey(childrenName)) {
+            val children = this[childrenName]?.jsonArray
+            if (children != null) {
+                val updatedChildren = buildJsonArray {
+                    children.forEachIndexed { index, child ->
+                        if (child is JsonObject) {
+                            val childCode = child["code"]?.jsonPrimitive?.content
+
+                            // Find issues that target this specific child by index
+                            val directIssues = issues.filter { issue ->
+                                // Match issues like "G1.questions[2]" where index is 2
+                                issue.path.matches(Regex(".*\\b$childrenName\\[$index\\]"))
+                            }
+
+                            // Find issues that belong to descendants of this child
+                            val descendantIssues = if (childCode != null) {
+                                issues.filter { issue ->
+                                    issue.path.startsWith("$childCode.")
+                                }.map { issue ->
+                                    // Remove the child code prefix from the path
+                                    issue.copy(path = issue.path.removePrefix("$childCode."))
+                                }
+                            } else {
+                                emptyList()
+                            }
+
+                            var updatedChild = child
+
+                            // Add direct issues to this child node
+                            if (directIssues.isNotEmpty()) {
+                                val childMap = updatedChild.toMutableMap()
+                                val existingIssues = (updatedChild["deserializationIssues"] as? JsonArray)?.toMutableList() ?: mutableListOf()
+                                directIssues.forEach { issue ->
+                                    // Strip out redundant path and jsonFragment since issue is colocated with the node
+                                    val simplifiedIssue = issue.simplified()
+                                    existingIssues.add(jsonMapper.encodeToJsonElement(simplifiedIssue))
+                                }
+                                childMap["deserializationIssues"] = JsonArray(existingIssues)
+                                updatedChild = JsonObject(childMap)
+                            }
+
+                            // Recursively process descendants
+                            if (descendantIssues.isNotEmpty()) {
+                                updatedChild = updatedChild.copyDeserializationIssues(descendantIssues)
+                            }
+
+                            add(updatedChild)
+                        } else {
+                            add(child)
+                        }
+                    }
+                }
+                returnObjectMap[childrenName] = updatedChildren
+            }
+        }
     }
 
     return JsonObject(returnObjectMap)
