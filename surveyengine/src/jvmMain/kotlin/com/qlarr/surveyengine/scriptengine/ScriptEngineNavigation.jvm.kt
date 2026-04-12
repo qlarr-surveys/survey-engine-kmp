@@ -22,7 +22,7 @@ actual fun getValidate(): ScriptEngineValidate {
             .allowHostClassLookup { false }
             .resourceLimits(
                 ResourceLimits.newBuilder()
-                    .statementLimit(1000000, null)
+                    .statementLimit(10_000_000, null)
                     .build()
             ) // Set resource limits
             .allowIO(false)
