@@ -14,7 +14,6 @@ import com.qlarr.surveyengine.model.exposed.*
 import com.qlarr.surveyengine.navigate.*
 import com.qlarr.surveyengine.scriptengine.ScriptEngineNavigate
 import kotlinx.serialization.json.*
-import kotlin.collections.flatten
 
 interface NavigationUseCase {
     fun navigate(scriptEngine: ScriptEngineNavigate): NavigationOutput
@@ -88,10 +87,25 @@ class NavigationUseCaseImp(
             childlessComponent.instructionList
                 .filterIsInstance<Instruction.Format>()
                 .map { instruction ->
-                    ComponentInstruction(childlessComponent.code, instruction.runnableInstruction())
+                    val key = childlessComponent.code + "." + instruction.code
+                    val runnableInstruction = instruction.runnableInstruction()
+                    ComponentInstruction(
+                        componentCode = childlessComponent.code,
+                        instruction = if (validationOutput.replacements.containsKey(key)) {
+                            runnableInstruction.copy(text = validationOutput.replacements[key]!!)
+                        } else {
+                            runnableInstruction
+                        }
+                    )
                 }
         }.flatten()
-        return contextExecutor.getNavigationScript(instructionsMap, valueBindings, sequence, formatInstructions)
+        return contextExecutor.getNavigationScript(
+            instructionsMap,
+            valueBindings,
+            validationOutput.replacements,
+            sequence,
+            formatInstructions
+        )
     }
 
     override fun processNavigationResult(scriptResult: String): NavigationOutput {

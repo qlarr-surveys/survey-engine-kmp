@@ -54,7 +54,8 @@ internal class NavigationUseCaseWrapperImpl(
     private fun processNavigationOutput(navigationOutput: NavigationOutput): NavigationJsonOutput {
         val state = StateMachineWriter(navigationOutput.toScriptInput()).state()
         return navigationOutput.toNavigationJsonOutput(
-            surveyJson = validationJsonOutput.survey, state = state,
+            surveyJson = validationJsonOutput.survey,
+            state = state,
             lang = lang
         )
     }

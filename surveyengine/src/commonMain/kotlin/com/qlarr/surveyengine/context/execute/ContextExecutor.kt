@@ -30,6 +30,7 @@ internal class ContextExecutor {
     fun getNavigationScript(
         instructionsMap: LinkedHashMap<Dependency, Instruction.State>,
         valueBindings: Map<Dependency, JsonElement>,
+        replacements: Map<String, String>,
         sequence: List<Dependency>,
         formatInstructions: List<ComponentInstruction>
     ): String {
@@ -42,7 +43,14 @@ internal class ContextExecutor {
                 )
             }
         val navSequence = sequence.map {
-            ComponentInstruction(it.componentCode, instructionsMap[it]!!.runnableInstruction())
+            val runnableInstruction = instructionsMap[it]!!.runnableInstruction()
+            val key = it.componentCode + "." + runnableInstruction.code
+            val finalRunnable = if (replacements.containsKey(key)) {
+                runnableInstruction.copy(text = replacements[key]!!)
+            } else {
+                runnableInstruction
+            }
+            ComponentInstruction(it.componentCode, finalRunnable)
         }
         val codes = values.keys.map { it.componentCode }.toMutableSet().apply {
             addAll(navSequence.map { it.componentCode })

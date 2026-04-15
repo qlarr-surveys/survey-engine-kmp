@@ -83,6 +83,26 @@ fun List<SurveyComponent>.validateDuplicates(parentCode: String = ""): List<Surv
     return returnList
 }
 
+fun List<SurveyComponent>.validateReservedCode(): List<SurveyComponent> {
+    val returnList = toMutableList()
+    returnList.forEachIndexed { index, webComponent ->
+        returnList[index] = webComponent.validateReservedCode().duplicate(
+            children = webComponent.children.validateReservedCode()
+        )
+    }
+    return returnList
+}
+
+private fun SurveyComponent.validateReservedCode(): SurveyComponent {
+    return if (elementType == SurveyElementType.GROUP && code == "Gthis"
+        || elementType == SurveyElementType.QUESTION && code == "Qthis"
+        || elementType == SurveyElementType.ANSWER && code == "Athis"
+    )
+        addError(ComponentError.RESERVED_CODE)
+    else
+        this
+}
+
 
 fun List<SurveyComponent>.validateEmptyParents(): List<SurveyComponent> {
     if (isEmpty()) {

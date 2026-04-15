@@ -3,6 +3,7 @@ package com.qlarr.surveyengine.context.assemble
 import com.qlarr.surveyengine.dependency.DependencyMapper
 import com.qlarr.surveyengine.dependency.ForwardDependencyAnalyzer
 import com.qlarr.surveyengine.dependency.componentIndices
+import com.qlarr.surveyengine.ext.withReplacements
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.exposed.ReturnType
 import com.qlarr.surveyengine.scriptengine.ScriptEngineValidate
@@ -20,7 +21,9 @@ internal class ContextBuilder(
     val scriptEngine: ScriptEngineValidate
 
 ) {
-    val sanitizedNestedComponents: List<ChildlessComponent> get() = components.sanitizedNestedComponents()
+    val replacements: MutableMap<String, String> = mutableMapOf()
+    val sanitizedNestedComponents: List<ChildlessComponent>
+        get() = components.sanitizedNestedComponents().withReplacements(replacements)
     lateinit var componentIndexList: List<ComponentIndex>
     private lateinit var validatedSystemInstructions: MutableList<ComponentInstruction>
     lateinit var skipMap: Map<String, List<NotSkippedInstructionManifesto>>
@@ -68,9 +71,9 @@ internal class ContextBuilder(
 
     private fun getValidationScript(validateSpecialTypeGroups: Boolean = false): List<ScriptValidationInput> {
         val newComponents = if (validateSpecialTypeGroups)
-            components.validateDuplicates().validateEmptyParents().validateSpecialTypeGroups()
+            components.validateDuplicates().validateReservedCode().validateEmptyParents().validateSpecialTypeGroups()
         else
-            components.validateDuplicates().validateEmptyParents()
+            components.validateDuplicates().validateReservedCode().validateEmptyParents()
 
         components.apply {
             clear()

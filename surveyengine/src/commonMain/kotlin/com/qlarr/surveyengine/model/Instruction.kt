@@ -42,6 +42,8 @@ sealed class Instruction {
             errors = runnableInstruction.errors
         )
 
+        override fun withNewText(text: String) = withValidatedText(text)
+
         fun withValidatedText(validatedText: String) = copy(text = validatedText)
     }
 
@@ -148,7 +150,7 @@ sealed class Instruction {
 
         abstract override fun withValidatedInstruction(runnableInstruction: RunnableInstruction): State
         abstract fun toInActive(): State
-        abstract fun withNewText(validatedText: String): State
+        abstract override fun withNewText(text: String): State
 
     }
 
@@ -174,7 +176,7 @@ sealed class Instruction {
 
         override fun toInActive() = copy(isActive = false)
 
-        override fun withNewText(validatedText: String) = copy(text = validatedText)
+        override fun withNewText(text: String) = copy(text = text)
 
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
@@ -207,7 +209,7 @@ sealed class Instruction {
         )
 
 
-        override fun withNewText(validatedText: String) = copy(text = validatedText)
+        override fun withNewText(text: String) = copy(text = text)
 
         override fun toInActive() = copy(isActive = false)
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
@@ -227,6 +229,7 @@ sealed class Instruction {
     interface IsRunnable {
         fun runnableInstruction(): RunnableInstruction
         fun withValidatedInstruction(runnableInstruction: RunnableInstruction): Instruction
+        fun withNewText(text: String): Instruction
     }
 
 

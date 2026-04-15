@@ -6,8 +6,11 @@ import com.qlarr.surveyengine.model.Dependent
 import com.qlarr.surveyengine.model.Instruction
 import com.qlarr.surveyengine.model.Instruction.State
 
-fun List<ChildlessComponent>.runtimeScript(dependencyMap: DependencyMap): String {
-    val componentFunctions = mapNotNull { it.componentRuntimeScript(dependencyMap) }
+fun List<ChildlessComponent>.runtimeScript(
+    dependencyMap: DependencyMap,
+    replacements: Map<String, String> = mapOf()
+): String {
+    val componentFunctions = mapNotNull { it.componentRuntimeScript(dependencyMap, replacements) }
     val stringToInject = if (componentFunctions.isEmpty()) {
         ""
     } else {
@@ -17,15 +20,18 @@ fun List<ChildlessComponent>.runtimeScript(dependencyMap: DependencyMap): String
 
 }
 
-fun ChildlessComponent.componentRuntimeScript(dependencyMap: DependencyMap): String? {
+fun ChildlessComponent.componentRuntimeScript(
+    dependencyMap: DependencyMap,
+    replacements: Map<String, String>
+): String? {
     val parts = instructionList.mapNotNull {
         when (it) {
             is State -> {
-                it.stateRuntimeScript(code, dependencyMap)
+                it.stateRuntimeScript(code, dependencyMap, replacements)
             }
 
             is Instruction.Format -> {
-                it.formatRuntimeScript(code, dependencyMap)
+                it.formatRuntimeScript(code, dependencyMap, replacements)
             }
 
             else -> {
@@ -42,11 +48,16 @@ fun ChildlessComponent.componentRuntimeScript(dependencyMap: DependencyMap): Str
 
 }
 
-fun State.stateRuntimeScript(componentCode: String, dependencyMap: DependencyMap): String? {
+fun State.stateRuntimeScript(
+    componentCode: String,
+    dependencyMap: DependencyMap,
+    replacements: Map<String, String>
+): String? {
     return if (!isActive || !reservedCode.isRuntime) {
         null
     } else {
-        var finalText = text
+        val key = "$componentCode.$code"
+        var finalText = if (replacements.containsKey(key)) replacements[key]!! else text
         dependencyMap[Dependent(componentCode, code)]?.forEach {
             val dependencyCode = Regex("(?<![\\w\\d])${it.asCode()}(?![\\w\\d])")
             val newDependencyCode = "state.${it.asCode()}"
@@ -56,8 +67,13 @@ fun State.stateRuntimeScript(componentCode: String, dependencyMap: DependencyMap
     }
 }
 
-fun Instruction.Format.formatRuntimeScript(componentCode: String, dependencyMap: DependencyMap): String {
-    var finalText = text
+fun Instruction.Format.formatRuntimeScript(
+    componentCode: String,
+    dependencyMap: DependencyMap,
+    replacements: Map<String, String>
+): String {
+    val key = "$componentCode.$code"
+    var finalText = if (replacements.containsKey(key)) replacements[key]!! else text
     dependencyMap[Dependent(componentCode, code)]?.forEach {
         val dependencyCode = "${it.componentCode}.${it.reservedCode.code}"
         val newDependencyCode = "state.$dependencyCode"

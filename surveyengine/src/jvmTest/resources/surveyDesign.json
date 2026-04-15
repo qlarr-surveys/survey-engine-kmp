@@ -49,6 +49,12 @@
               "text": "0",
               "returnType": "int",
               "isActive": false
+            },
+            {
+              "code": "format_kabaka",
+              "text": "Qthis.value.length > 0",
+              "returnType": "string",
+              "isActive": true
             }
           ],
           "content": {

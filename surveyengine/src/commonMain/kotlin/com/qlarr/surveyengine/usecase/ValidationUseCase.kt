@@ -1,14 +1,12 @@
 package com.qlarr.surveyengine.usecase
 
 import com.qlarr.surveyengine.context.assemble.*
-import com.qlarr.surveyengine.context.assemble.ContextBuilder
-import com.qlarr.surveyengine.context.assemble.getSchema
-import com.qlarr.surveyengine.model.exposed.ResponseField
 import com.qlarr.surveyengine.dependency.DependencyMapper
 import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.ComponentIndex
 import com.qlarr.surveyengine.model.StringImpactMap
 import com.qlarr.surveyengine.model.Survey
+import com.qlarr.surveyengine.model.exposed.ResponseField
 import com.qlarr.surveyengine.model.toStringImpactMap
 import com.qlarr.surveyengine.scriptengine.ScriptEngineValidate
 
@@ -28,15 +26,24 @@ class ValidationUseCaseImpl(scriptEngine: ScriptEngineValidate, survey: Survey) 
             val dependency = entry.key
             val instructionText = entry.value
             val parents = contextManager.sanitizedNestedComponents.parents(dependency.componentCode)
-            contextManager.components.correctInstruction(parents.reversed(), dependency.componentCode.splitToComponentCodes().last(), dependency.reservedCode, instructionText)
+            contextManager.components.correctInstruction(
+                parents.reversed(),
+                dependency.componentCode.splitToComponentCodes().last(),
+                dependency.reservedCode,
+                instructionText
+            )
         }
         return ValidationOutput(
             survey = contextManager.components[0] as Survey,
             impactMap = dependencyMapper.impactMap.toStringImpactMap(),
             schema = contextManager.components.getSchema(),
-            script = contextManager.sanitizedNestedComponents.runtimeScript(dependencyMapper.dependencyMap),
+            script = contextManager.sanitizedNestedComponents.runtimeScript(
+                dependencyMapper.dependencyMap,
+                contextManager.replacements
+            ),
             componentIndexList = contextManager.componentIndexList,
-            skipMap = contextManager.skipMap
+            skipMap = contextManager.skipMap,
+            replacements = contextManager.replacements
         )
     }
 
@@ -45,6 +52,7 @@ class ValidationUseCaseImpl(scriptEngine: ScriptEngineValidate, survey: Survey) 
 data class ValidationOutput(
     val survey: Survey = Survey(),
     val impactMap: StringImpactMap = mapOf(),
+    val replacements: Map<String, String> = mapOf(),
     val schema: List<ResponseField> = listOf(),
     val script: String,
     val componentIndexList: List<ComponentIndex>,

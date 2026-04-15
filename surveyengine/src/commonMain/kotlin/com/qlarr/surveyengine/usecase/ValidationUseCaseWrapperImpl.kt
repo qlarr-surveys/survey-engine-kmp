@@ -23,6 +23,7 @@ internal class ValidationUseCaseWrapperImpl(private val surveyJson: String) :
             ValidationJsonOutput.serializer(), ValidationJsonOutput(
                 survey = output.survey.copyComponentsToJson(survey),
                 schema = output.schema,
+                replacements = output.replacements,
                 impactMap = output.impactMap,
                 componentIndexList = output.componentIndexList,
                 skipMap = output.skipMap,

@@ -11,6 +11,7 @@ import kotlinx.serialization.json.*
 internal data class ValidationJsonOutput(
     val survey: JsonObject = buildJsonObject {},
     val schema: List<ResponseField> = listOf(),
+    val replacements: Map<String, String> = mapOf(),
     val impactMap: StringImpactMap = mapOf(),
     val componentIndexList: List<ComponentIndex> = listOf(),
     val skipMap: Map<String, List<NotSkippedInstructionManifesto>> = mapOf(),
@@ -19,6 +20,7 @@ internal data class ValidationJsonOutput(
     fun toValidationOutput() = ValidationOutput(
         impactMap = impactMap,
         schema = schema,
+        replacements = replacements,
         survey = jsonMapper.decodeFromString<Survey>(survey.toString()),
         script = script,
         componentIndexList = componentIndexList,
