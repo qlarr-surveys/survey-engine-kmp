@@ -193,7 +193,7 @@ QlarrScripts = {
             ('00' + time.getSeconds()).slice(-2);
     },
     isVoid: function(value) {
-        if (value === undefined || value === null || value === "") {
+        if (value === undefined || value === null || value.length == 0) {
             return true;
         } else {
             return false;
