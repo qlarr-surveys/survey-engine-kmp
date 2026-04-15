@@ -31,7 +31,7 @@ fun Survey.navigate(
     }
     // we can get the whole survey validity from the bindings...
     val surveyValid = navigationBindings[Dependency("Survey", Validity)]!!.jsonPrimitive.boolean
-    val isSubmitting = navigationIndex is NavigationIndex.End
+    val isSubmitting = newNavigationIndex is NavigationIndex.End
     val isNextOrJump = navigationDirection is NavigationDirection.Next
     val shouldNotSkipValid = !skipInvalid && isNextOrJump
 
