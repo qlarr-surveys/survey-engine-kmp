@@ -371,7 +371,11 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
 }
 
 private fun SurveyComponent.addOrder(index: Int): SurveyComponent {
-    return if (hasStateInstruction(Order)) {
+    val orderInstruction = instructionList.firstOrNull { it.code == Order.code } as? Instruction.SimpleState
+    return if (orderInstruction?.isActive == true
+        && orderInstruction.errors.isEmpty()
+        && orderInstruction.text.trim().toIntOrNull() == null
+    ) {
         this
     } else {
         insertOrOverrideState(Order, index.toString(), false)
