@@ -7,12 +7,13 @@ Qlarr Survey Engine is a UI-agnostic tool that lets you create and run customiza
 1. 📴 Offline Surveys
 2. ⍰ Conditional Logic and Skip Logic
 3. ✅ Input Validation
-4. 🎲 Randomizationa and Sampling
+4. 🎲 Randomization and Sampling
 5. 🌐 Multilingual Surveys
 6. 🔗 Piping values from users' previous answers
 7. ⬅️➡️ Flexible Navigation: all questions, page by page or question by question
-8. **WIP**: ⏱️ Time limits and 📊 Scoring for Quizzes
-9. **WIP**: 🎨 Conditional Formatting
+8. 🎨 Conditional Formatting
+9. **WIP**: ⏱️ Time limits and 📊 Scoring for Quizzes
+
 
 ## Usecases
 Qlarr Survey Engine has two main usecases
@@ -35,5 +36,9 @@ takes processed survey and existing user responses (if any) and generates:
 <img width="723" alt="Screenshot 2024-10-31 at 21 24 13" src="https://github.com/user-attachments/assets/2394a22a-2525-4ef2-bb41-1aaacbc69a92">
 
 ## State of Development
-This library is writted in Kotlin JVM, and used to support a Spring boot backend and an Android application. 
-Future plan is to re-write it in Kotlin Native, to support also Node.js backend and iOS applications.
+This library is built with **Kotlin Multiplatform (KMP)** and supports multiple platforms:
+- **JVM**: For Spring Boot backends and JVM-based applications
+- **JavaScript**: For Node.js backends and browser-based applications
+- **iOS**: Native iOS support via CocoaPods framework
+
+The library is currently at version 0.1.6 and published as `com.qlarr.survey-engine:surveyengine`.
