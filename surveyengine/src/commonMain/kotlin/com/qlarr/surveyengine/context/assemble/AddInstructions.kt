@@ -117,7 +117,7 @@ internal fun MutableList<SurveyComponent>.addModeRelevanceInstruction() {
 
         if (returnComponent !is Survey && returnComponent.hasMode()) {
             val text = "Survey.mode === \"${returnComponent.mode()}\""
-            returnComponent = returnComponent.insertOrOverrideState(Relevance, text, true)
+            returnComponent = returnComponent.insertOrOverrideState(ModeRelevance, text, true)
         }
 
 
@@ -258,17 +258,17 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
             })
     } else if (this is Question || this is Answer) {
         if (hasEnumRule() && enumValues().isNotEmpty()) {
-            returnComponent = insertOrOverrideState(
+            returnComponent = returnComponent.insertOrOverrideState(
                 reservedCode = ValidationRule(code = "validation_enum"),
-                text = "QlarrScripts.isNotVoid(${qualifiedCode}.value) && [${enumValues()}].indexOf(${qualifiedCode}.value) == -1",
+                text = "QlarrScripts.isVoid(${qualifiedCode}.value) || [${enumValues()}].indexOf(${qualifiedCode}.value) > -1",
                 isActive = true,
                 returnType = ReturnType.Boolean
             )
         }
         if (hasListRule() && listValues().isNotEmpty()) {
-            returnComponent = insertOrOverrideState(
+            returnComponent = returnComponent.insertOrOverrideState(
                 reservedCode = ValidationRule(code = "validation_list"),
-                text = "QlarrScripts.isNotVoid(${qualifiedCode}.value) && !${qualifiedCode}.value.every(element => [${listValues()}].includes(element))",
+                text = "QlarrScripts.isVoid(${qualifiedCode}.value) || ${qualifiedCode}.value.every(element => [${listValues()}].includes(element))",
                 isActive = true,
                 returnType = ReturnType.Boolean
             )
@@ -279,7 +279,7 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
                 prefix = if (validationRules.size > 1) "(" else "",
                 postfix = if (validationRules.size > 1) ")" else "",
                 separator = " && ",
-                transform = { "!$qualifiedCode.${it.code}" }
+                transform = { "$qualifiedCode.${it.code}" }
             )
         }
         val childrenWithValidity = returnComponent.children.filter {

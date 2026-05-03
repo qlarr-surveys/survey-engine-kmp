@@ -169,9 +169,11 @@ fun List<SurveyComponent>.indexableCodesRemoveDeprioritised(bindings: Map<Depend
 }
 
 
-fun Survey.allInOne(): NavigationIndex {
+fun Survey.allInOne(orderRelevanceBindings: Map<Dependency, JsonElement> = emptyMap()): NavigationIndex {
     val groupCodes = groups.filter { it.groupType != GroupType.END }.map { it.code }
-    return if (groupCodes.isNotEmpty()) {
+    return if (groupCodes.isNotEmpty()
+        && (orderRelevanceBindings.isEmpty() || groupCodes.map { orderRelevanceBindings.isRelevant(it)}.any { it })
+    ) {
         NavigationIndex.Groups(groupCodes)
     } else {
         NavigationIndex.End(groups.first { it.groupType == GroupType.END }.code)
@@ -183,7 +185,7 @@ private fun Survey.firstRelevant(
     orderRelevanceBindings: Map<Dependency, JsonElement>
 ): NavigationIndex {
     return when (navigationMode) {
-        NavigationMode.ALL_IN_ONE -> allInOne()
+        NavigationMode.ALL_IN_ONE -> allInOne(orderRelevanceBindings)
 
         NavigationMode.GROUP_BY_GROUP -> {
             NavigationIndex.Group(groups.first { orderRelevanceBindings.isRelevant(it.code) }.code)
@@ -332,7 +334,7 @@ private fun Survey.prevRelevant(
     orderRelevanceBindings: Map<Dependency, JsonElement>
 ): NavigationIndex {
     return when (navigationMode) {
-        NavigationMode.ALL_IN_ONE -> allInOne()
+        NavigationMode.ALL_IN_ONE -> allInOne(orderRelevanceBindings)
 
         NavigationMode.GROUP_BY_GROUP -> {
             val groupId = (navigationIndex as? NavigationIndex.Group)?.groupId ?: return firstRelevant(

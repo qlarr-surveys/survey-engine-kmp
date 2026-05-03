@@ -154,6 +154,7 @@ fun String.toReservedCode(): ReservedCode {
         this == "show_errors" -> ReservedCode.ShowErrors
         this == "value" -> ReservedCode.Value
         this == "relevance" -> ReservedCode.Relevance
+        this == "mode_relevance" -> ReservedCode.ModeRelevance
         this == "conditional_relevance" -> ReservedCode.ConditionalRelevance
         this == "children_relevance" -> ReservedCode.ChildrenRelevance
         this == "validity" -> ReservedCode.Validity
@@ -186,6 +187,7 @@ fun String.isReservedCode(): Boolean {
         "value",
         "relevance",
         "children_relevance",
+        "mode_relevance",
         "conditional_relevance",
         "validity",
         "has_previous",

@@ -1,8 +1,10 @@
 package com.qlarr.surveyengine.context.assemble
 
+import com.qlarr.surveyengine.context.getStateInstruction
 import com.qlarr.surveyengine.context.nestedComponents
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.Instruction.*
+import com.qlarr.surveyengine.model.ReservedCode.*
 import com.qlarr.surveyengine.model.exposed.ReturnType
 import com.qlarr.surveyengine.scriptengine.getValidate
 import com.qlarr.surveyengine.usecase.wrapToSurvey
@@ -68,7 +70,7 @@ class ContextBuilderTest {
                 it.reservedCode is ReservedCode.ValidationRule
             }
         assertEquals(
-            expected = "QlarrScripts.isNotVoid(Q1.value) && [\"A1\",\"A2\",\"A3\"].indexOf(Q1.value) == -1",
+            expected = "QlarrScripts.isVoid(Q1.value) || [\"A1\",\"A2\",\"A3\"].indexOf(Q1.value) > -1",
             actual = validationList.text
         )
         assertEquals(
@@ -106,7 +108,7 @@ class ContextBuilderTest {
                 it.reservedCode is ReservedCode.ValidationRule
             }
         assertEquals(
-            expected = "QlarrScripts.isNotVoid(Q1.value) && !Q1.value.every(element => [\"A1\",\"A2\",\"A3\"].includes(element))",
+            expected = "QlarrScripts.isVoid(Q1.value) || Q1.value.every(element => [\"A1\",\"A2\",\"A3\"].includes(element))",
             actual = validationList.text
         )
         assertEquals(
@@ -434,5 +436,68 @@ class ContextBuilderTest {
             ), allSkip
         )
 
+    }
+
+    @Test
+    fun answer_with_child_having_validation_rule_should_have_validity_referencing_child() {
+        val childAnswer = Answer(
+            code = "Atext",
+            instructionList = listOf(
+                SimpleState(
+                    text = "",
+                    reservedCode = Value,
+                    isActive = false,
+                    returnType = ReturnType.String
+                ),
+                SimpleState(
+                    text = "QlarrScripts.isNotVoid(Qmultiple_choiceAotherAtext.value)",
+                    reservedCode = ValidationRule(code = "validation_required"),
+                    isActive = true,
+                    returnType = ReturnType.Boolean
+                )
+            )
+        )
+        val parentAnswer = Answer(
+            code = "Aother",
+            answers = listOf(childAnswer)
+        )
+        val question = Question(
+            code = "Qmultiple_choice",
+            answers = listOf(parentAnswer)
+        )
+        val survey = Survey(
+            groups = listOf(
+                Group(code = "G1", questions = listOf(question))
+            )
+        )
+
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        // Check that child has validity set to reference validation_required
+        val childValidity = contextManager.components[0]
+            .children[0].children[0].children[0].children[0]
+            .getStateInstruction(Validity)
+        assertEquals(
+            expected = "Qmultiple_choiceAotherAtext.validation_required",
+            actual = childValidity?.text
+        )
+        assertEquals(
+            expected = true,
+            actual = childValidity?.isActive
+        )
+
+        // Check that parent has validity set to reference child's validity
+        val parentValidity = contextManager.components[0]
+            .children[0].children[0].children[0]
+            .getStateInstruction(Validity)
+        assertEquals(
+            expected = "(!Qmultiple_choiceAotherAtext.relevance || Qmultiple_choiceAotherAtext.validity)",
+            actual = parentValidity?.text
+        )
+        assertEquals(
+            expected = true,
+            actual = parentValidity?.isActive
+        )
     }
 }
