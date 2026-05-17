@@ -1,4 +1,7 @@
 # Qlarr Survey Engine
+
+[Discord 💬](https://discord.gg/9mbRh6SpGj) | [Demo 🖥️](https://console.qlarr.com/) | [Docs 📄](https://qlarr-surveys.github.io/docs/) | [Deploy Locally in 30 Sec! 🚀](https://qlarr-surveys.github.io/docs/guides/deployment/local)
+
 Qlarr Survey Engine is a UI-agnostic tool that lets you create and run customizable, scientific & offline-first **surveys as code** on all platforms. Surveys are defined using JSON to represent structure and [Javascript](https://github.com/qlarr-surveys/survey-engine-script) instructions to represent survey logic. Qlarr Survey Engine parses the survey definition and into a **JavaScript State Machine** that reacts to user interaction to manage and update the survey state.
 
 <img width="500" alt="Screenshot 2024-10-31 at 21 23 52" src="https://github.com/user-attachments/assets/f4d30698-2f1f-4628-9299-240da0ab221e">
