@@ -11,11 +11,13 @@ import kotlin.js.JsExport
 @JsExport
 interface NavigationUseCaseWrapper {
     // Serialized NavigationJsonOutput
+    @Throws(Throwable::class)
     fun navigate(scriptEngine: ScriptEngineNavigate): String
     fun getNavigationScript(): String
     fun processNavigationResult(scriptResult: String): String
 
     companion object {
+        @Throws(Throwable::class)
         fun init(
             values: String = "{}",
             processedSurvey: String,
