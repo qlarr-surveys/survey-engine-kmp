@@ -138,7 +138,7 @@ kotlin {
         // Required properties
         // Specify the required Pod version here
         // Otherwise, the Gradle project version is used
-        version = "0.1.6"
+        version = "0.1.7"
         summary = "Some description for a Kotlin/Native module"
         homepage = "Link to a Kotlin/Native module homepage"
 
@@ -198,7 +198,7 @@ val assembleNpmPackage by tasks.registering {
 }
 
 group = "com.qlarr.survey-engine"
-version = "0.1.6"
+version = "0.1.7"
 publishing {
     publications {
         // This creates a publication for each target
