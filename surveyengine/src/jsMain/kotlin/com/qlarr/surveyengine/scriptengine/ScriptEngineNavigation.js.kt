@@ -17,6 +17,17 @@ fun createNavigationEngine(): ScriptEngineNavigate = getNavigate()
 @JsExport
 fun createValidationEngine(): ScriptEngineValidate = getValidate()
 
+// commonScript()/engineScript() return CommonScriptProvider/EngineScriptProvider, which are not
+// @JsExport-able. These wrappers expose the raw script strings so JS consumers of the npm package can
+// read them directly.
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun getCommonScript(): String = commonScript().script
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun getEngineScript(): String = engineScript().script
+
 
 actual fun getValidate(): ScriptEngineValidate {
 

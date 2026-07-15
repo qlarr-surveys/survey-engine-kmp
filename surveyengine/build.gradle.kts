@@ -157,6 +157,46 @@ kotlin {
     }
 
 }
+// Assembles a self-contained, publish-ready npm package from the Kotlin/JS production library.
+// The compiled library does `require('survey-engine-script')`, but the distribution ships that
+// helper as a plain sibling folder that Node can't resolve. This task relocates it into
+// node_modules/ and marks it as a bundledDependency so it ships inside both a local
+// `npm install ./build/npmPackage` and a future `npm publish`.
+val assembleNpmPackage by tasks.registering {
+    dependsOn("jsNodeProductionLibraryDistribution")
+    val distDir = layout.buildDirectory.dir("dist/js/productionLibrary")
+    val outDir = layout.buildDirectory.dir("npmPackage")
+    inputs.dir(distDir)
+    outputs.dir(outDir)
+    doLast {
+        val src = distDir.get().asFile
+        val out = outDir.get().asFile
+        out.deleteRecursively()
+        out.mkdirs()
+        src.copyRecursively(out, overwrite = true)
+
+        // Relocate the runtime dependency into node_modules so `require('survey-engine-script')` resolves.
+        val bundled = out.resolve("survey-engine-script")
+        if (bundled.exists()) {
+            bundled.copyRecursively(out.resolve("node_modules/survey-engine-script"), overwrite = true)
+            bundled.deleteRecursively()
+        }
+        // The embedded navigation scripts are Base64-inlined into the compiled JS, so the copied
+        // `scripts/` resource folder is dead weight in the package.
+        out.resolve("scripts").deleteRecursively()
+
+        // Declare survey-engine-script as a bundled dependency in the generated package.json.
+        val pkg = out.resolve("package.json")
+        pkg.writeText(
+            pkg.readText()
+                .replace("\"name\": \"qlarr-survey-engine\"", "\"name\": \"@qlarr/survey-engine\"")
+                .replace("\"dependencies\": {}", "\"dependencies\": {\n    \"survey-engine-script\": \"1.0.0\"\n  }")
+                .replace("\"bundledDependencies\": []", "\"bundledDependencies\": [\n    \"survey-engine-script\"\n  ]")
+        )
+        logger.lifecycle("npm package assembled at: ${out.absolutePath}")
+    }
+}
+
 group = "com.qlarr.survey-engine"
 version = "0.1.6"
 publishing {
