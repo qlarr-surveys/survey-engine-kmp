@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'SurveyEngineCocoaPod'
-    spec.version                  = '0.1.6'
+    spec.version                  = '0.1.8'
     spec.homepage                 = 'Link to a Kotlin/Native module homepage'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''

@@ -204,7 +204,7 @@ private fun MutableList<SurveyComponent>.addPrioritisedInstruction(
                     weight.code != surveyComponent.code
                 }.joinToString(separator = ", ",
                     prefix = "[",
-                    postfix = "].filter(Boolean).length < ${priorityGroup.weights.count() + priorityGroup.limit - 1} - $code.priority",
+                    postfix = "].filter(Boolean).length < ${priorityGroup.limit}",
                     transform = { "${if (hasUniqueCode) it.code else parentCode + it.code}.relevance" })
             set(index, surveyComponent.insertOrOverrideState(Prioritised, text, true))
         }
