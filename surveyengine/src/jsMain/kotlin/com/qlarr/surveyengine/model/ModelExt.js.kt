@@ -24,6 +24,24 @@ fun parents(componentIndexListJson: String, code: String): Array<String> =
 fun hasSkip(componentIndexJson: String): Boolean =
     jsonMapper.decodeFromString<ComponentIndex>(componentIndexJson).hasSkip()
 
+// `MutableList<ComponentIndex>.sortChildren(order)` — JS-native array in, array out. The array elements
+// must be real `ComponentIndex` instances (as produced by the other exported helpers); we validate and
+// cast them, then call the extension directly — no JSON round-trip. `order` is optional
+// (`{ "code.order": 1 }`); `sortChildren` only reads Int values, so it's decoded as `Map<String, Int>`,
+// which satisfies the `Map<String, Any>` parameter via Map's value covariance.
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun sortChildren(componentIndices: Array<dynamic>, order: dynamic = null): Array<dynamic> {
+    val list = componentIndices.map {
+        it as? ComponentIndex
+            ?: throw IllegalArgumentException("sortChildren expects an array of ComponentIndex")
+    }.toMutableList()
+    val orderMap: Map<String, Int> =
+        if (order == null || order == undefined) emptyMap()
+        else jsonMapper.decodeFromString(JSON.stringify(order))
+    return list.sortChildren(orderMap).toTypedArray()
+}
+
 // `StringImpactMap.toImpactMap()` — takes a StringImpactMap (`{ "code.reserved": ["code.instr"] }`)
 // as a JSON string and returns the normalized map as a JSON string. The intermediate ImpactMap keys
 // are `Dependency`/`Dependent` objects, which are not JS-representable, so we round-trip back to the
