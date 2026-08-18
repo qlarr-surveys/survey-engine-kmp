@@ -52,6 +52,13 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
+"@qlarr/survey-engine-script@0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@qlarr/survey-engine-script/-/survey-engine-script-0.2.1.tgz#64a0e6d8cceeeca9a77847e47bab95045e698801"
+  integrity sha512-TQU1oWLn6/Lxworonk+QMeSebYXw2lnBP3VynIetcOFh9X4hNxifqcC2TwR2GQs1Yqdu3zOYR5B/96TOU/h4pQ==
+  dependencies:
+    acorn "^8.12.1"
+
 "@socket.io/component-emitter@~3.1.0":
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/@socket.io/component-emitter/-/component-emitter-3.1.2.tgz#821f8442f4175d8f0467b9daf26e3a18e2d02af2"
@@ -239,6 +246,11 @@ acorn-import-attributes@^1.9.5:
   version "1.9.5"
   resolved "https://registry.yarnpkg.com/acorn-import-attributes/-/acorn-import-attributes-1.9.5.tgz#7eb1557b1ba05ef18b5ed0ec67591bfab04688ef"
   integrity sha512-n02Vykv5uA3eHGM/Z2dQrcD56kL8TyDb2p1+0P83PClMnC/nc+anbQRhIOWnSq4Ke/KvDPrY3C9hDtC/A3eHnQ==
+
+acorn@^8.12.1:
+  version "8.18.0"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.18.0.tgz#4faf01b2d6d326bfeed97aea1f52220b5f4c1940"
+  integrity sha512-lGq+9yr1/GuAWaVYIHRjvvySG5/4VfKIvC8EWxStPdcDh/Ka7FG3twP6v4d5BkravUilhIAsG4Qj83t02LWUPQ==
 
 acorn@^8.7.1, acorn@^8.8.2:
   version "8.14.1"
@@ -1799,9 +1811,6 @@ supports-preserve-symlinks-flag@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
-
-"survey-engine-script@file:../../surveyengine/src/commonMain/resources/survey-engine-script":
-  version "1.0.0"
 
 tapable@^2.1.1, tapable@^2.2.0:
   version "2.2.1"

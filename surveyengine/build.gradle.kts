@@ -13,6 +13,40 @@ plugins {
 // Kotlin source for the JS target. Kotlin/JS can't read commonMain resources at runtime the way the
 // JVM reads them off the classpath, so we Base64-encode them (avoids all string-escaping issues) and
 // decode at runtime. commonMain/resources/scripts is the single source of truth.
+// Single source of truth for the survey-engine-script version. Used both for the JS target's npm
+// dependency and for the build-time fetch that embeds the compiled script into JVM/iOS resources.
+val surveyEngineScriptVersion = "0.2.1"
+
+// JVM (GraalVM classpath) and iOS (app bundle) can't npm-install at runtime, so they load the
+// compiled `survey-engine-script.min.js` as an embedded resource. This task pulls that exact file
+// from the published npm package (registry tarball) and drops it into a generated resources dir,
+// keeping npm the single source of truth instead of a committed copy.
+val fetchSurveyEngineScript by tasks.registering {
+    val version = surveyEngineScriptVersion
+    val outDir = layout.buildDirectory.dir("generated/surveyEngineScript")
+    val tgzFile = layout.buildDirectory.file("tmp/survey-engine-script-$version.tgz")
+    inputs.property("version", version)
+    outputs.dir(outDir)
+    doLast {
+        val url = "https://registry.npmjs.org/@qlarr/survey-engine-script/-/survey-engine-script-$version.tgz"
+        val tgz = tgzFile.get().asFile
+        tgz.parentFile.mkdirs()
+        uri(url).toURL().openStream().use { input -> tgz.outputStream().use { input.copyTo(it) } }
+
+        val dest = outDir.get().dir("survey-engine-script").asFile
+        dest.deleteRecursively()
+        dest.mkdirs()
+        copy {
+            from(tarTree(resources.gzip(tgz)))
+            include("package/dist/survey-engine-script.min.js")
+            includeEmptyDirs = false
+            eachFile { path = name } // flatten package/dist/ into the resource root
+            into(dest)
+        }
+        logger.lifecycle("fetched survey-engine-script@$version into ${dest.absolutePath}")
+    }
+}
+
 val generateJsScriptResources by tasks.registering {
     val scriptsDir = layout.projectDirectory.dir("src/commonMain/resources/scripts")
     val outputDir = layout.buildDirectory.dir("generated/scriptResources/jsMain/kotlin")
@@ -53,7 +87,7 @@ kotlin {
 
     sourceSets {
         val commonMain by getting {
-            resources.srcDirs("src/commonMain/resources")
+            resources.srcDirs("src/commonMain/resources", fetchSurveyEngineScript)
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
             }
@@ -77,7 +111,7 @@ kotlin {
         val jsMain by getting {
             kotlin.srcDir(generateJsScriptResources)
             dependencies {
-                implementation(devNpm("survey-engine-script", file("src/commonMain/resources/survey-engine-script")))
+                implementation(npm("@qlarr/survey-engine-script", surveyEngineScriptVersion))
             }
         }
 
@@ -100,6 +134,7 @@ kotlin {
     }
 
     tasks.matching { it.name.contains("ProcessResources") }.configureEach {
+        dependsOn(fetchSurveyEngineScript)
         if (this is Copy) {
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         }
@@ -117,6 +152,7 @@ kotlin {
             }
             val copyTask1 = tasks.register<Copy>("copyTestResourcesFor${targetName}1") {
                 from("src/commonMain/resources")
+                from(fetchSurveyEngineScript)
                 into("build/bin/${targetName}/debugTest")
                 mustRunAfter(tasks.withType<KotlinCompile>())
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -138,7 +174,7 @@ kotlin {
         // Required properties
         // Specify the required Pod version here
         // Otherwise, the Gradle project version is used
-        version = "0.1.8"
+        version = "0.2.1"
         summary = "Some description for a Kotlin/Native module"
         homepage = "Link to a Kotlin/Native module homepage"
 
@@ -157,11 +193,10 @@ kotlin {
     }
 
 }
-// Assembles a self-contained, publish-ready npm package from the Kotlin/JS production library.
-// The compiled library does `require('survey-engine-script')`, but the distribution ships that
-// helper as a plain sibling folder that Node can't resolve. This task relocates it into
-// node_modules/ and marks it as a bundledDependency so it ships inside both a local
-// `npm install ./build/npmPackage` and a future `npm publish`.
+// Assembles a publish-ready npm package from the Kotlin/JS production library.
+// The compiled library does `require('@qlarr/survey-engine-script')`, which Kotlin already declares
+// as a regular dependency in the generated package.json, so npm pulls it from the registry at
+// install time. This task only fixes up the package name and strips dead resources.
 val assembleNpmPackage by tasks.registering {
     dependsOn("jsNodeProductionLibraryDistribution")
     val distDir = layout.buildDirectory.dir("dist/js/productionLibrary")
@@ -175,30 +210,25 @@ val assembleNpmPackage by tasks.registering {
         out.mkdirs()
         src.copyRecursively(out, overwrite = true)
 
-        // Relocate the runtime dependency into node_modules so `require('survey-engine-script')` resolves.
-        val bundled = out.resolve("survey-engine-script")
-        if (bundled.exists()) {
-            bundled.copyRecursively(out.resolve("node_modules/survey-engine-script"), overwrite = true)
-            bundled.deleteRecursively()
-        }
         // The embedded navigation scripts are Base64-inlined into the compiled JS, so the copied
-        // `scripts/` resource folder is dead weight in the package.
+        // `scripts/` resource folder is dead weight in the package. Likewise, the JS target resolves
+        // survey-engine-script via its npm dependency, so the resource copy (embedded for JVM/iOS) is
+        // dead weight here too.
         out.resolve("scripts").deleteRecursively()
+        out.resolve("survey-engine-script").deleteRecursively()
 
-        // Declare survey-engine-script as a bundled dependency in the generated package.json.
+        // Publish under the scoped name.
         val pkg = out.resolve("package.json")
         pkg.writeText(
             pkg.readText()
                 .replace("\"name\": \"qlarr-survey-engine\"", "\"name\": \"@qlarr/survey-engine\"")
-                .replace("\"dependencies\": {}", "\"dependencies\": {\n    \"survey-engine-script\": \"1.0.0\"\n  }")
-                .replace("\"bundledDependencies\": []", "\"bundledDependencies\": [\n    \"survey-engine-script\"\n  ]")
         )
         logger.lifecycle("npm package assembled at: ${out.absolutePath}")
     }
 }
 
 group = "com.qlarr.survey-engine"
-version = "0.1.8"
+version = "0.2.1"
 publishing {
     publications {
         // This creates a publication for each target
