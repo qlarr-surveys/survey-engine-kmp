@@ -7,6 +7,7 @@ import com.qlarr.surveyengine.model.ReservedCode.*
 import com.qlarr.surveyengine.model.exposed.*
 import com.qlarr.surveyengine.usecase.ValidationJsonOutput
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -75,6 +76,18 @@ class JsonAdapterTest {
     private val NAV_INDEX_Q1 = NavigationIndex.Question("Q1")
     private val NAV_INDEX_G1_2_3 = NavigationIndex.Groups(listOf("G1", "G2", "G3"))
 
+    private val REPEATED: RepeatInfo = RepeatInfo.Repeated
+    private val REPEATABLE: RepeatInfo = RepeatInfo.Repeatable(
+        range = listOf("1", "2", "3"),
+        relevanceInstruction = "Q1.value == true"
+    )
+    private val REPEATABLE_DEFAULT_RANGE: RepeatInfo = RepeatInfo.Repeatable(relevanceInstruction = "true")
+    private val REPEATABLE_QUESTION = Question(
+        code = "Q9",
+        instructionList = listOf(SimpleState("", Value)),
+        repeatInfo = REPEATABLE
+    )
+
 
     @Test
     fun serializes_and_deserializes_instructions() {
@@ -136,6 +149,45 @@ class JsonAdapterTest {
             jsonMapper.decodeFromString<List<Group>>(jsonMapper.encodeToString(COMPONENT_List))
         )
         assertEquals(G3, jsonMapper.decodeFromString<Group>(jsonMapper.encodeToString(G3)))
+    }
+
+    @Test
+    fun serializes_and_de_serializes_repeat_info() {
+        // Lock the lowercase wire format for the discriminator
+        assertEquals(
+            "repeated",
+            jsonMapper.parseToJsonElement(jsonMapper.encodeToString(REPEATED)).jsonObject["type"]?.jsonPrimitive?.content
+        )
+        assertEquals(
+            "repeatable",
+            jsonMapper.parseToJsonElement(jsonMapper.encodeToString(REPEATABLE)).jsonObject["type"]?.jsonPrimitive?.content
+        )
+
+        // Test round-trip serialization of each RepeatInfo variant
+        assertEquals(REPEATED, jsonMapper.decodeFromString<RepeatInfo>(jsonMapper.encodeToString(REPEATED)))
+        assertEquals(REPEATABLE, jsonMapper.decodeFromString<RepeatInfo>(jsonMapper.encodeToString(REPEATABLE)))
+        assertEquals(
+            REPEATABLE_DEFAULT_RANGE,
+            jsonMapper.decodeFromString<RepeatInfo>(jsonMapper.encodeToString(REPEATABLE_DEFAULT_RANGE))
+        )
+
+        // repeatInfo survives a full survey component round-trip
+        assertEquals(
+            REPEATABLE_QUESTION,
+            jsonMapper.decodeFromString<Question>(jsonMapper.encodeToString(REPEATABLE_QUESTION))
+        )
+        assertEquals(
+            REPEATABLE,
+            jsonMapper.decodeFromString<SurveyComponent>(jsonMapper.encodeToString(REPEATABLE_QUESTION)).repeatInfo
+        )
+
+        // repeatInfo is omitted from the JSON when it is null
+        assertEquals(
+            false,
+            "repeatInfo" in jsonMapper.encodeToString(QUESTION as SurveyComponent).let {
+                jsonMapper.parseToJsonElement(it).jsonObject
+            }
+        )
     }
 
     @Test
