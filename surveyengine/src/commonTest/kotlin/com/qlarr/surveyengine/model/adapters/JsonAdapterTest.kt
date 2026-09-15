@@ -76,7 +76,7 @@ class JsonAdapterTest {
     private val NAV_INDEX_Q1 = NavigationIndex.Question("Q1")
     private val NAV_INDEX_G1_2_3 = NavigationIndex.Groups(listOf("G1", "G2", "G3"))
 
-    private val REPEATED: RepeatInfo = RepeatInfo.Repeated
+    private val REPEATED: RepeatInfo = RepeatInfo.Repeated(token = "a")
     private val REPEATABLE: RepeatInfo = RepeatInfo.Repeatable(
         range = listOf("1", "2", "3"),
         relevanceInstruction = "Q1.value == true"

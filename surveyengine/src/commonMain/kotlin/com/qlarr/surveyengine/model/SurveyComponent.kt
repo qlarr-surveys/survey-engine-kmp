@@ -369,7 +369,9 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
 @Serializable(with = RepeatInfoSerializer::class)
 sealed class RepeatInfo {
     @Serializable(with = RepeatInfoSerializer::class)
-    data object Repeated : RepeatInfo()
+    data class Repeated(
+        val token: String
+    ) : RepeatInfo()
 
     @Serializable(with = RepeatInfoSerializer::class)
     data class Repeatable(
@@ -387,6 +389,7 @@ object RepeatInfoSerializer : KSerializer<RepeatInfo> {
             when (value) {
                 is RepeatInfo.Repeated -> {
                     put("type", "repeated")
+                    put("token", value.token)
                 }
 
                 is RepeatInfo.Repeatable -> {
@@ -411,7 +414,12 @@ object RepeatInfoSerializer : KSerializer<RepeatInfo> {
             ?: throw SerializationException("RepeatInfo requires a 'type' field")
 
         return when (type) {
-            "repeated" -> RepeatInfo.Repeated
+            "repeated" -> {
+                val token = jsonElement["token"]?.jsonPrimitive?.content
+                    ?: throw SerializationException("Repeated requires a 'token' field")
+                RepeatInfo.Repeated(token)
+            }
+
             "repeatable" -> {
                 val range = jsonElement["range"]?.jsonArray?.map { it.jsonPrimitive.content } ?: emptyList()
                 val relevanceInstruction = jsonElement["relevanceInstruction"]?.jsonPrimitive?.content
