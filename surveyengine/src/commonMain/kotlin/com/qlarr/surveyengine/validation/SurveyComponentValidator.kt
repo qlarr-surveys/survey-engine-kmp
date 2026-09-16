@@ -83,6 +83,40 @@ fun List<SurveyComponent>.validateDuplicates(parentCode: String = ""): List<Surv
     return returnList
 }
 
+fun List<SurveyComponent>.validateRepeatables(insideRepeatable: Boolean = false): List<SurveyComponent> =
+    map { component ->
+        // An already-errored component is excluded from everything else, including its subtree.
+        if (component.hasErrors()) {
+            return@map component
+        }
+
+        val repeatable = component.repeatInfo as? RepeatInfo.Repeatable
+
+        // A repeatable nested inside another repeatable is the outermost offender: flag it and
+        // stop descending, so its subtree is excluded from the rest of validation and expansion.
+        if (repeatable != null && insideRepeatable) {
+            return@map component.addError(ComponentError.NESTED_REPEATABLE)
+        }
+
+        var validated = component
+        if (repeatable != null) {
+            if (repeatable.range.isEmpty()) {
+                validated = validated.addError(ComponentError.EMPTY_REPEAT_RANGE)
+            }
+            if (!repeatable.relevanceInstruction.contains(REPEAT_TOKEN_PLACEHOLDER)) {
+                validated = validated.addError(ComponentError.MISSING_REPEAT_TOKEN)
+            }
+            // A malformed repeatable is excluded from everything else too.
+            if (validated.hasErrors()) {
+                return@map validated
+            }
+        }
+
+        validated.duplicate(
+            children = validated.children.validateRepeatables(insideRepeatable || repeatable != null)
+        )
+    }
+
 fun List<SurveyComponent>.validateReservedCode(): List<SurveyComponent> {
     val returnList = toMutableList()
     returnList.forEachIndexed { index, webComponent ->

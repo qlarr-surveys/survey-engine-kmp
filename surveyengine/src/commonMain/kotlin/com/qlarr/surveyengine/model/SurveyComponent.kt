@@ -366,6 +366,8 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
     }
 }
 
+const val REPEAT_TOKEN_PLACEHOLDER = "{{token}}"
+
 @Serializable(with = RepeatInfoSerializer::class)
 sealed class RepeatInfo {
     @Serializable(with = RepeatInfoSerializer::class)

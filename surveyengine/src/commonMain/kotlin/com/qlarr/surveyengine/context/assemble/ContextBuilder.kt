@@ -71,9 +71,10 @@ internal class ContextBuilder(
 
     private fun getValidationScript(validateSpecialTypeGroups: Boolean = false): List<ScriptValidationInput> {
         val newComponents = if (validateSpecialTypeGroups)
-            components.validateDuplicates().validateReservedCode().validateEmptyParents().validateSpecialTypeGroups()
+            components.validateDuplicates().validateReservedCode().validateEmptyParents().validateRepeatables()
+                .validateSpecialTypeGroups()
         else
-            components.validateDuplicates().validateReservedCode().validateEmptyParents()
+            components.validateDuplicates().validateReservedCode().validateEmptyParents().validateRepeatables()
 
         components.apply {
             clear()
