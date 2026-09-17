@@ -7,6 +7,7 @@ import com.qlarr.surveyengine.model.Question
 import com.qlarr.surveyengine.model.RepeatInfo
 import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.model.Survey
+import com.qlarr.surveyengine.model.SurveyComponent
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -138,6 +139,65 @@ class ExpandRepeatablesTest {
     }
 
     private fun relevance(text: String) = SimpleState(text, ReservedCode.ConditionalRelevance)
+
+    private fun SurveyComponent.conditionalRelevance(): String? =
+        instructionList.filterIsInstance<SimpleState>()
+            .firstOrNull { it.reservedCode == ReservedCode.ConditionalRelevance }?.text
+
+    @Test
+    fun injects_token_relevance_on_each_copy() {
+        val survey = Survey(
+            groups = listOf(
+                Group("G1", repeatInfo = repeatable("a", "b"), questions = listOf(Question("Q1")))
+            )
+        )
+
+        val expanded = listOf(survey).expandRepeatables()[0] as Survey
+
+        assertNull(expanded.groups[0].conditionalRelevance())
+        assertEquals("Qbrands.value.includes('a')", expanded.groups[1].conditionalRelevance())
+        assertEquals("Qbrands.value.includes('b')", expanded.groups[2].conditionalRelevance())
+    }
+
+    @Test
+    fun ands_token_relevance_with_authored_conditional_relevance() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    instructionList = listOf(relevance("Q11.value == 1")),
+                    repeatInfo = repeatable("a", "b"),
+                    questions = listOf(Question("Q1"))
+                )
+            )
+        )
+
+        val expanded = listOf(survey).expandRepeatables()[0] as Survey
+
+        assertEquals("Q11.value == 1", expanded.groups[0].conditionalRelevance())
+        assertEquals("(Q11.value == 1) && (Qbrands.value.includes('a'))", expanded.groups[1].conditionalRelevance())
+        assertEquals("(Q11.value == 1) && (Qbrands.value.includes('b'))", expanded.groups[2].conditionalRelevance())
+    }
+
+    @Test
+    fun replaces_every_token_placeholder() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(
+                        range = listOf("a"),
+                        relevanceInstruction = "Qx.includes('{{token}}') || Qy.includes('{{token}}')"
+                    ),
+                    questions = listOf(Question("Q1"))
+                )
+            )
+        )
+
+        val expanded = listOf(survey).expandRepeatables()[0] as Survey
+
+        assertEquals("Qx.includes('a') || Qy.includes('a')", expanded.groups[1].conditionalRelevance())
+    }
 
     @Test
     fun repoints_descendant_refs_without_partial_matching_longer_codes() {

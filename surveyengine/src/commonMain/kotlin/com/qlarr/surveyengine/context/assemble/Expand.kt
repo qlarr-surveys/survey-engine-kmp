@@ -5,7 +5,9 @@ import com.qlarr.surveyengine.model.Answer
 import com.qlarr.surveyengine.model.Group
 import com.qlarr.surveyengine.model.Instruction
 import com.qlarr.surveyengine.model.Question
+import com.qlarr.surveyengine.model.REPEAT_TOKEN_PLACEHOLDER
 import com.qlarr.surveyengine.model.RepeatInfo
+import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.model.Survey
 import com.qlarr.surveyengine.model.SurveyComponent
 
@@ -17,7 +19,9 @@ internal fun List<SurveyComponent>.expandRepeatables(): List<SurveyComponent> =
             component.noErrors() && repeatInfo is RepeatInfo.Repeatable -> {
                 val codes = component.suffixableCodes(isRoot = true)
                 listOf(component) + repeatInfo.range.map { token ->
-                    component.expand(token) { c -> if (c in codes) "${c}_$token" else c }
+                    component
+                        .suffixCodes(token, isRoot = true) { c -> if (c in codes) "${c}_$token" else c }
+                        .withRepeatRelevance(repeatInfo.relevanceInstruction.replace(REPEAT_TOKEN_PLACEHOLDER, token))
                 }
             }
 
@@ -28,9 +32,6 @@ internal fun List<SurveyComponent>.expandRepeatables(): List<SurveyComponent> =
 private fun SurveyComponent.suffixableCodes(isRoot: Boolean): Set<String> =
     (if (isRoot || hasUniqueCode()) setOf(code) else emptySet()) +
         children.flatMap { it.suffixableCodes(isRoot = false) }
-
-private fun SurveyComponent.expand(token: String, remap: (String) -> String): SurveyComponent =
-    suffixCodes(token, isRoot = true, remap)
 
 private fun SurveyComponent.suffixCodes(
     token: String,
@@ -67,4 +68,13 @@ private fun SurveyComponent.suffixCodes(
 
         is Survey -> this
     }
+}
+
+private fun SurveyComponent.withRepeatRelevance(tokenRelevance: String): SurveyComponent {
+    val existing = instructionList
+        .filterIsInstance<Instruction.SimpleState>()
+        .firstOrNull { it.reservedCode == ReservedCode.ConditionalRelevance && it.noErrors() && it.text != "true" }
+    val text = if (existing != null) "(${existing.text}) && ($tokenRelevance)" else tokenRelevance
+    val instruction = existing?.withNewText(text) ?: Instruction.SimpleState(text, ReservedCode.ConditionalRelevance)
+    return replaceOrAddInstruction(instruction)
 }
