@@ -312,7 +312,7 @@ internal fun MutableList<SurveyComponent>.addDisqualifyInstruction(
             .filterIsInstance<Instruction.SkipInstruction>()
             .filter { it.noErrors() && it.disqualify }
     }.flatten().joinToString(
-        separator = " && ", transform = { it.text }
+        separator = " || ", transform = { it.text }
     )
     if (text.isNotEmpty()) {
         this[0] = survey.replaceOrAddInstruction(
