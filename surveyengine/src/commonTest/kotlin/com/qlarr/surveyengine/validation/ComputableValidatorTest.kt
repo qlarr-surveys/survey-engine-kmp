@@ -242,4 +242,23 @@ class ComponentValidatorTest {
             validated.children[2].errors
         )
     }
+
+    @Test
+    fun invalid_range_tokens_are_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "Brand X"), relevanceInstruction = "x {{token}}")
+                ),
+                Group(
+                    "G2",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "b_1"), relevanceInstruction = "x {{token}}")
+                )
+            )
+        )
+        val validated = listOf(survey).validateRepeatables()[0]
+        assertEquals(listOf(ComponentError.INVALID_REPEAT_TOKEN), validated.children[0].errors)
+        assertEquals(emptyList(), validated.children[1].errors)
+    }
 }

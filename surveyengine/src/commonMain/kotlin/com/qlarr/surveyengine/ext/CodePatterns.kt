@@ -9,6 +9,7 @@ const val VALID_GROUP_CODE = "^G[a-z0-9_]+$"
 const val VALID_QUESTION_CODE = "^Q[a-z0-9_]+$"
 const val VALID_ANSWER_CODE = ".*A[a-z0-9_]+$"
 const val VALID_SINGLE_ANSWER_CODE = "^A[a-z0-9_]+$"
+const val VALID_REPEAT_TOKEN = "^[a-z0-9_]+$"
 
 private val COMPONENT_CODE_REFERENCE = Regex("\\b[SGQA][a-z0-9_]*")
 

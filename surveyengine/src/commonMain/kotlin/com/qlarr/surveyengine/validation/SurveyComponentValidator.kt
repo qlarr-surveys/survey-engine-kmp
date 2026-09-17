@@ -1,8 +1,11 @@
 package com.qlarr.surveyengine.validation
 
+import com.qlarr.surveyengine.ext.VALID_REPEAT_TOKEN
 import com.qlarr.surveyengine.ext.getDuplicates
 import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.*
+
+private val REPEAT_TOKEN_REGEX = Regex(VALID_REPEAT_TOKEN)
 
 internal fun SurveyComponent.validateInstructions(): SurveyComponent {
     if (hasErrors()) {
@@ -102,6 +105,9 @@ fun List<SurveyComponent>.validateRepeatables(insideRepeatable: Boolean = false)
         if (repeatable != null) {
             if (repeatable.range.isEmpty()) {
                 validated = validated.addError(ComponentError.EMPTY_REPEAT_RANGE)
+            }
+            if (repeatable.range.any { !it.matches(REPEAT_TOKEN_REGEX) }) {
+                validated = validated.addError(ComponentError.INVALID_REPEAT_TOKEN)
             }
             if (!repeatable.relevanceInstruction.contains(REPEAT_TOKEN_PLACEHOLDER)) {
                 validated = validated.addError(ComponentError.MISSING_REPEAT_TOKEN)
