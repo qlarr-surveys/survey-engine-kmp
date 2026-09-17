@@ -2,8 +2,10 @@ package com.qlarr.surveyengine.context.assemble
 
 import com.qlarr.surveyengine.model.Answer
 import com.qlarr.surveyengine.model.Group
+import com.qlarr.surveyengine.model.Instruction.SimpleState
 import com.qlarr.surveyengine.model.Question
 import com.qlarr.surveyengine.model.RepeatInfo
+import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.model.Survey
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -133,6 +135,53 @@ class ExpandRepeatablesTest {
         val twice = once.expandRepeatables()
 
         assertEquals(once, twice)
+    }
+
+    private fun relevance(text: String) = SimpleState(text, ReservedCode.ConditionalRelevance)
+
+    @Test
+    fun repoints_descendant_refs_without_partial_matching_longer_codes() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1", repeatInfo = repeatable("a", "b"),
+                    questions = listOf(
+                        Question("Q1"),
+                        Question("Q2", instructionList = listOf(relevance("Q1.value == 1 && Q11.value == 2")))
+                    )
+                )
+            )
+        )
+
+        val expanded = listOf(survey).expandRepeatables()[0] as Survey
+
+        fun relevanceOf(groupIndex: Int) =
+            (expanded.groups[groupIndex].questions[1].instructionList[0] as SimpleState).text
+
+        assertEquals("Q1.value == 1 && Q11.value == 2", relevanceOf(0))
+        assertEquals("Q1_a.value == 1 && Q11.value == 2", relevanceOf(1))
+        assertEquals("Q1_b.value == 1 && Q11.value == 2", relevanceOf(2))
+    }
+
+    @Test
+    fun leaves_external_references_untouched() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1", repeatInfo = repeatable("a", "b"),
+                    questions = listOf(
+                        Question("Q1", instructionList = listOf(relevance("Qbrands.value.includes('x') && Q1.value")))
+                    )
+                )
+            )
+        )
+
+        val g1a = (listOf(survey).expandRepeatables()[0] as Survey).groups[1]
+
+        assertEquals(
+            "Qbrands.value.includes('x') && Q1_a.value",
+            (g1a.questions[0].instructionList[0] as SimpleState).text
+        )
     }
 
     @Test
