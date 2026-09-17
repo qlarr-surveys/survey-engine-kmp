@@ -15,6 +15,7 @@ internal fun SurveyComponent.validateInstructions(): SurveyComponent {
         .validateRandomGroupInstruction()
         .validatePriorityGroupInstruction()
         .validateParentRelevanceInstruction()
+        .validateQuotaInstruction()
 
     val newChildren = mutableListOf<SurveyComponent>()
     validatedComponent.children.forEach {
@@ -34,6 +35,23 @@ private fun SurveyComponent.addInstructionDuplicateCodes(): SurveyComponent {
         if (instructionList.count { it.code == instruction.code } > 1
             && instructionList.indexOfFirst { it.code == instruction.code } != index) {
             newInstructions[index] = instruction.addError(InstructionError.DuplicateInstructionCode)
+        }
+    }
+    return duplicate(instructionList = newInstructions)
+}
+
+// Quotas are survey-wide by nature, and navigation only consults the ones on the Survey.
+// A quota anywhere else would validate and run, yet gate nothing, so flag it at design time.
+private fun SurveyComponent.validateQuotaInstruction(): SurveyComponent {
+    if (this is Survey) {
+        return this
+    }
+    val newInstructions = instructionList.toMutableList()
+    instructionList.forEachIndexed { index, instruction ->
+        if (instruction is Instruction.State && instruction.reservedCode is ReservedCode.Quota
+            && instruction.noErrors()
+        ) {
+            newInstructions[index] = instruction.addError(InstructionError.QuotaNotOnSurvey)
         }
     }
     return duplicate(instructionList = newInstructions)

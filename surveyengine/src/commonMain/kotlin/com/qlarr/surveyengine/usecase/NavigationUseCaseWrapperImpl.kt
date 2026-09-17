@@ -18,7 +18,8 @@ internal class NavigationUseCaseWrapperImpl(
     val navigationIndex: NavigationIndex? = null,
     val navigationDirection: NavigationDirection = NavigationDirection.Start,
     skipInvalid: Boolean,
-    surveyMode: SurveyMode
+    surveyMode: SurveyMode,
+    fullQuotas: Set<String> = setOf()
 ) : NavigationUseCaseWrapper {
 
     private val validationJsonOutput: ValidationJsonOutput =
@@ -33,7 +34,8 @@ internal class NavigationUseCaseWrapperImpl(
         navigationMode = navigationMode,
         lang ?: validationJsonOutput.survey.defaultLang(),
         skipInvalid,
-        surveyMode
+        surveyMode,
+        fullQuotas
     )
 
     override fun navigate(scriptEngine: ScriptEngineNavigate): String {

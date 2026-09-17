@@ -30,7 +30,8 @@ class NavigationUseCaseImp(
     private val navigationMode: NavigationMode,
     private val lang: String,
     private val skipInvalid: Boolean,
-    private val surveyMode: SurveyMode
+    private val surveyMode: SurveyMode,
+    private val fullQuotas: Set<String> = setOf()
 ) : NavigationUseCase {
     private val values = stringValues.withDependencyKeys(validationOutput.schema)
     private val startupRandomValues = mutableMapOf<Dependency, Int>()
@@ -128,7 +129,7 @@ class NavigationUseCaseImp(
             "Survey",
             ReservedCode.Validity
         )]!!.jsonPrimitive.boolean
-        val newNavIndex =
+        val navigatedIndex =
             survey.navigate(
                 navigationIndex,
                 navigationDirection,
@@ -137,6 +138,12 @@ class NavigationUseCaseImp(
                 skipInvalid,
                 currentIndexValidity
             )
+        val newNavIndex = if (isScreenedOutByQuota(stateBindings, navigatedIndex)) {
+            stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
+            survey.endIndex()
+        } else {
+            navigatedIndex
+        }
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
         extraBindings.putAll(runtimeContextBuilder.addValidityInstruction(survey, newNavIndex))
@@ -169,6 +176,32 @@ class NavigationUseCaseImp(
             dependencyMapBundle = Pair(dependencyMapper.impactMap, dependencyMapper.dependencyMap),
             navigationIndex = newNavIndex
         )
+    }
+
+    // A respondent is screened out when they match a quota that is already full. Every quota is
+    // recomputed from the current answers on each navigation, exactly like skip and disqualify,
+    // so nothing about which quotas were matched before needs to be carried along: change the
+    // answer back and the screen-out reverses itself.
+    //
+    // Only forward moves act on the result. Backward moves are left alone so that a respondent
+    // editing an earlier answer is not dragged to the end, which matches skip: prevRelevant walks
+    // backward through what is still relevant and the ejection lands on the next forward move.
+    private fun isScreenedOutByQuota(
+        stateBindings: Map<Dependency, JsonElement>,
+        navigatedIndex: NavigationIndex
+    ): Boolean {
+        val movingForward = navigationDirection is NavigationDirection.Start
+                || navigationDirection is NavigationDirection.Next
+                || navigationDirection is NavigationDirection.Jump
+        if (!movingForward || navigatedIndex.showError) {
+            return false
+        }
+        return stateBindings.any { (dependency, value) ->
+            val reservedCode = dependency.reservedCode
+            reservedCode is ReservedCode.Quota
+                    && value.jsonPrimitive.booleanOrNull == true
+                    && reservedCode.quotaCode in fullQuotas
+        }
     }
 
     private fun getLabel(qualifiedCode: String): String {
@@ -212,6 +245,7 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
 
             ReservedCode.Mode,
             ReservedCode.Disqualified,
+            is ReservedCode.Quota,
             ReservedCode.Value -> true
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean

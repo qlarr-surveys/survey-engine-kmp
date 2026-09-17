@@ -180,6 +180,10 @@ fun Survey.allInOne(orderRelevanceBindings: Map<Dependency, JsonElement> = empty
     }
 }
 
+// The END group is always the survey's last group: validation rejects a survey without one
+// (NO_END_GROUP) and rejects any END group that is not last (MISPLACED_END_GROUP).
+internal fun Survey.endIndex() = NavigationIndex.End(groups.last().code)
+
 private fun Survey.firstRelevant(
     navigationMode: NavigationMode,
     orderRelevanceBindings: Map<Dependency, JsonElement>
@@ -274,7 +278,7 @@ private fun Survey.nextRelevant(
 ): NavigationIndex {
     return when (navigationMode) {
         NavigationMode.ALL_IN_ONE -> {
-            NavigationIndex.End(groups.last().code)
+            endIndex()
         }
 
         NavigationMode.GROUP_BY_GROUP -> {
@@ -287,7 +291,7 @@ private fun Survey.nextRelevant(
                 orderRelevanceBindings.isRelevant(it.code) && it.hasRelevantChildren(orderRelevanceBindings)
             } ?: groups[index]
             if (nextGroup.groupType == GroupType.END || groups.indexOf(nextGroup) == index) {
-                NavigationIndex.End(groups.last().code)
+                endIndex()
             } else {
                 NavigationIndex.Group(nextGroup.code)
             }
@@ -315,7 +319,7 @@ private fun Survey.nextRelevant(
                         )
                     } ?: groups[groupIndex]
                 if (nextGroup.groupType == GroupType.END || groups.indexOf(nextGroup) == groupIndex) {
-                    NavigationIndex.End(groups.last().code)
+                    endIndex()
                 } else {
                     NavigationIndex.Question(nextGroup.questions.first { orderRelevanceBindings.isRelevant(it.code) }.code)
                 }
