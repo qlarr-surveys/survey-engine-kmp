@@ -4,6 +4,7 @@ package com.qlarr.surveyengine.model
 
 import com.qlarr.surveyengine.ext.VALID_FORMAT_INSTRUCTION_PATTERN
 import com.qlarr.surveyengine.ext.VALID_FORMAT_PREFIX
+import com.qlarr.surveyengine.ext.remapComponentCodes
 import com.qlarr.surveyengine.model.Instruction.*
 import com.qlarr.surveyengine.model.adapters.InstructionSerializer
 import com.qlarr.surveyengine.model.exposed.ReturnType
@@ -17,6 +18,7 @@ sealed class Instruction {
     abstract fun addError(error: InstructionError): Instruction
     fun noErrors() = errors.isEmpty()
     abstract fun clearErrors(): Instruction
+    abstract fun remapComponentCodes(remap: (String) -> String): Instruction
 
 
     @Serializable(with = InstructionSerializer::class)
@@ -45,6 +47,8 @@ sealed class Instruction {
         override fun withNewText(text: String) = withValidatedText(text)
 
         fun withValidatedText(validatedText: String) = copy(text = validatedText)
+
+        override fun remapComponentCodes(remap: (String) -> String) = copy(text = text.remapComponentCodes(remap))
     }
 
 
@@ -62,6 +66,8 @@ sealed class Instruction {
 
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
+        override fun remapComponentCodes(remap: (String) -> String) =
+            copy(groups = groups.map { group -> group.copy(codes = group.codes.map(remap)) })
     }
 
     @Serializable
@@ -72,6 +78,10 @@ sealed class Instruction {
     ) : Instruction() {
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
+        override fun remapComponentCodes(remap: (String) -> String) =
+            copy(priorities = priorities.map { priorityGroup ->
+                priorityGroup.copy(weights = priorityGroup.weights.map { it.copy(code = remap(it.code)) })
+            })
     }
 
     @Serializable
@@ -110,6 +120,8 @@ sealed class Instruction {
     ) : Instruction() {
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
+        override fun remapComponentCodes(remap: (String) -> String) =
+            copy(children = children.map { row -> row.map(remap) })
     }
 
 
@@ -182,6 +194,10 @@ sealed class Instruction {
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
         fun duplicate() = copy()
+        override fun remapComponentCodes(remap: (String) -> String) = copy(
+            text = text.remapComponentCodes(remap),
+            returnType = returnType.remapChildCodes(remap)
+        )
     }
 
     @Serializable(with = InstructionSerializer::class)
@@ -215,6 +231,11 @@ sealed class Instruction {
         override fun addError(error: InstructionError) = copy(errors = errors.toMutableList().apply { add(error) })
         override fun clearErrors() = copy(errors = emptyList())
         fun duplicate() = copy()
+        override fun remapComponentCodes(remap: (String) -> String): SkipInstruction {
+            return copy(
+                text = text.remapComponentCodes(remap)
+            )
+        }
     }
 
     @Serializable

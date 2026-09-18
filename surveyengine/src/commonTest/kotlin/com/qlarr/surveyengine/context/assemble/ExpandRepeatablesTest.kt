@@ -2,6 +2,7 @@ package com.qlarr.surveyengine.context.assemble
 
 import com.qlarr.surveyengine.model.Answer
 import com.qlarr.surveyengine.model.Group
+import com.qlarr.surveyengine.model.Instruction.RandomGroups
 import com.qlarr.surveyengine.model.Instruction.SimpleState
 import com.qlarr.surveyengine.model.Question
 import com.qlarr.surveyengine.model.RepeatInfo
@@ -242,6 +243,36 @@ class ExpandRepeatablesTest {
             "Qbrands.value.includes('x') && Q1_a.value",
             (g1a.questions[0].instructionList[0] as SimpleState).text
         )
+    }
+
+    @Test
+    fun repeated_question_keeps_its_answer_randomization() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    questions = listOf(
+                        Question(
+                            "Q1",
+                            instructionList = listOf(RandomGroups(groups = listOf(listOf("A1", "A2")))),
+                            repeatInfo = repeatable("a", "b"),
+                            answers = listOf(Answer("A1"), Answer("A2"))
+                        )
+                    )
+                )
+            )
+        )
+
+        val group = (listOf(survey).expandRepeatables()[0] as Survey).groups[0]
+
+        assertEquals(listOf("Q1", "Q1_a", "Q1_b"), group.questions.map { it.code })
+
+        fun randomCodes(questionIndex: Int) =
+            (group.questions[questionIndex].instructionList[0] as RandomGroups).groups[0].codes
+
+        assertEquals(listOf("A1", "A2"), randomCodes(0))
+        assertEquals(listOf("A1", "A2"), randomCodes(1))
+        assertEquals(listOf("A1", "A2"), randomCodes(2))
     }
 
     @Test

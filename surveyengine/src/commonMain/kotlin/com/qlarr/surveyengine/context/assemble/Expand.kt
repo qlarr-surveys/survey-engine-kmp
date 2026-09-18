@@ -1,6 +1,5 @@
 package com.qlarr.surveyengine.context.assemble
 
-import com.qlarr.surveyengine.ext.remapComponentCodes
 import com.qlarr.surveyengine.model.Answer
 import com.qlarr.surveyengine.model.Group
 import com.qlarr.surveyengine.model.Instruction
@@ -40,10 +39,7 @@ private fun SurveyComponent.suffixCodes(
 ): SurveyComponent {
     val newCode = if (isRoot || hasUniqueCode()) "${code}_$token" else code
     val newRepeatInfo = if (isRoot) RepeatInfo.Repeated(token) else repeatInfo
-    val newInstructions = instructionList.map { instruction ->
-        if (instruction is Instruction.State) instruction.withNewText(instruction.text.remapComponentCodes(remap))
-        else instruction
-    }
+    val newInstructions = instructionList.map { it.remapComponentCodes(remap) }
     return when (this) {
         is Group -> copy(
             code = newCode,
