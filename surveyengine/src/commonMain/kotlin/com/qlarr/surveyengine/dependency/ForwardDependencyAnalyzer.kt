@@ -8,7 +8,7 @@ internal class ForwardDependencyAnalyzer(
     private val components: MutableList<SurveyComponent>,
     private val dependencyMap: DependencyMap
 ) {
-    private val componentIndices = components.componentIndices()
+    private val componentIndices = components.componentIndices(includeRepeatables = false)
 
     fun validateForwardDependencies(): ForwardDependencyAnalyzer {
         components.forEachIndexed { index, surveyComponent ->
