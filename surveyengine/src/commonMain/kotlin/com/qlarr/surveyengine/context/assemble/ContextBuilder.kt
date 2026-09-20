@@ -164,19 +164,20 @@ internal class ContextBuilder(
         }
     }
 
-    private fun List<SurveyComponent>.sanitizedNestedComponents(parentCode: String = ""): List<ChildlessComponent> {
-        val returnList = mutableListOf<ChildlessComponent>()
-        filter { surveyComponent ->
-            surveyComponent.noErrors()
-        }.forEach { surveyComponent ->
-            val newInstructions = surveyComponent.instructionList.filterNoErrors()
-            returnList.add(
-                surveyComponent.duplicate(instructionList = newInstructions).withParentCode(parentCode)
-                    .toChildlessComponent(parentCode)
-            )
-            val newCode = surveyComponent.uniqueCode(parentCode)
-            returnList.addAll(surveyComponent.children.sanitizedNestedComponents(newCode))
-        }
-        return returnList
+}
+
+internal fun List<SurveyComponent>.sanitizedNestedComponents(parentCode: String = ""): List<ChildlessComponent> {
+    val returnList = mutableListOf<ChildlessComponent>()
+    filter { surveyComponent ->
+        surveyComponent.noErrors() && surveyComponent.repeatInfo !is RepeatInfo.Repeatable
+    }.forEach { surveyComponent ->
+        val newInstructions = surveyComponent.instructionList.filterNoErrors()
+        returnList.add(
+            surveyComponent.duplicate(instructionList = newInstructions).withParentCode(parentCode)
+                .toChildlessComponent(parentCode)
+        )
+        val newCode = surveyComponent.uniqueCode(parentCode)
+        returnList.addAll(surveyComponent.children.sanitizedNestedComponents(newCode))
     }
+    return returnList
 }

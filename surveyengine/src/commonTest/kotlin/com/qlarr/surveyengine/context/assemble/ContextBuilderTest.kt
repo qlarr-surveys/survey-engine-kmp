@@ -10,6 +10,7 @@ import com.qlarr.surveyengine.scriptengine.getValidate
 import com.qlarr.surveyengine.usecase.wrapToSurvey
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @Suppress("LocalVariableName")
@@ -220,6 +221,29 @@ class ContextBuilderTest {
             contextManager.components[0].children[0].children[3].instructionList[0].errors[0]
         )
         contextManager.components
+    }
+
+    @Test
+    fun sanitized_nested_components_drops_repeatable_templates() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "Qx.includes('{{token}}')"),
+                    questions = listOf(Question("Q1"))
+                ),
+                Group("G2", repeatInfo = RepeatInfo.Repeated("a"), questions = listOf(Question("Q2"))),
+                Group("G3", questions = listOf(Question("Q3")))
+            )
+        )
+
+        val codes = listOf(survey).sanitizedNestedComponents().map { it.code }
+
+        assertFalse("G1" in codes)   // repeatable template dropped
+        assertFalse("Q1" in codes)   // ...and its descendants
+        assertTrue("G2" in codes)    // repeated kept
+        assertTrue("Q2" in codes)
+        assertTrue("G3" in codes)
     }
 
     @Test
