@@ -366,7 +366,7 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
     }
 }
 
-const val REPEAT_TOKEN_PLACEHOLDER = "{{token}}"
+const val REPEAT_TOKEN_PLACEHOLDER = "{{repeat_token}}"
 
 @Serializable(with = RepeatInfoSerializer::class)
 sealed class RepeatInfo {
@@ -378,7 +378,8 @@ sealed class RepeatInfo {
     @Serializable(with = RepeatInfoSerializer::class)
     data class Repeatable(
         val range: List<String> = listOf(),
-        val relevanceInstruction: String
+        val relevanceInstruction: String,
+        val relevanceInstructionErrors: List<InstructionError> = listOf()
     ) : RepeatInfo()
 }
 
@@ -398,6 +399,15 @@ object RepeatInfoSerializer : KSerializer<RepeatInfo> {
                     put("type", "repeatable")
                     put("range", JsonArray(value.range.map { JsonPrimitive(it) }))
                     put("relevanceInstruction", value.relevanceInstruction)
+                    if (value.relevanceInstructionErrors.isNotEmpty()) {
+                        put(
+                            "relevanceInstructionErrors",
+                            jsonMapper.encodeToJsonElement(
+                                ListSerializer(serializer<InstructionError>()),
+                                value.relevanceInstructionErrors
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -426,7 +436,10 @@ object RepeatInfoSerializer : KSerializer<RepeatInfo> {
                 val range = jsonElement["range"]?.jsonArray?.map { it.jsonPrimitive.content } ?: emptyList()
                 val relevanceInstruction = jsonElement["relevanceInstruction"]?.jsonPrimitive?.content
                     ?: throw SerializationException("Repeatable requires a 'relevanceInstruction' field")
-                RepeatInfo.Repeatable(range, relevanceInstruction)
+                val relevanceInstructionErrors = jsonElement["relevanceInstructionErrors"]?.let {
+                    jsonMapper.decodeFromJsonElement(ListSerializer(serializer<InstructionError>()), it)
+                } ?: listOf()
+                RepeatInfo.Repeatable(range, relevanceInstruction, relevanceInstructionErrors)
             }
 
             else -> throw SerializationException("Unknown RepeatInfo type: $type")

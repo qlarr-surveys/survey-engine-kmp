@@ -161,7 +161,7 @@ class ComponentValidatorTest {
 
     private fun wellFormedRepeatable() = RepeatInfo.Repeatable(
         range = listOf("a", "b"),
-        relevanceInstruction = "Qbrands.value.includes('{{token}}')"
+        relevanceInstruction = "Qbrands.value.includes('{{repeat_token}}')"
     )
 
     @Test
@@ -222,7 +222,7 @@ class ComponentValidatorTest {
             groups = listOf(
                 Group(
                     "G1",
-                    repeatInfo = RepeatInfo.Repeatable(range = listOf(), relevanceInstruction = "includes('{{token}}')")
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf(), relevanceInstruction = "includes('{{repeat_token}}')")
                 ),
                 Group(
                     "G2",
@@ -249,16 +249,39 @@ class ComponentValidatorTest {
             groups = listOf(
                 Group(
                     "G1",
-                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "Brand X"), relevanceInstruction = "x {{token}}")
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "Brand X"), relevanceInstruction = "x {{repeat_token}}")
                 ),
                 Group(
                     "G2",
-                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "b_1"), relevanceInstruction = "x {{token}}")
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "b_1"), relevanceInstruction = "x {{repeat_token}}")
                 )
             )
         )
         val validated = listOf(survey).validateRepeatables()[0]
         assertEquals(listOf(ComponentError.INVALID_REPEAT_TOKEN), validated.children[0].errors)
         assertEquals(emptyList(), validated.children[1].errors)
+    }
+
+    @Test
+    fun repeatable_with_an_authored_conditional_relevance_is_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    instructionList = listOf(SimpleState("Qx.value == 1", ReservedCode.ConditionalRelevance)),
+                    repeatInfo = wellFormedRepeatable()
+                ),
+                Group(
+                    "G2",
+                    instructionList = listOf(SimpleState("true", ReservedCode.ConditionalRelevance)),
+                    repeatInfo = wellFormedRepeatable()
+                ),
+                Group("G3", repeatInfo = wellFormedRepeatable())
+            )
+        )
+        val validated = listOf(survey).validateRepeatables()[0]
+        assertEquals(listOf(ComponentError.REPEATABLE_WITH_RELEVANCE), validated.children[0].errors)
+        assertEquals(emptyList(), validated.children[1].errors) // trivial "true" relevance is allowed
+        assertEquals(emptyList(), validated.children[2].errors) // no relevance is fine
     }
 }

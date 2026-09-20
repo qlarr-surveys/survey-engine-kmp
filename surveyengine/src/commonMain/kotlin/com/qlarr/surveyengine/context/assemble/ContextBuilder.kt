@@ -22,8 +22,9 @@ internal class ContextBuilder(
 
 ) {
     val replacements: MutableMap<String, String> = mutableMapOf()
-    val sanitizedNestedComponents: List<ChildlessComponent>
-        get() = components.sanitizedNestedComponents().withReplacements(replacements)
+    fun sanitizedNestedComponents(): List<ChildlessComponent> = components
+        .sanitizedNestedComponents()
+        .withReplacements(replacements)
     lateinit var componentIndexList: List<ComponentIndex>
     private lateinit var validatedSystemInstructions: MutableList<ComponentInstruction>
     lateinit var skipMap: Map<String, List<NotSkippedInstructionManifesto>>
@@ -84,18 +85,23 @@ internal class ContextBuilder(
             val newComponent = surveyComponent.validateInstructions()
             components[index] = newComponent
         }
+        val expandedComponents = components.expandRepeatables()
+        components.apply {
+            clear()
+            addAll(expandedComponents)
+        }
         components.addStateToAllComponents()
 
-        val dependencyMapper = DependencyMapper(sanitizedNestedComponents)
+        val dependencyMapper = DependencyMapper(sanitizedNestedComponents())
 
         ForwardDependencyAnalyzer(
             components, dependencyMapper.dependencyMap
         ).validateForwardDependencies()
             .validateSkipDestinations()
-        components.addDisqualifyInstruction(sanitizedNestedComponents)
+        components.addDisqualifyInstruction(sanitizedNestedComponents())
         componentIndexList = components.componentIndices()
 
-        sanitizedNestedComponents.let { sanitisedComponents ->
+        sanitizedNestedComponents().let { sanitisedComponents ->
             val systemInstructions = sanitisedComponents.map { childlessComponent ->
                 childlessComponent.instructionList
                     .filter {
@@ -144,6 +150,11 @@ internal class ContextBuilder(
             addParentRelevanceInstruction()
             adjustRelevanceInstruction()
             addValidityInstructions()
+        }
+        val withRepeatableErrors = components.copyRepeatedErrorsToRepeatable()
+        components.apply {
+            clear()
+            addAll(withRepeatableErrors)
         }
     }
 

@@ -15,7 +15,7 @@ class ExecuteUtilsTest {
             groups = listOf(
                 Group(
                     "G1",
-                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "Qx.includes('{{token}}')"),
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "Qx.includes('{{repeat_token}}')"),
                     questions = listOf(Question("Q1"))
                 ),
                 Group("G2", repeatInfo = RepeatInfo.Repeated("a"), questions = listOf(Question("Q2"))),

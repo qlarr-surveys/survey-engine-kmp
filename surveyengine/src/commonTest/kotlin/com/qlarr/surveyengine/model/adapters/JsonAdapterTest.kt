@@ -171,6 +171,16 @@ class JsonAdapterTest {
             jsonMapper.decodeFromString<RepeatInfo>(jsonMapper.encodeToString(REPEATABLE_DEFAULT_RANGE))
         )
 
+        val repeatableWithErrors = RepeatInfo.Repeatable(
+            range = listOf("a"),
+            relevanceInstruction = "Qx.includes('{{repeat_token}}')",
+            relevanceInstructionErrors = listOf(ScriptError("bad", 0, 3))
+        )
+        assertEquals(
+            repeatableWithErrors,
+            jsonMapper.decodeFromString<RepeatInfo>(jsonMapper.encodeToString(repeatableWithErrors))
+        )
+
         // repeatInfo survives a full survey component round-trip
         assertEquals(
             REPEATABLE_QUESTION,

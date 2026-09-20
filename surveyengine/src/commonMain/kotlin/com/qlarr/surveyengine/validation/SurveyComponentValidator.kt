@@ -112,6 +112,12 @@ fun List<SurveyComponent>.validateRepeatables(insideRepeatable: Boolean = false)
             if (!repeatable.relevanceInstruction.contains(REPEAT_TOKEN_PLACEHOLDER)) {
                 validated = validated.addError(ComponentError.MISSING_REPEAT_TOKEN)
             }
+            if (component.instructionList.any {
+                    it is Instruction.State && it.reservedCode == ReservedCode.ConditionalRelevance &&
+                            it.noErrors() && it.text != "true"
+                }) {
+                validated = validated.addError(ComponentError.REPEATABLE_WITH_RELEVANCE)
+            }
             // A malformed repeatable is excluded from everything else too.
             if (validated.hasErrors()) {
                 return@map validated

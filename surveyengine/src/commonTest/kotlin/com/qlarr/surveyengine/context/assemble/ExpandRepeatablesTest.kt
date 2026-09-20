@@ -4,6 +4,7 @@ import com.qlarr.surveyengine.model.Answer
 import com.qlarr.surveyengine.model.Group
 import com.qlarr.surveyengine.model.Instruction.RandomGroups
 import com.qlarr.surveyengine.model.Instruction.SimpleState
+import com.qlarr.surveyengine.model.InstructionError
 import com.qlarr.surveyengine.model.Question
 import com.qlarr.surveyengine.model.RepeatInfo
 import com.qlarr.surveyengine.model.ReservedCode
@@ -17,7 +18,7 @@ class ExpandRepeatablesTest {
 
     private fun repeatable(vararg tokens: String) = RepeatInfo.Repeatable(
         range = tokens.toList(),
-        relevanceInstruction = "Qbrands.value.includes('{{token}}')"
+        relevanceInstruction = "Qbrands.value.includes('{{repeat_token}}')"
     )
 
     @Test
@@ -161,7 +162,7 @@ class ExpandRepeatablesTest {
     }
 
     @Test
-    fun ands_token_relevance_with_authored_conditional_relevance() {
+    fun token_relevance_replaces_any_existing_conditional_relevance() {
         val survey = Survey(
             groups = listOf(
                 Group(
@@ -175,9 +176,30 @@ class ExpandRepeatablesTest {
 
         val expanded = listOf(survey).expandRepeatables()[0] as Survey
 
-        assertEquals("Q11.value == 1", expanded.groups[0].conditionalRelevance())
-        assertEquals("(Q11.value == 1) && (Qbrands.value.includes('a'))", expanded.groups[1].conditionalRelevance())
-        assertEquals("(Q11.value == 1) && (Qbrands.value.includes('b'))", expanded.groups[2].conditionalRelevance())
+        assertEquals("Q11.value == 1", expanded.groups[0].conditionalRelevance()) // template untouched
+        assertEquals("Qbrands.value.includes('a')", expanded.groups[1].conditionalRelevance())
+        assertEquals("Qbrands.value.includes('b')", expanded.groups[2].conditionalRelevance())
+    }
+
+    @Test
+    fun replaces_repeat_token_in_any_copied_instruction() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1", repeatInfo = repeatable("a", "b"),
+                    questions = listOf(
+                        Question("Q1", instructionList = listOf(relevance("Qbrands.value.includes('{{repeat_token}}')")))
+                    )
+                )
+            )
+        )
+
+        val expanded = listOf(survey).expandRepeatables()[0] as Survey
+        fun q1Relevance(groupIndex: Int) = expanded.groups[groupIndex].questions[0].conditionalRelevance()
+
+        assertEquals("Qbrands.value.includes('{{repeat_token}}')", q1Relevance(0)) // template untouched
+        assertEquals("Qbrands.value.includes('a')", q1Relevance(1))
+        assertEquals("Qbrands.value.includes('b')", q1Relevance(2))
     }
 
     @Test
@@ -188,7 +210,7 @@ class ExpandRepeatablesTest {
                     "G1",
                     repeatInfo = RepeatInfo.Repeatable(
                         range = listOf("a"),
-                        relevanceInstruction = "Qx.includes('{{token}}') || Qy.includes('{{token}}')"
+                        relevanceInstruction = "Qx.includes('{{repeat_token}}') || Qy.includes('{{repeat_token}}')"
                     ),
                     questions = listOf(Question("Q1"))
                 )
@@ -273,6 +295,50 @@ class ExpandRepeatablesTest {
         assertEquals(listOf("A1", "A2"), randomCodes(0))
         assertEquals(listOf("A1", "A2"), randomCodes(1))
         assertEquals(listOf("A1", "A2"), randomCodes(2))
+    }
+
+    @Test
+    fun copies_a_descendant_error_from_the_first_copy_onto_the_repeatable() {
+        val error = InstructionError.ScriptError("bad", 0, 3)
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1", repeatInfo = repeatable("a"),
+                    questions = listOf(Question("Q1", instructionList = listOf(SimpleState("Qx.value", ReservedCode.Value))))
+                ),
+                Group(
+                    "G1_a", repeatInfo = RepeatInfo.Repeated("a"),
+                    instructionList = listOf(relevance("Qbrands.value.includes('a')")),
+                    questions = listOf(
+                        Question("Q1_a", instructionList = listOf(SimpleState("Qx.value", ReservedCode.Value).addError(error)))
+                    )
+                )
+            )
+        )
+
+        val result = listOf(survey).copyRepeatedErrorsToRepeatable()[0] as Survey
+
+        assertEquals(listOf(error), result.groups[0].questions[0].instructionList[0].errors)
+    }
+
+    @Test
+    fun routes_the_injected_relevance_error_to_repeat_info() {
+        val error = InstructionError.ScriptError("bad relevance", 0, 5)
+        val survey = Survey(
+            groups = listOf(
+                Group("G1", repeatInfo = repeatable("a"), questions = listOf(Question("Q1"))),
+                Group(
+                    "G1_a", repeatInfo = RepeatInfo.Repeated("a"),
+                    instructionList = listOf(relevance("Qbrands.value.includes('a')").addError(error)),
+                    questions = listOf(Question("Q1_a"))
+                )
+            )
+        )
+
+        val result = listOf(survey).copyRepeatedErrorsToRepeatable()[0] as Survey
+
+        val repeatable = result.groups[0].repeatInfo as RepeatInfo.Repeatable
+        assertEquals(listOf(error), repeatable.relevanceInstructionErrors)
     }
 
     @Test
