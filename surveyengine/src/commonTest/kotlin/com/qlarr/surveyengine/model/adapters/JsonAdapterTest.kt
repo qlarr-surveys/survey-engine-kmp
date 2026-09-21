@@ -120,6 +120,10 @@ class JsonAdapterTest {
             List_ERR_1,
             jsonMapper.decodeFromString<List<InstructionError>>(jsonMapper.encodeToString(List_ERR_1))
         )
+        assertEquals(
+            InstructionError.SkipInsideRepeatable,
+            jsonMapper.decodeFromString<InstructionError>(jsonMapper.encodeToString<InstructionError>(InstructionError.SkipInsideRepeatable))
+        )
     }
 
     @Test

@@ -101,7 +101,11 @@ fun List<SurveyComponent>.validateRepeatables(insideRepeatable: Boolean = false)
             return@map component.addError(ComponentError.NESTED_REPEATABLE)
         }
 
-        var validated = component
+        var validated = if (insideRepeatable || repeatable != null) {
+            component.flagSkipsInsideRepeatable()
+        } else {
+            component
+        }
         if (repeatable != null) {
             if (repeatable.range.isEmpty()) {
                 validated = validated.addError(ComponentError.EMPTY_REPEAT_RANGE)
@@ -128,6 +132,17 @@ fun List<SurveyComponent>.validateRepeatables(insideRepeatable: Boolean = false)
             children = validated.children.validateRepeatables(insideRepeatable || repeatable != null)
         )
     }
+
+private fun SurveyComponent.flagSkipsInsideRepeatable(): SurveyComponent =
+    duplicate(
+        instructionList = instructionList.map { instruction ->
+            if (instruction is Instruction.SkipInstruction) {
+                instruction.addError(InstructionError.SkipInsideRepeatable)
+            } else {
+                instruction
+            }
+        }
+    )
 
 fun List<SurveyComponent>.validateReservedCode(): List<SurveyComponent> {
     val returnList = toMutableList()

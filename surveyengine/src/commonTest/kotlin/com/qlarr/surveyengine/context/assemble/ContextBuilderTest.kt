@@ -274,6 +274,80 @@ class ContextBuilderTest {
     }
 
     @Test
+    fun a_skip_from_a_repeatable_is_flagged_and_does_not_crash() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(
+                        range = listOf("a", "b"),
+                        relevanceInstruction = "true || '{{repeat_token}}'"
+                    ),
+                    instructionList = listOf(SkipInstruction(skipToComponent = "G2", text = "true")),
+                    questions = listOf(Question("Q1"))
+                ),
+                Group("G2", questions = listOf(Question("Q2")))
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        val g1 = contextManager.components[0].children.first { it.code == "G1" }
+        val templateSkip = g1.instructionList.first { it is SkipInstruction }
+        assertTrue(templateSkip.errors.contains(InstructionError.SkipInsideRepeatable))
+
+        val g1a = contextManager.components[0].children.first { it.code == "G1_a" }
+        val copySkip = g1a.instructionList.first { it is SkipInstruction }
+        assertTrue(copySkip.errors.contains(InstructionError.SkipInsideRepeatable))
+    }
+
+    @Test
+    fun a_skip_inside_a_repeatable_descendant_is_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(
+                        range = listOf("a"),
+                        relevanceInstruction = "true || '{{repeat_token}}'"
+                    ),
+                    questions = listOf(
+                        Question("Q1", instructionList = listOf(SkipInstruction(skipToComponent = "Q2", text = "true"))),
+                        Question("Q2")
+                    )
+                )
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        val g1 = contextManager.components[0].children.first { it.code == "G1" }
+        val q1 = g1.children.first { it.code == "Q1" }
+        val skip = q1.instructionList.first { it is SkipInstruction }
+        assertTrue(skip.errors.contains(InstructionError.SkipInsideRepeatable))
+    }
+
+    @Test
+    fun a_skip_outside_any_repeatable_is_not_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    instructionList = listOf(SkipInstruction(skipToComponent = "G2", text = "true")),
+                    questions = listOf(Question("Q1"))
+                ),
+                Group("G2", questions = listOf(Question("Q2")))
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        val g1 = contextManager.components[0].children.first { it.code == "G1" }
+        val skip = g1.instructionList.first { it is SkipInstruction }
+        assertFalse(skip.errors.contains(InstructionError.SkipInsideRepeatable))
+    }
+
+    @Test
     fun sanitized_nested_components_drops_repeatable_templates() {
         val survey = Survey(
             groups = listOf(
