@@ -306,7 +306,7 @@ class ContextBuilderTest {
         )
         val contextManager = ContextBuilder(mutableListOf(Survey), getValidate())
         contextManager.validate()
-        assertEquals("Q1.value > 3 && Q1.value <8 ", (contextManager.components[0].instructionList.firstOrNull {
+        assertEquals("Q1.value > 3 || Q1.value <8 ", (contextManager.components[0].instructionList.firstOrNull {
             it is SimpleState && it.reservedCode == ReservedCode.Disqualified
         }!! as SimpleState).text)
     }
