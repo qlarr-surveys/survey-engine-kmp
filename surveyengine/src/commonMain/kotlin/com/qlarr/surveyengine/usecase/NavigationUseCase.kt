@@ -140,7 +140,7 @@ class NavigationUseCaseImp(
                 currentIndexValidity,
                 screenedOut
             )
-        if (screenedOut && !newNavIndex.showError) {
+        if (screenedOut) {
             stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
         }
 

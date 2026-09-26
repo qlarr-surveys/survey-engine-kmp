@@ -50,6 +50,30 @@ class QuotaNavigationTest {
     }
 
     @Test
+    fun invalid_page_still_screens_out() {
+        val survey = ValidationUseCaseWrapper.create(design(withRequired = true).toString()).validate()
+        val values = """{"Q1.value":"male"}"""
+        val blocked = navigate(
+            values = values,
+            direction = NavigationDirection.Next,
+            index = NavigationIndex.Group("G1"),
+            survey = survey,
+            skipInvalid = false
+        )
+        assertEquals(NavigationIndex.Group("G1"), blocked.navigationIndex)
+        val output = navigate(
+            values = values,
+            direction = NavigationDirection.Next,
+            index = NavigationIndex.Group("G1"),
+            fullQuotas = """["QT1"]""",
+            survey = survey,
+            skipInvalid = false
+        )
+        assertEquals(NavigationIndex.End("G3"), output.navigationIndex)
+        assertEquals(JsonPrimitive(true), output.toSave["Survey.disqualified"])
+    }
+
+    @Test
     fun matching_a_full_quota_screens_out_to_end() {
         val output = navigate(
             values = """{"Q1.value":"male"}""",
@@ -190,7 +214,8 @@ class QuotaNavigationTest {
         direction: NavigationDirection,
         index: NavigationIndex? = null,
         fullQuotas: String = "[]",
-        survey: String = processedSurvey
+        survey: String = processedSurvey,
+        skipInvalid: Boolean = true
     ): NavigationJsonOutput {
         val output = NavigationUseCaseWrapper.init(
             values = values,
@@ -198,14 +223,14 @@ class QuotaNavigationTest {
             navigationMode = NavigationMode.GROUP_BY_GROUP,
             navigationIndex = index,
             navigationDirection = direction,
-            skipInvalid = true,
+            skipInvalid = skipInvalid,
             surveyMode = SurveyMode.ONLINE,
             fullQuotas = fullQuotas
         ).navigate(getNavigate())
         return jsonMapper.decodeFromString(NavigationJsonOutput.serializer(), output)
     }
 
-    private fun textQuestion(code: String) = buildJsonObject {
+    private fun textQuestion(code: String, required: Boolean = false) = buildJsonObject {
         put("code", code)
         put("type", "text")
         put("instructionList", buildJsonArray {
@@ -214,6 +239,14 @@ class QuotaNavigationTest {
                 put("text", "")
                 put("returnType", "string")
                 put("isActive", false)
+            }
+            if (required) {
+                addJsonObject {
+                    put("code", "validation_required")
+                    put("text", "!!$code.value")
+                    put("returnType", "boolean")
+                    put("isActive", true)
+                }
             }
         })
     }
@@ -231,7 +264,7 @@ class QuotaNavigationTest {
         put("isActive", true)
     }
 
-    private fun design(withQuotas: Boolean = true) = buildJsonObject {
+    private fun design(withQuotas: Boolean = true, withRequired: Boolean = false) = buildJsonObject {
         put("code", "Survey")
         put("defaultLang", buildJsonObject {
             put("code", "en")
@@ -249,7 +282,11 @@ class QuotaNavigationTest {
             }
         })
         put("groups", buildJsonArray {
-            add(group("G1", "GROUP", textQuestion("Q1")))
+            if (withRequired) {
+                add(group("G1", "GROUP", textQuestion("Q1"), textQuestion("Q1b", required = true)))
+            } else {
+                add(group("G1", "GROUP", textQuestion("Q1")))
+            }
             add(group("G2", "GROUP", textQuestion("Q2")))
             add(group("G3", "END"))
         })
