@@ -27,6 +27,29 @@ class QuotaNavigationTest {
     }
 
     @Test
+    fun start_does_not_screen_out() {
+        val output = navigate(
+            values = """{"Q1.value":"male"}""",
+            direction = NavigationDirection.Start,
+            fullQuotas = """["QT1"]"""
+        )
+        assertEquals(NavigationIndex.Group("G1"), output.navigationIndex)
+        assertEquals(JsonPrimitive(false), output.toSave["Survey.disqualified"])
+    }
+
+    @Test
+    fun jump_does_not_screen_out() {
+        val output = navigate(
+            values = """{"Q1.value":"male"}""",
+            direction = NavigationDirection.Jump(NavigationIndex.Group("G2")),
+            index = NavigationIndex.Group("G1"),
+            fullQuotas = """["QT1"]"""
+        )
+        assertEquals(NavigationIndex.Group("G2"), output.navigationIndex)
+        assertEquals(JsonPrimitive(false), output.toSave["Survey.disqualified"])
+    }
+
+    @Test
     fun matching_a_full_quota_screens_out_to_end() {
         val output = navigate(
             values = """{"Q1.value":"male"}""",

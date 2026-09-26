@@ -19,6 +19,7 @@ fun Survey.navigate(
     navigationBindings: Map<Dependency, JsonElement>,
     skipInvalid: Boolean = false,
     currentIndexValid: Boolean = true,
+    screenedOut: Boolean = false,
 ): NavigationIndex {
     val newNavigationIndex = when (navigationDirection) {
         is NavigationDirection.Save,
@@ -35,7 +36,7 @@ fun Survey.navigate(
     val isNextOrJump = navigationDirection is NavigationDirection.Next
     val shouldNotSkipValid = !skipInvalid && isNextOrJump
 
-    return when {
+    val result = when {
         (isSubmitting || shouldNotSkipValid) && !currentIndexValid -> {
             navigationIndex!!.with(true)
         }
@@ -43,6 +44,7 @@ fun Survey.navigate(
         isSubmitting && !surveyValid -> firstInvalid(navigationMode, navigationBindings).with(true)
         else -> newNavigationIndex.with(false)
     }
+    return if (screenedOut && !result.showError) endIndex().with(false) else result
 }
 
 

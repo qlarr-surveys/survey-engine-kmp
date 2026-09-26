@@ -129,20 +129,19 @@ class NavigationUseCaseImp(
             "Survey",
             ReservedCode.Validity
         )]!!.jsonPrimitive.boolean
-        val navigatedIndex =
+        val screenedOut = matchesFullQuota(stateBindings)
+        val newNavIndex =
             survey.navigate(
                 navigationIndex,
                 navigationDirection,
                 navigationMode,
                 navigationBindings,
                 skipInvalid,
-                currentIndexValidity
+                currentIndexValidity,
+                screenedOut
             )
-        val newNavIndex = if (isScreenedOutByQuota(stateBindings, navigatedIndex)) {
+        if (screenedOut && !newNavIndex.showError) {
             stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
-            survey.endIndex()
-        } else {
-            navigatedIndex
         }
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
@@ -178,17 +177,8 @@ class NavigationUseCaseImp(
         )
     }
 
-    private fun isScreenedOutByQuota(
-        stateBindings: Map<Dependency, JsonElement>,
-        navigatedIndex: NavigationIndex
-    ): Boolean {
-        val movingForward = navigationDirection is NavigationDirection.Start
-                || navigationDirection is NavigationDirection.Next
-                || navigationDirection is NavigationDirection.Jump
-        if (!movingForward || navigatedIndex.showError) {
-            return false
-        }
-        return stateBindings.any { (dependency, value) ->
+    private fun matchesFullQuota(stateBindings: Map<Dependency, JsonElement>): Boolean {
+        return navigationDirection is NavigationDirection.Next && stateBindings.any { (dependency, value) ->
             val reservedCode = dependency.reservedCode
             reservedCode is ReservedCode.Quota
                     && value.jsonPrimitive.booleanOrNull == true
