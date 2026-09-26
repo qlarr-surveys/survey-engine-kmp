@@ -9,8 +9,6 @@ import kotlinx.serialization.json.jsonPrimitive
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
 
-// Malformed input here means the caller built it wrong, and silently falling back to "no quota is
-// full" would keep the survey recruiting past its targets. Fail loudly instead.
 object MalformedFullQuotasException : Exception()
 
 private fun String.toQuotaCodes(): Set<String> = try {
@@ -39,7 +37,6 @@ interface NavigationUseCaseWrapper {
             navigationDirection: NavigationDirection = NavigationDirection.Start,
             skipInvalid: Boolean,
             surveyMode: SurveyMode,
-            // Serialized JSON array of quota codes that are already full, e.g. ["QT1"]
             fullQuotas: String = "[]"
         ): NavigationUseCaseWrapper {
             return NavigationUseCaseWrapperImpl(

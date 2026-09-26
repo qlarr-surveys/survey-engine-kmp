@@ -180,8 +180,6 @@ fun Survey.allInOne(orderRelevanceBindings: Map<Dependency, JsonElement> = empty
     }
 }
 
-// The END group is always the survey's last group: validation rejects a survey without one
-// (NO_END_GROUP) and rejects any END group that is not last (MISPLACED_END_GROUP).
 internal fun Survey.endIndex() = NavigationIndex.End(groups.last().code)
 
 private fun Survey.firstRelevant(

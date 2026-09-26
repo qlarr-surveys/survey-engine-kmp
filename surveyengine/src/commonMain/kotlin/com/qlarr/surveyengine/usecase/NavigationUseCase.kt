@@ -178,14 +178,6 @@ class NavigationUseCaseImp(
         )
     }
 
-    // A respondent is screened out when they match a quota that is already full. Every quota is
-    // recomputed from the current answers on each navigation, exactly like skip and disqualify,
-    // so nothing about which quotas were matched before needs to be carried along: change the
-    // answer back and the screen-out reverses itself.
-    //
-    // Only forward moves act on the result. Backward moves are left alone so that a respondent
-    // editing an earlier answer is not dragged to the end, which matches skip: prevRelevant walks
-    // backward through what is still relevant and the ejection lands on the next forward move.
     private fun isScreenedOutByQuota(
         stateBindings: Map<Dependency, JsonElement>,
         navigatedIndex: NavigationIndex

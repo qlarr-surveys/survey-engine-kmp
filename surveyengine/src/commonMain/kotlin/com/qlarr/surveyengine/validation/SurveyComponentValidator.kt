@@ -40,8 +40,6 @@ private fun SurveyComponent.addInstructionDuplicateCodes(): SurveyComponent {
     return duplicate(instructionList = newInstructions)
 }
 
-// Quotas are survey-wide by nature, and navigation only consults the ones on the Survey.
-// A quota anywhere else would validate and run, yet gate nothing, so flag it at design time.
 private fun SurveyComponent.validateQuotaInstruction(): SurveyComponent {
     if (this is Survey) {
         return this
