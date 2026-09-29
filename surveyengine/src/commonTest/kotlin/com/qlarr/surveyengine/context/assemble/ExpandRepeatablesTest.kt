@@ -77,56 +77,6 @@ class ExpandRepeatablesTest {
     }
 
     @Test
-    fun keeps_repeatable_answer_containing_answers_and_adds_copies() {
-        val survey = Survey(
-            groups = listOf(
-                Group(
-                    "G1",
-                    questions = listOf(
-                        Question(
-                            "Q1",
-                            answers = listOf(
-                                Answer(
-                                    "A1", repeatInfo = repeatable("a", "b"),
-                                    answers = listOf(Answer("A2"), Answer("A3"))
-                                )
-                            )
-                        )
-                    )
-                )
-            )
-        )
-
-        val question = (listOf(survey).expandRepeatables()[0] as Survey).groups[0].questions[0]
-
-        assertEquals(listOf("A1", "A1_a", "A1_b"), question.answers.map { it.code })
-        assertEquals(RepeatInfo.Repeated("a"), question.answers[1].repeatInfo)
-        assertEquals(listOf("A2", "A3"), question.answers[1].answers.map { it.code })
-    }
-
-    @Test
-    fun keeps_repeatable_leaf_answer_and_adds_copies() {
-        val survey = Survey(
-            groups = listOf(
-                Group(
-                    "G1",
-                    questions = listOf(
-                        Question("Q1", answers = listOf(Answer("A1", repeatInfo = repeatable("a", "b"))))
-                    )
-                )
-            )
-        )
-
-        val question = (listOf(survey).expandRepeatables()[0] as Survey).groups[0].questions[0]
-
-        assertEquals(listOf("A1", "A1_a", "A1_b"), question.answers.map { it.code })
-        assertEquals(
-            listOf(repeatable("a", "b"), RepeatInfo.Repeated("a"), RepeatInfo.Repeated("b")),
-            question.answers.map { it.repeatInfo }
-        )
-    }
-
-    @Test
     fun expansion_is_idempotent() {
         val survey = Survey(
             groups = listOf(

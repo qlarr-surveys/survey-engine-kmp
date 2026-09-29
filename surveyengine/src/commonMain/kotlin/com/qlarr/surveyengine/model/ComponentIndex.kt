@@ -12,9 +12,16 @@ data class ComponentIndex(
     val maxIndex: Int,
     val prioritisedSiblings: Set<String> = setOf(),
     val dependencies: Set<ReservedCode> = setOf(),
-    val repetitionScope: String? = null
+    val repetitionScope: String? = null,
+    val repetitionType: RepetitionType? = null
 ) {
     fun hasSkip() = dependencies.any { it is ReservedCode.Skip }
+}
+
+@Serializable
+enum class RepetitionType {
+    REPEATABLE,
+    REPEATED
 }
 
 fun List<ComponentIndex>.parents(code: String): List<String> {

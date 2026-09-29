@@ -202,6 +202,13 @@ class JsonAdapterTest {
                 jsonMapper.parseToJsonElement(it).jsonObject
             }
         )
+
+        // an answer never carries repeatInfo — a stray value in incoming JSON is dropped at parse
+        val answerJsonWithRepeatInfo = """{"code":"A1","instructionList":[],"repeatInfo":{"type":"repeatable","range":["1","2","3"],"relevanceInstruction":"Q1.value == true"}}"""
+        assertEquals(
+            null,
+            jsonMapper.decodeFromString<SurveyComponent>(answerJsonWithRepeatInfo).repeatInfo
+        )
     }
 
     @Test

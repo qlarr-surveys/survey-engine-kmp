@@ -195,7 +195,7 @@ class ComponentValidatorTest {
 
     @Test
     fun only_outermost_offender_is_flagged_and_subtree_is_excluded() {
-        // G1(repeatable) > Q1(repeatable) > A1(repeatable): only Q1 is flagged, A1 is excluded
+        // G1(repeatable) > Q1(repeatable): only Q1 is flagged, its subtree is excluded
         val survey = Survey(
             groups = listOf(
                 Group(
@@ -203,7 +203,7 @@ class ComponentValidatorTest {
                     questions = listOf(
                         Question(
                             "Q1", repeatInfo = wellFormedRepeatable(),
-                            answers = listOf(Answer("A1", repeatInfo = wellFormedRepeatable()))
+                            answers = listOf(Answer("A1"))
                         )
                     )
                 )

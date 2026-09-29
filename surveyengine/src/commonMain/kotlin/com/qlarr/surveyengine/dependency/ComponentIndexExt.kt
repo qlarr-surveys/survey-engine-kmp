@@ -12,7 +12,8 @@ fun List<SurveyComponent>.componentIndices(
     parentRandomInstruction: Instruction.RandomGroups? = null,
     parentPriority: Instruction.PriorityGroups? = null,
     includeRepeatables: Boolean = true,
-    scope: String? = null
+    scope: String? = null,
+    scopeType: RepetitionType? = null
 ): List<ComponentIndex> {
     val returnList = mutableListOf<ComponentIndex>()
     val indices = indices(parentRandomInstruction)
@@ -23,6 +24,11 @@ fun List<SurveyComponent>.componentIndices(
         if (surveyComponent is Survey || surveyComponent.noErrors()) {
             val code = surveyComponent.uniqueCode(parentIndex?.code ?: "")
             val componentScope = if (surveyComponent.repeatInfo != null) code else scope
+            val componentScopeType = when (surveyComponent.repeatInfo) {
+                is RepeatInfo.Repeatable -> RepetitionType.REPEATABLE
+                is RepeatInfo.Repeated -> RepetitionType.REPEATED
+                null -> scopeType
+            }
             val hasUniqueCode = surveyComponent.hasUniqueCode()
             val componentIndex = ComponentIndex(
                 code = code,
@@ -38,7 +44,8 @@ fun List<SurveyComponent>.componentIndices(
                     ?.map {
                         if (hasUniqueCode) it else (parentIndex?.code ?: "") + it
                     }?.toSet() ?: setOf(),
-                repetitionScope = componentScope
+                repetitionScope = componentScope,
+                repetitionType = componentScopeType
             )
             returnList.add(componentIndex)
             val randomInstruction =
@@ -51,7 +58,8 @@ fun List<SurveyComponent>.componentIndices(
                     randomInstruction,
                     priorityInstruction,
                     includeRepeatables,
-                    componentScope
+                    componentScope,
+                    componentScopeType
                 )
             )
         }

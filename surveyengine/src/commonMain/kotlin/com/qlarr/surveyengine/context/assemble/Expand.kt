@@ -66,7 +66,6 @@ private fun SurveyComponent.suffixCodes(
         is Answer -> copy(
             code = newCode,
             instructionList = newInstructions,
-            repeatInfo = newRepeatInfo,
             answers = answers.map { it.suffixCodes(token, isRoot = false, remap) as Answer }
         )
 
@@ -112,7 +111,6 @@ private fun SurveyComponent.mergeErrorsFrom(copy: SurveyComponent, isRoot: Boole
     return when (this) {
         is Group -> copy(instructionList = newInstructions, repeatInfo = repeatable, questions = newChildren.filterIsInstance<Question>())
         is Question -> copy(instructionList = newInstructions, repeatInfo = repeatable, answers = newChildren.filterIsInstance<Answer>())
-        is Answer -> copy(instructionList = newInstructions, repeatInfo = repeatable, answers = newChildren.filterIsInstance<Answer>())
-        is Survey -> this
+        is Answer, is Survey -> this
     }
 }

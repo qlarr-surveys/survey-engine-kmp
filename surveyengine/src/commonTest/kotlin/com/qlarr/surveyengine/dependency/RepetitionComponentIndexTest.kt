@@ -40,6 +40,50 @@ class RepetitionComponentIndexTest {
     }
 
     @Test
+    fun marks_repetition_type_on_repeatable_and_repeated_subtrees() {
+        val survey = Survey(
+            groups = listOf(
+                Group("G1", repeatInfo = repeatable(), questions = listOf(Question("Q1"))),
+                Group("G2", repeatInfo = RepeatInfo.Repeated("a"), questions = listOf(Question("Q2"))),
+                Group("G3", questions = listOf(Question("Q3")))
+            )
+        )
+
+        val indices = listOf(survey).componentIndices()
+        fun typeOf(code: String) = indices.first { it.code == code }.repetitionType
+
+        assertNull(typeOf("Survey"))
+        assertEquals(RepetitionType.REPEATABLE, typeOf("G1"))
+        assertEquals(RepetitionType.REPEATABLE, typeOf("Q1"))
+        assertEquals(RepetitionType.REPEATED, typeOf("G2"))
+        assertEquals(RepetitionType.REPEATED, typeOf("Q2"))
+        assertNull(typeOf("G3"))
+        assertNull(typeOf("Q3"))
+    }
+
+    @Test
+    fun nested_repeatable_overrides_inherited_repeated_type() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1", repeatInfo = RepeatInfo.Repeated("a"),
+                    questions = listOf(
+                        Question("Q1"),
+                        Question("Q2", repeatInfo = repeatable())
+                    )
+                )
+            )
+        )
+
+        val indices = listOf(survey).componentIndices()
+        fun typeOf(code: String) = indices.first { it.code == code }.repetitionType
+
+        assertEquals(RepetitionType.REPEATED, typeOf("G1"))
+        assertEquals(RepetitionType.REPEATED, typeOf("Q1"))
+        assertEquals(RepetitionType.REPEATABLE, typeOf("Q2"))
+    }
+
+    @Test
     fun include_repeatables_false_drops_repeatable_subtree_but_keeps_repeated() {
         val survey = Survey(
             groups = listOf(

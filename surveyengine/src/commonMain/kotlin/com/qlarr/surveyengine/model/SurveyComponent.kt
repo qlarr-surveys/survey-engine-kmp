@@ -223,9 +223,8 @@ data class Answer(
     override val code: String,
     override val instructionList: List<Instruction> = listOf(),
     val answers: List<Answer> = listOf(),
-    override val repeatInfo: RepeatInfo? = null,
     override val errors: List<ComponentError> = listOf()
-) : SurveyComponent(code, instructionList, repeatInfo, errors) {
+) : SurveyComponent(code, instructionList, null, errors) {
 
     @Transient
     override val elementType: SurveyElementType = SurveyElementType.ANSWER
@@ -357,7 +356,7 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
             val answers: List<Answer> = jsonElement["answers"]?.let {
                 json.decodeFromJsonElement(ListSerializer(serializer<Answer>()), it)
             } ?: listOf()
-            Answer(code, instructionList, answers, repeatInfo, errors)
+            Answer(code, instructionList, answers, errors)
         } else {
             throw SerializationException("Invalid component code")
         }
