@@ -221,11 +221,16 @@ val assembleNpmPackage by tasks.registering {
         // repository README into the package directory so it shows on the npm listing.
         rootProject.file("README.md").copyTo(out.resolve("README.md"), overwrite = true)
 
-        // Publish under the scoped name.
+        // Publish under the scoped name, and declare the repository so npm provenance can verify the
+        // package against the GitHub Actions build it was published from.
         val pkg = out.resolve("package.json")
         pkg.writeText(
             pkg.readText()
-                .replace("\"name\": \"qlarr-survey-engine\"", "\"name\": \"@qlarr/survey-engine\"")
+                .replace(
+                    "\"name\": \"qlarr-survey-engine\"",
+                    "\"name\": \"@qlarr/survey-engine\",\n  \"repository\": " +
+                        "{\"type\": \"git\", \"url\": \"git+https://github.com/qlarr-surveys/survey-engine-kmp.git\"}"
+                )
         )
         logger.lifecycle("npm package assembled at: ${out.absolutePath}")
     }
