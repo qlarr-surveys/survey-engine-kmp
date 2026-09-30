@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,16 +25,12 @@ jobs:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Update npm (trusted publishing support)
+        run: npm install -g npm@latest
+
       - name: Assemble npm package
         run: ./gradlew clean :surveyengine:assembleNpmPackage
 
-      - name: Pack npm tarball
-        run: npm pack
+      - name: Publish to npm
+        run: npm publish --access public --provenance
         working-directory: surveyengine/build/npmPackage
-
-      - name: Upload package artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: npm-package
-          path: surveyengine/build/npmPackage/*.tgz
-          if-no-files-found: error
