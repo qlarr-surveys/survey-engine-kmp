@@ -9,7 +9,7 @@ internal fun Survey.sanitize(): Survey {
 
 internal fun List<SurveyComponent>.sanitize(): List<SurveyComponent> {
     return filter { surveyComponent ->
-        surveyComponent.noErrors()
+        surveyComponent.noErrors() && surveyComponent.repeatInfo !is RepeatInfo.Repeatable
     }.map { surveyComponent ->
         val newInstructions = surveyComponent.instructionList.filterNoErrors()
         val newChildren = surveyComponent.children.sanitize()

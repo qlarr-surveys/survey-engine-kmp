@@ -22,8 +22,9 @@ internal class ContextBuilder(
 
 ) {
     val replacements: MutableMap<String, String> = mutableMapOf()
-    val sanitizedNestedComponents: List<ChildlessComponent>
-        get() = components.sanitizedNestedComponents().withReplacements(replacements)
+    fun sanitizedNestedComponents(): List<ChildlessComponent> = components
+        .sanitizedNestedComponents()
+        .withReplacements(replacements)
     lateinit var componentIndexList: List<ComponentIndex>
     private lateinit var validatedSystemInstructions: MutableList<ComponentInstruction>
     lateinit var skipMap: Map<String, List<NotSkippedInstructionManifesto>>
@@ -71,9 +72,10 @@ internal class ContextBuilder(
 
     private fun getValidationScript(validateSpecialTypeGroups: Boolean = false): List<ScriptValidationInput> {
         val newComponents = if (validateSpecialTypeGroups)
-            components.validateDuplicates().validateReservedCode().validateEmptyParents().validateSpecialTypeGroups()
+            components.validateDuplicates().validateReservedCode().validateEmptyParents().validateRepeatables()
+                .validateSpecialTypeGroups()
         else
-            components.validateDuplicates().validateReservedCode().validateEmptyParents()
+            components.validateDuplicates().validateReservedCode().validateEmptyParents().validateRepeatables()
 
         components.apply {
             clear()
@@ -83,18 +85,23 @@ internal class ContextBuilder(
             val newComponent = surveyComponent.validateInstructions()
             components[index] = newComponent
         }
+        val expandedComponents = components.expandRepeatables()
+        components.apply {
+            clear()
+            addAll(expandedComponents)
+        }
         components.addStateToAllComponents()
 
-        val dependencyMapper = DependencyMapper(sanitizedNestedComponents)
+        val dependencyMapper = DependencyMapper(sanitizedNestedComponents())
 
         ForwardDependencyAnalyzer(
             components, dependencyMapper.dependencyMap
         ).validateForwardDependencies()
             .validateSkipDestinations()
-        components.addDisqualifyInstruction(sanitizedNestedComponents)
+        components.addDisqualifyInstruction(sanitizedNestedComponents())
         componentIndexList = components.componentIndices()
 
-        sanitizedNestedComponents.let { sanitisedComponents ->
+        sanitizedNestedComponents().let { sanitisedComponents ->
             val systemInstructions = sanitisedComponents.map { childlessComponent ->
                 childlessComponent.instructionList
                     .filter {
@@ -144,6 +151,11 @@ internal class ContextBuilder(
             adjustRelevanceInstruction()
             addValidityInstructions()
         }
+        val withRepeatableErrors = components.copyRepeatedErrorsToRepeatable()
+        components.apply {
+            clear()
+            addAll(withRepeatableErrors)
+        }
     }
 
     private fun MutableList<SurveyComponent>.replaceInstruction(parentCode: String) {
@@ -163,19 +175,20 @@ internal class ContextBuilder(
         }
     }
 
-    private fun List<SurveyComponent>.sanitizedNestedComponents(parentCode: String = ""): List<ChildlessComponent> {
-        val returnList = mutableListOf<ChildlessComponent>()
-        filter { surveyComponent ->
-            surveyComponent.noErrors()
-        }.forEach { surveyComponent ->
-            val newInstructions = surveyComponent.instructionList.filterNoErrors()
-            returnList.add(
-                surveyComponent.duplicate(instructionList = newInstructions).withParentCode(parentCode)
-                    .toChildlessComponent(parentCode)
-            )
-            val newCode = surveyComponent.uniqueCode(parentCode)
-            returnList.addAll(surveyComponent.children.sanitizedNestedComponents(newCode))
-        }
-        return returnList
+}
+
+internal fun List<SurveyComponent>.sanitizedNestedComponents(parentCode: String = ""): List<ChildlessComponent> {
+    val returnList = mutableListOf<ChildlessComponent>()
+    filter { surveyComponent ->
+        surveyComponent.noErrors() && surveyComponent.repeatInfo !is RepeatInfo.Repeatable
+    }.forEach { surveyComponent ->
+        val newInstructions = surveyComponent.instructionList.filterNoErrors()
+        returnList.add(
+            surveyComponent.duplicate(instructionList = newInstructions).withParentCode(parentCode)
+                .toChildlessComponent(parentCode)
+        )
+        val newCode = surveyComponent.uniqueCode(parentCode)
+        returnList.addAll(surveyComponent.children.sanitizedNestedComponents(newCode))
     }
+    return returnList
 }

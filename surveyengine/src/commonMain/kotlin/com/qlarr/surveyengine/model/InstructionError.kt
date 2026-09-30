@@ -19,6 +19,8 @@ sealed class InstructionError(val name: String = "") {
     @Serializable(with = InstructionErrorSerializer::class)
     data object DisqualifyNotToEnd : InstructionError("DisqualifyNotToEnd")
     @Serializable(with = InstructionErrorSerializer::class)
+    data object SkipInsideRepeatable : InstructionError("SkipInsideRepeatable")
+    @Serializable(with = InstructionErrorSerializer::class)
     data object SkipToEndOfEndGroup : InstructionError("SkipToEndOfEndGroup")
     @Serializable(with = InstructionErrorSerializer::class)
     data class InvalidReference(val reference: String, val invalidComponent: Boolean) :
@@ -109,6 +111,7 @@ object InstructionErrorSerializer : KSerializer<InstructionError> {
 
                 }
                 InstructionError.DisqualifyNotToEnd,
+                InstructionError.SkipInsideRepeatable,
                 InstructionError.DuplicateInstructionCode,
                 InstructionError.InvalidInstructionInEndGroup,
                 InstructionError.PriorityLimitMismatch,
@@ -210,6 +213,7 @@ object InstructionErrorSerializer : KSerializer<InstructionError> {
             }
 
             "DisqualifyNotToEnd" -> InstructionError.DisqualifyNotToEnd
+            "SkipInsideRepeatable" -> InstructionError.SkipInsideRepeatable
             "DuplicateInstructionCode" -> InstructionError.DuplicateInstructionCode
 
             "InvalidInstructionInEndGroup" -> InstructionError.InvalidInstructionInEndGroup

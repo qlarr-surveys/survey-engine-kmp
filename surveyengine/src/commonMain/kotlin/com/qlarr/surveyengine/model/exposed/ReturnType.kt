@@ -64,6 +64,12 @@ sealed class ReturnType {
         } else {
             this
         }
+
+    fun remapChildCodes(remap: (kotlin.String) -> kotlin.String): ReturnType = when (this) {
+        is Enum -> Enum(values.map(remap).toSet())
+        is List -> List(values.map(remap).toSet())
+        else -> this
+    }
 }
 
 @Serializable
