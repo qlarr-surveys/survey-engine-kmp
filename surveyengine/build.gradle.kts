@@ -174,7 +174,7 @@ kotlin {
         // Required properties
         // Specify the required Pod version here
         // Otherwise, the Gradle project version is used
-        version = "0.2.1"
+        version = "0.3.0"
         summary = "Some description for a Kotlin/Native module"
         homepage = "Link to a Kotlin/Native module homepage"
 
@@ -217,6 +217,10 @@ val assembleNpmPackage by tasks.registering {
         out.resolve("scripts").deleteRecursively()
         out.resolve("survey-engine-script").deleteRecursively()
 
+        // The compiled dist has no README, so npm would publish the package without one. Copy the
+        // repository README into the package directory so it shows on the npm listing.
+        rootProject.file("README.md").copyTo(out.resolve("README.md"), overwrite = true)
+
         // Publish under the scoped name.
         val pkg = out.resolve("package.json")
         pkg.writeText(
@@ -228,7 +232,7 @@ val assembleNpmPackage by tasks.registering {
 }
 
 group = "com.qlarr.survey-engine"
-version = "0.2.1"
+version = "0.3.0"
 publishing {
     publications {
         // This creates a publication for each target
