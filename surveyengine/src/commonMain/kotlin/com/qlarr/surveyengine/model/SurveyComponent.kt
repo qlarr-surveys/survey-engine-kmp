@@ -260,6 +260,7 @@ data class Answer(
 }
 
 fun List<SurveyComponent>.withoutErrors() = filter { it.noErrors() }
+fun List<SurveyComponent>.notRepeatable() = filter { it.repeatInfo !is RepeatInfo.Repeatable }
 
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -365,7 +366,7 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
     }
 }
 
-const val REPEAT_TOKEN_PLACEHOLDER = "{{repeat_token}}"
+const val REPEAT_TOKEN_PLACEHOLDER = "\$repeat_token"
 
 @Serializable(with = RepeatInfoSerializer::class)
 sealed class RepeatInfo {

@@ -161,7 +161,7 @@ class ComponentValidatorTest {
 
     private fun wellFormedRepeatable() = RepeatInfo.Repeatable(
         range = listOf("a", "b"),
-        relevanceInstruction = "Qbrands.value.includes('{{repeat_token}}')"
+        relevanceInstruction = "Qbrands.value.includes('\$repeat_token')"
     )
 
     @Test
@@ -222,7 +222,7 @@ class ComponentValidatorTest {
             groups = listOf(
                 Group(
                     "G1",
-                    repeatInfo = RepeatInfo.Repeatable(range = listOf(), relevanceInstruction = "includes('{{repeat_token}}')")
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf(), relevanceInstruction = "includes('\$repeat_token')")
                 ),
                 Group(
                     "G2",
@@ -249,11 +249,11 @@ class ComponentValidatorTest {
             groups = listOf(
                 Group(
                     "G1",
-                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "Brand X"), relevanceInstruction = "x {{repeat_token}}")
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "Brand X"), relevanceInstruction = "x \$repeat_token")
                 ),
                 Group(
                     "G2",
-                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "b_1"), relevanceInstruction = "x {{repeat_token}}")
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "b_1"), relevanceInstruction = "x \$repeat_token")
                 )
             )
         )

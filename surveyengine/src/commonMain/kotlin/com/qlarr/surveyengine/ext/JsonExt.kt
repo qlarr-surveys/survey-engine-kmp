@@ -395,15 +395,29 @@ private fun JsonArray.getByCode(code: String): JsonObject {
     throw IllegalStateException("Child with corresponding code not found")
 }
 
-internal fun SurveyComponent.copyComponentsToJson(surveyDef: JsonObject, parentCode: String = ""): JsonObject {
-    if (!surveyDef.containsKey("code") || code != surveyDef["code"]?.jsonPrimitive?.content) {
+private fun JsonObject.repeatInfoType(): String? =
+    (this["repeatInfo"] as? JsonObject)?.get("type")?.jsonPrimitive?.contentOrNull
+
+internal fun SurveyComponent.copyComponentsToJson(
+    surveyDef: JsonObject,
+    parentCode: String = "",
+    insideRepeated: Boolean = false
+): JsonObject {
+    if (!insideRepeated && (!surveyDef.containsKey("code") || code != surveyDef["code"]?.jsonPrimitive?.content)) {
         throw IllegalStateException("copyErrorsToJSON: copying into a JsonObject with different code: $code")
     }
 
     val qualifiedCode = uniqueCode(parentCode)
     val returnObjectMap = surveyDef.toMutableMap()
 
+    returnObjectMap["code"] = JsonPrimitive(code)
     returnObjectMap["qualifiedCode"] = JsonPrimitive(qualifiedCode)
+
+    if (repeatInfo != null) {
+        returnObjectMap["repeatInfo"] = jsonMapper.encodeToJsonElement(RepeatInfoSerializer, repeatInfo!!)
+    } else {
+        returnObjectMap.remove("repeatInfo")
+    }
 
     if (instructionList.isNotEmpty()) {
         returnObjectMap["instructionList"] = jsonMapper.encodeToJsonElement(instructionList)
@@ -422,11 +436,39 @@ internal fun SurveyComponent.copyComponentsToJson(surveyDef: JsonObject, parentC
     if (children.isNotEmpty()) {
         val childrenListName = childType.nameAsChildList()
         val jsonChildren = surveyDef[childrenListName]?.jsonArray ?: buildJsonArray {}
+        val typedChildren = children.filter { it.elementType == childType }
 
         val newChildren = buildJsonArray {
-            children.filter { it.elementType == childType }.forEachIndexed { index, surveyComponent ->
-                val jsonChild = jsonChildren.getOrNull(index)?.jsonObject ?: buildJsonObject {}
-                add(surveyComponent.copyComponentsToJson(jsonChild, qualifiedCode))
+            if (insideRepeated) {
+                // Base is the template subtree, whose children mirror this copy's children 1:1 by order.
+                typedChildren.forEachIndexed { index, surveyComponent ->
+                    val jsonChild = jsonChildren.getOrNull(index)?.jsonObject ?: buildJsonObject {}
+                    add(surveyComponent.copyComponentsToJson(jsonChild, qualifiedCode, insideRepeated = true))
+                }
+            } else {
+                val componentsByCode = typedChildren.associateBy { it.code }
+                val repeatedByTemplate = typedChildren
+                    .mapNotNull { child ->
+                        (child.repeatInfo as? RepeatInfo.Repeated)
+                            ?.let { child.code.removeSuffix("_${it.token}") to child }
+                    }
+                    .groupBy({ it.first }, { it.second })
+
+                jsonChildren.forEach { element ->
+                    val jsonChild = element.jsonObject
+                    // Drop stale repeated copies; they are rebuilt from their template below, keeping the
+                    // copy-back idempotent when a previously-expanded survey is re-submitted.
+                    if (jsonChild.repeatInfoType() == "repeated") {
+                        return@forEach
+                    }
+                    val childCode = jsonChild["code"]?.jsonPrimitive?.content ?: return@forEach
+                    val component = componentsByCode[childCode] ?: return@forEach
+                    add(component.copyComponentsToJson(jsonChild, qualifiedCode))
+                    // Rebuild each repeated copy by duplicating this template and overlaying its component.
+                    repeatedByTemplate[childCode]?.forEach { copy ->
+                        add(copy.copyComponentsToJson(jsonChild, qualifiedCode, insideRepeated = true))
+                    }
+                }
             }
         }
 
@@ -436,6 +478,11 @@ internal fun SurveyComponent.copyComponentsToJson(surveyDef: JsonObject, parentC
     return JsonObject(returnObjectMap)
 }
 
+private val HTML_TAG = Regex("<[^>]*>")
+
+// Reduces an HTML label to plain text, e.g. `<p class="x">hi <b>there</b></p>` -> `hi there`.
+internal fun String.stripHtmlTags(): String = HTML_TAG.replace(this, "").trim()
+
 internal fun JsonObject.getLabel(lang: String, defaultLang: String): String {
     return (this["content"] as? JsonObject)?.let { content ->
         val langContent = content[lang] as? JsonObject
@@ -443,7 +490,7 @@ internal fun JsonObject.getLabel(lang: String, defaultLang: String): String {
 
         langContent?.get("label")?.jsonPrimitive?.contentOrNull
             ?: defaultLangContent?.get("label")?.jsonPrimitive?.contentOrNull
-    } ?: ""
+    }?.stripHtmlTags() ?: ""
 }
 
 internal fun JsonObject.getChild(codes: List<String>): JsonObject {

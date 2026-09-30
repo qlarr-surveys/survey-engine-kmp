@@ -232,7 +232,7 @@ class ContextBuilderTest {
                     "G1",
                     repeatInfo = RepeatInfo.Repeatable(
                         range = listOf("a", "b"),
-                        relevanceInstruction = "Qbrands.value.includes('{{repeat_token}}')"
+                        relevanceInstruction = "Qbrands.value.includes('\$repeat_token')"
                     ),
                     questions = listOf(
                         Question("Q1", instructionList = listOf(SimpleState("Qzzz.value == 1", ConditionalRelevance)))
@@ -258,7 +258,7 @@ class ContextBuilderTest {
                     "G1",
                     repeatInfo = RepeatInfo.Repeatable(
                         range = listOf("a", "b"),
-                        relevanceInstruction = "Qzzz.value.includes('{{repeat_token}}')"
+                        relevanceInstruction = "Qzzz.value.includes('\$repeat_token')"
                     ),
                     questions = listOf(Question("Q1"))
                 )
@@ -281,7 +281,7 @@ class ContextBuilderTest {
                     "G1",
                     repeatInfo = RepeatInfo.Repeatable(
                         range = listOf("a", "b"),
-                        relevanceInstruction = "true || '{{repeat_token}}'"
+                        relevanceInstruction = "true || '\$repeat_token'"
                     ),
                     instructionList = listOf(SkipInstruction(skipToComponent = "G2", text = "true")),
                     questions = listOf(Question("Q1"))
@@ -309,7 +309,7 @@ class ContextBuilderTest {
                     "G1",
                     repeatInfo = RepeatInfo.Repeatable(
                         range = listOf("a"),
-                        relevanceInstruction = "true || '{{repeat_token}}'"
+                        relevanceInstruction = "true || '\$repeat_token'"
                     ),
                     questions = listOf(
                         Question("Q1", instructionList = listOf(SkipInstruction(skipToComponent = "Q2", text = "true"))),
@@ -353,7 +353,7 @@ class ContextBuilderTest {
             groups = listOf(
                 Group(
                     "G1",
-                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "Qx.includes('{{repeat_token}}')"),
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "Qx.includes('\$repeat_token')"),
                     questions = listOf(Question("Q1"))
                 ),
                 Group("G2", repeatInfo = RepeatInfo.Repeated("a"), questions = listOf(Question("Q2"))),

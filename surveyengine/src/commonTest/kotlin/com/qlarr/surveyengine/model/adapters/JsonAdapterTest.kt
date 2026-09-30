@@ -177,7 +177,7 @@ class JsonAdapterTest {
 
         val repeatableWithErrors = RepeatInfo.Repeatable(
             range = listOf("a"),
-            relevanceInstruction = "Qx.includes('{{repeat_token}}')",
+            relevanceInstruction = "Qx.includes('\$repeat_token')",
             relevanceInstructionErrors = listOf(ScriptError("bad", 0, 3))
         )
         assertEquals(

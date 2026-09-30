@@ -10,7 +10,7 @@ import kotlin.test.assertTrue
 
 class RepetitionComponentIndexTest {
 
-    private fun repeatable() = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "Qx.includes('{{repeat_token}}')")
+    private fun repeatable() = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "Qx.includes('\$repeat_token')")
 
     private fun value() = listOf(SimpleState("", ReservedCode.Value))
 

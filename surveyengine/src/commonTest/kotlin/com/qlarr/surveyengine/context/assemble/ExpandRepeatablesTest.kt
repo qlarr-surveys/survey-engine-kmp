@@ -18,7 +18,7 @@ class ExpandRepeatablesTest {
 
     private fun repeatable(vararg tokens: String) = RepeatInfo.Repeatable(
         range = tokens.toList(),
-        relevanceInstruction = "Qbrands.value.includes('{{repeat_token}}')"
+        relevanceInstruction = "Qbrands.value.includes('\$repeat_token')"
     )
 
     @Test
@@ -138,7 +138,7 @@ class ExpandRepeatablesTest {
                 Group(
                     "G1", repeatInfo = repeatable("a", "b"),
                     questions = listOf(
-                        Question("Q1", instructionList = listOf(relevance("Qbrands.value.includes('{{repeat_token}}')")))
+                        Question("Q1", instructionList = listOf(relevance("Qbrands.value.includes('\$repeat_token')")))
                     )
                 )
             )
@@ -147,7 +147,7 @@ class ExpandRepeatablesTest {
         val expanded = listOf(survey).expandRepeatables()[0] as Survey
         fun q1Relevance(groupIndex: Int) = expanded.groups[groupIndex].questions[0].conditionalRelevance()
 
-        assertEquals("Qbrands.value.includes('{{repeat_token}}')", q1Relevance(0)) // template untouched
+        assertEquals("Qbrands.value.includes('\$repeat_token')", q1Relevance(0)) // template untouched
         assertEquals("Qbrands.value.includes('a')", q1Relevance(1))
         assertEquals("Qbrands.value.includes('b')", q1Relevance(2))
     }
@@ -160,7 +160,7 @@ class ExpandRepeatablesTest {
                     "G1",
                     repeatInfo = RepeatInfo.Repeatable(
                         range = listOf("a"),
-                        relevanceInstruction = "Qx.includes('{{repeat_token}}') || Qy.includes('{{repeat_token}}')"
+                        relevanceInstruction = "Qx.includes('\$repeat_token') || Qy.includes('\$repeat_token')"
                     ),
                     questions = listOf(Question("Q1"))
                 )
