@@ -30,7 +30,8 @@ class NavigationUseCaseImp(
     private val navigationMode: NavigationMode,
     private val lang: String,
     private val skipInvalid: Boolean,
-    private val surveyMode: SurveyMode
+    private val surveyMode: SurveyMode,
+    private val fullQuotas: Set<String> = setOf()
 ) : NavigationUseCase {
     private val values = stringValues.withDependencyKeys(validationOutput.schema)
     private val startupRandomValues = mutableMapOf<Dependency, Int>()
@@ -128,6 +129,7 @@ class NavigationUseCaseImp(
             "Survey",
             ReservedCode.Validity
         )]!!.jsonPrimitive.boolean
+        val screenedOut = matchesFullQuota(stateBindings)
         val newNavIndex =
             survey.navigate(
                 navigationIndex,
@@ -135,8 +137,12 @@ class NavigationUseCaseImp(
                 navigationMode,
                 navigationBindings,
                 skipInvalid,
-                currentIndexValidity
+                currentIndexValidity,
+                screenedOut
             )
+        if (screenedOut) {
+            stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
+        }
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
         extraBindings.putAll(runtimeContextBuilder.addValidityInstruction(survey, newNavIndex))
@@ -169,6 +175,15 @@ class NavigationUseCaseImp(
             dependencyMapBundle = Pair(dependencyMapper.impactMap, dependencyMapper.dependencyMap),
             navigationIndex = newNavIndex
         )
+    }
+
+    private fun matchesFullQuota(stateBindings: Map<Dependency, JsonElement>): Boolean {
+        return navigationDirection is NavigationDirection.Next && stateBindings.any { (dependency, value) ->
+            val reservedCode = dependency.reservedCode
+            reservedCode is ReservedCode.Quota
+                    && value.jsonPrimitive.booleanOrNull == true
+                    && reservedCode.quotaCode in fullQuotas
+        }
     }
 
     private fun getLabel(qualifiedCode: String): String {
@@ -212,6 +227,7 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
 
             ReservedCode.Mode,
             ReservedCode.Disqualified,
+            is ReservedCode.Quota,
             ReservedCode.Value -> true
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean

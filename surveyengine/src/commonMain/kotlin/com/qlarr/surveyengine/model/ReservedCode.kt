@@ -68,6 +68,10 @@ sealed class ReservedCode(
         isRuntime = true
     )
     @Serializable(with = ReservedCodeSerializer::class)
+    data class Quota(override val code: String) : ReservedCode(code, executionOrder = 8, requiresValidation = true) {
+        val quotaCode: String get() = code.removePrefix(QUOTA_INSTRUCTION_PREFIX)
+    }
+    @Serializable(with = ReservedCodeSerializer::class)
     data object MaskedValue : ReservedCode("masked_value", isAccessible = true, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
     data object RelevanceMap : ReservedCode("relevance_map", executionOrder = 8)
@@ -102,7 +106,7 @@ sealed class ReservedCode(
             is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
-            is Disqualified,  is HasPrevious, is HasNext -> ReturnType.Boolean
+            is Disqualified,  is HasPrevious, is HasNext, is Quota -> ReturnType.Boolean
         }
     }
     fun validReturnType(returnType: ReturnType): Boolean {
@@ -113,7 +117,7 @@ sealed class ReservedCode(
             is Lang, is Mode, is Value, is MaskedValue, is Label -> returnType == ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
-            is Disqualified,  is HasPrevious, is HasNext -> returnType == ReturnType.Boolean
+            is Disqualified,  is HasPrevious, is HasNext, is Quota -> returnType == ReturnType.Boolean
         }
     }
 
@@ -141,6 +145,8 @@ object ReservedCodeSerializer : KSerializer<ReservedCode> {
 
 const val VALIDATION_INSTRUCTION_PATTERN = "validation_[a-z0-9][a-z0-9_]*\$"
 const val SKIP_INSTRUCTION_PATTERN = "skip_to_[A-Za-z0-9][A-Za-z0-9_]*\$"
+const val QUOTA_INSTRUCTION_PREFIX = "quota_"
+const val QUOTA_INSTRUCTION_PATTERN = "quota_[A-Za-z0-9][A-Za-z0-9_]*\$"
 
 fun String.toReservedCode(): ReservedCode {
     return when {
@@ -170,6 +176,7 @@ fun String.toReservedCode(): ReservedCode {
         this == "validity_map" -> ReservedCode.ValidityMap
         this.matches(Regex(VALIDATION_INSTRUCTION_PATTERN)) -> ReservedCode.ValidationRule(this)
         this.matches(Regex(SKIP_INSTRUCTION_PATTERN)) -> ReservedCode.Skip(this)
+        this.matches(Regex(QUOTA_INSTRUCTION_PATTERN)) -> ReservedCode.Quota(this)
         else -> throw IllegalStateException("")
     }
 }
@@ -203,6 +210,7 @@ fun String.isReservedCode(): Boolean {
     )
             || this.matches(Regex(VALIDATION_INSTRUCTION_PATTERN))
             || this.matches(Regex(SKIP_INSTRUCTION_PATTERN))
+            || this.matches(Regex(QUOTA_INSTRUCTION_PATTERN))
 }
 
 
