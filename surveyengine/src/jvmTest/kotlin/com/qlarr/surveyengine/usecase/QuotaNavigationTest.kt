@@ -11,6 +11,7 @@ import kotlinx.serialization.json.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class QuotaNavigationTest {
@@ -174,6 +175,23 @@ class QuotaNavigationTest {
     }
 
     @Test
+    fun quota_referencing_a_deleted_question_is_not_evaluated() {
+        val survey = ValidationUseCaseWrapper.create(design(withBrokenQuota = true).toString()).validate()
+        assertTrue(survey.contains("unIdentified: Q9.value"), "expected QT3 to reference a missing question")
+        val output = navigate(
+            values = """{"Q1.value":"male"}""",
+            direction = NavigationDirection.Next,
+            index = NavigationIndex.Group("G1"),
+            fullQuotas = """["QT3"]""",
+            survey = survey
+        )
+        assertEquals(NavigationIndex.Group("G2"), output.navigationIndex)
+        assertEquals(JsonPrimitive(false), output.toSave["Survey.disqualified"])
+        assertFalse(output.toSave.containsKey("Survey.quota_QT3"))
+        assertEquals(JsonPrimitive(true), output.toSave["Survey.quota_QT1"])
+    }
+
+    @Test
     fun quota_outside_the_survey_is_a_design_error() {
         val badDesign = buildJsonObject {
             design().forEach { (key, value) ->
@@ -264,7 +282,11 @@ class QuotaNavigationTest {
         put("isActive", true)
     }
 
-    private fun design(withQuotas: Boolean = true, withRequired: Boolean = false) = buildJsonObject {
+    private fun design(
+        withQuotas: Boolean = true,
+        withRequired: Boolean = false,
+        withBrokenQuota: Boolean = false
+    ) = buildJsonObject {
         put("code", "Survey")
         put("defaultLang", buildJsonObject {
             put("code", "en")
@@ -279,6 +301,9 @@ class QuotaNavigationTest {
             if (withQuotas) {
                 add(quota("QT1", "Q1.value == \"male\""))
                 add(quota("QT2", "Q1.value == \"female\""))
+            }
+            if (withBrokenQuota) {
+                add(quota("QT3", "Q1.value == \"male\" && Q9.value == \"x\""))
             }
         })
         put("groups", buildJsonArray {
