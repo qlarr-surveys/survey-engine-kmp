@@ -30,13 +30,17 @@ class NavigationUseCaseImp(
     private val navigationMode: NavigationMode,
     private val lang: String,
     private val skipInvalid: Boolean,
-    private val surveyMode: SurveyMode
+    private val surveyMode: SurveyMode,
 ) : NavigationUseCase {
     private val values = stringValues.withDependencyKeys(validationOutput.schema)
     private val startupRandomValues = mutableMapOf<Dependency, Int>()
     private val contextExecutor = ContextExecutor()
     private var survey = validationOutput.survey.sanitize()
         .replaceOrAddInstruction(Instruction.SimpleState(lang, ReservedCode.Lang)) as Survey
+    private val inputVariables = survey.inputVariables()
+    private val inputValues = inputVariables
+        .mapNotNull { input -> stringValues[input.toValueKey()]?.let { input to it } }
+        .toMap()
     private val dependencyMapper = DependencyMapper(validationOutput.impactMap)
     private val skipMap = validationOutput.skipMap
     private lateinit var contextRunner: ContextRunner
@@ -63,6 +67,7 @@ class NavigationUseCaseImp(
                 putAll(alphaSorted.mapValues { JsonPrimitive(it.value) })
                 putAll(labelsMap.mapValues { JsonPrimitive(it.value) })
                 put(modeDependency, JsonPrimitive(surveyMode.name.lowercase()))
+                putAll(inputValues)
             }
 
         val instructionsMap = listOf(survey).instructionsMap()
@@ -157,7 +162,7 @@ class NavigationUseCaseImp(
 
         val toSave: Map<Dependent, JsonElement> = formatBindings + stateBindings.apply {
             putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
-        }.filterStateToSave(dependenciesToSave)
+        }.filterStateToSave(dependenciesToSave, inputVariables)
 
         return NavigationOutput(
             reducedSurvey = reducedSurvey,
@@ -181,12 +186,19 @@ class NavigationUseCaseImp(
     }
 }
 
+private fun Survey.inputVariables(): Set<Dependency> = instructionList
+    .filterIsInstance<Instruction.State>()
+    .filter { it.reservedCode is ReservedCode.Variable && !it.isActive }
+    .map { Dependency(code, it.reservedCode) }
+    .toSet()
+
 private fun Map<Dependency, JsonElement>.filterBindings(dependencies: Set<Dependency>): Map<Dependency, JsonElement> {
     return filterKeys { dependencies.contains(it) }
 }
 
 private fun Map<Dependency, JsonElement>.filterStateToSave(
-    dependencies: Set<Dependency>
+    dependencies: Set<Dependency>,
+    inputVariables: Set<Dependency>
 ): Map<Dependent, JsonElement> {
     return filterKeys {
         when (it.reservedCode) {
@@ -213,6 +225,8 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
             ReservedCode.Mode,
             ReservedCode.Disqualified,
             ReservedCode.Value -> true
+
+            is ReservedCode.Variable -> it !in inputVariables
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean
             ReservedCode.MaskedValue -> this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]
