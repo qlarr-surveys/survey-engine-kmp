@@ -3,19 +3,9 @@ package com.qlarr.surveyengine.usecase
 import com.qlarr.surveyengine.model.exposed.*
 import com.qlarr.surveyengine.model.jsonMapper
 import com.qlarr.surveyengine.scriptengine.ScriptEngineNavigate
-import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import kotlin.js.ExperimentalJsExport
 import kotlin.js.JsExport
-
-object MalformedFullQuotasException : Exception()
-
-private fun String.toQuotaCodes(): Set<String> = try {
-    jsonMapper.parseToJsonElement(this).jsonArray.map { it.jsonPrimitive.content }.toSet()
-} catch (_: Exception) {
-    throw MalformedFullQuotasException
-}
 
 @OptIn(ExperimentalJsExport::class)
 @JsExport
@@ -37,7 +27,6 @@ interface NavigationUseCaseWrapper {
             navigationDirection: NavigationDirection = NavigationDirection.Start,
             skipInvalid: Boolean,
             surveyMode: SurveyMode,
-            fullQuotas: String = "[]"
         ): NavigationUseCaseWrapper {
             return NavigationUseCaseWrapperImpl(
                 processedSurvey = processedSurvey,
@@ -48,7 +37,6 @@ interface NavigationUseCaseWrapper {
                 navigationMode = navigationMode,
                 navigationIndex = navigationIndex,
                 navigationDirection = navigationDirection,
-                fullQuotas = fullQuotas.toQuotaCodes()
             )
         }
     }

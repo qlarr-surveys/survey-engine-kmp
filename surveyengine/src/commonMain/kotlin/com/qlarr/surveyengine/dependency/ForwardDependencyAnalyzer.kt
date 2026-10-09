@@ -35,6 +35,7 @@ internal class ForwardDependencyAnalyzer(
                     if (dependency.componentCode != uniqueCode
                         && dependency != langDependency
                         && dependency != modeDependency
+                        && dependency.reservedCode !is ReservedCode.Variable
                         && !accessibleDependencies.contains(dependency)
                     ) {
                         returnComponent =

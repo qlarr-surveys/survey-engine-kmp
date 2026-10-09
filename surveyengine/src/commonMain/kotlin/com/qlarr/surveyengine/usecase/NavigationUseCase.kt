@@ -31,13 +31,16 @@ class NavigationUseCaseImp(
     private val lang: String,
     private val skipInvalid: Boolean,
     private val surveyMode: SurveyMode,
-    private val fullQuotas: Set<String> = setOf()
 ) : NavigationUseCase {
     private val values = stringValues.withDependencyKeys(validationOutput.schema)
     private val startupRandomValues = mutableMapOf<Dependency, Int>()
     private val contextExecutor = ContextExecutor()
     private var survey = validationOutput.survey.sanitize()
         .replaceOrAddInstruction(Instruction.SimpleState(lang, ReservedCode.Lang)) as Survey
+    private val inputVariables = survey.inputVariables()
+    private val inputValues = inputVariables
+        .mapNotNull { input -> stringValues[input.toValueKey()]?.let { input to it } }
+        .toMap()
     private val dependencyMapper = DependencyMapper(validationOutput.impactMap)
     private val skipMap = validationOutput.skipMap
     private lateinit var contextRunner: ContextRunner
@@ -64,6 +67,7 @@ class NavigationUseCaseImp(
                 putAll(alphaSorted.mapValues { JsonPrimitive(it.value) })
                 putAll(labelsMap.mapValues { JsonPrimitive(it.value) })
                 put(modeDependency, JsonPrimitive(surveyMode.name.lowercase()))
+                putAll(inputValues)
             }
 
         val instructionsMap = listOf(survey).instructionsMap()
@@ -129,7 +133,6 @@ class NavigationUseCaseImp(
             "Survey",
             ReservedCode.Validity
         )]!!.jsonPrimitive.boolean
-        val screenedOut = matchesFullQuota(stateBindings)
         val newNavIndex =
             survey.navigate(
                 navigationIndex,
@@ -137,12 +140,8 @@ class NavigationUseCaseImp(
                 navigationMode,
                 navigationBindings,
                 skipInvalid,
-                currentIndexValidity,
-                screenedOut
+                currentIndexValidity
             )
-        if (screenedOut) {
-            stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
-        }
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
         extraBindings.putAll(runtimeContextBuilder.addValidityInstruction(survey, newNavIndex))
@@ -163,7 +162,7 @@ class NavigationUseCaseImp(
 
         val toSave: Map<Dependent, JsonElement> = formatBindings + stateBindings.apply {
             putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
-        }.filterStateToSave(dependenciesToSave)
+        }.filterStateToSave(dependenciesToSave, inputVariables)
 
         return NavigationOutput(
             reducedSurvey = reducedSurvey,
@@ -177,15 +176,6 @@ class NavigationUseCaseImp(
         )
     }
 
-    private fun matchesFullQuota(stateBindings: Map<Dependency, JsonElement>): Boolean {
-        return navigationDirection is NavigationDirection.Next && stateBindings.any { (dependency, value) ->
-            val reservedCode = dependency.reservedCode
-            reservedCode is ReservedCode.Quota
-                    && value.jsonPrimitive.booleanOrNull == true
-                    && reservedCode.quotaCode in fullQuotas
-        }
-    }
-
     private fun getLabel(qualifiedCode: String): String {
         val codes = qualifiedCode.splitToComponentCodes().toMutableList()
         if (codes[0].isQuestionCode()) {
@@ -196,12 +186,20 @@ class NavigationUseCaseImp(
     }
 }
 
+// Inactive variables are inputs: their values come in with the navigation values and are never saved
+private fun Survey.inputVariables(): Set<Dependency> = instructionList
+    .filterIsInstance<Instruction.State>()
+    .filter { it.reservedCode is ReservedCode.Variable && !it.isActive }
+    .map { Dependency(code, it.reservedCode) }
+    .toSet()
+
 private fun Map<Dependency, JsonElement>.filterBindings(dependencies: Set<Dependency>): Map<Dependency, JsonElement> {
     return filterKeys { dependencies.contains(it) }
 }
 
 private fun Map<Dependency, JsonElement>.filterStateToSave(
-    dependencies: Set<Dependency>
+    dependencies: Set<Dependency>,
+    inputVariables: Set<Dependency>
 ): Map<Dependent, JsonElement> {
     return filterKeys {
         when (it.reservedCode) {
@@ -227,8 +225,9 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
 
             ReservedCode.Mode,
             ReservedCode.Disqualified,
-            is ReservedCode.Quota,
             ReservedCode.Value -> true
+
+            is ReservedCode.Variable -> it !in inputVariables
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean
             ReservedCode.MaskedValue -> this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]

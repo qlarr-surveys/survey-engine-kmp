@@ -19,11 +19,7 @@ fun Survey.navigate(
     navigationBindings: Map<Dependency, JsonElement>,
     skipInvalid: Boolean = false,
     currentIndexValid: Boolean = true,
-    screenedOut: Boolean = false,
 ): NavigationIndex {
-    if (screenedOut) {
-        return endIndex().with(false)
-    }
     val newNavigationIndex = when (navigationDirection) {
         is NavigationDirection.Save,
         is NavigationDirection.Resume -> currentRelevant(navigationIndex!!, navigationMode, navigationBindings)
