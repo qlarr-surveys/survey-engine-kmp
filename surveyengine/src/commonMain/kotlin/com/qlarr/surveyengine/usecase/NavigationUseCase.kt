@@ -32,11 +32,12 @@ class NavigationUseCaseImp(
     private val skipInvalid: Boolean,
     private val surveyMode: SurveyMode
 ) : NavigationUseCase {
-    private val values = stringValues.withDependencyKeys(validationOutput.schema)
     private val startupRandomValues = mutableMapOf<Dependency, Int>()
     private val contextExecutor = ContextExecutor()
     private var survey = validationOutput.survey.sanitize()
         .replaceOrAddInstruction(Instruction.SimpleState(lang, ReservedCode.Lang)) as Survey
+    private val values = stringValues.withDependencyKeys(validationOutput.schema) +
+            stringValues.valueMetaBindings(survey.nestedComponents())
     private val dependencyMapper = DependencyMapper(validationOutput.impactMap)
     private val skipMap = validationOutput.skipMap
     private lateinit var contextRunner: ContextRunner
@@ -181,6 +182,16 @@ class NavigationUseCaseImp(
     }
 }
 
+private fun Map<String, JsonElement>.valueMetaBindings(
+    components: List<ChildlessComponent>
+): Map<Dependency, JsonElement> = components
+    .filter { component -> component.instructionList.any { it.code == ReservedCode.ValueMeta.code } }
+    .mapNotNull { component ->
+        val dependency = Dependency(component.code, ReservedCode.ValueMeta)
+        (get(dependency.toValueKey()) as? JsonObject)?.let { dependency to it }
+    }
+    .toMap()
+
 private fun Map<Dependency, JsonElement>.filterBindings(dependencies: Set<Dependency>): Map<Dependency, JsonElement> {
     return filterKeys { dependencies.contains(it) }
 }
@@ -212,7 +223,8 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
 
             ReservedCode.Mode,
             ReservedCode.Disqualified,
-            ReservedCode.Value -> true
+            ReservedCode.Value,
+            ReservedCode.ValueMeta -> true
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean
             ReservedCode.MaskedValue -> this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]
