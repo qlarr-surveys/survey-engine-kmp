@@ -186,7 +186,6 @@ class NavigationUseCaseImp(
     }
 }
 
-// Inactive variables are inputs: their values come in with the navigation values and are never saved
 private fun Survey.inputVariables(): Set<Dependency> = instructionList
     .filterIsInstance<Instruction.State>()
     .filter { it.reservedCode is ReservedCode.Variable && !it.isActive }
