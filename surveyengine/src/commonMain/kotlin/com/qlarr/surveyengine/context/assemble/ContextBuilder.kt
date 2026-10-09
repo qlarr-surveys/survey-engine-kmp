@@ -97,6 +97,7 @@ internal class ContextBuilder(
         ForwardDependencyAnalyzer(
             components, dependencyMapper.dependencyMap
         ).validateForwardDependencies()
+            .validateValueMetaReferences()
             .validateSkipDestinations()
         components.addDisqualifyInstruction(sanitizedNestedComponents())
         componentIndexList = components.componentIndices()

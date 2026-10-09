@@ -18,6 +18,7 @@ internal fun SurveyComponent.validateInstructions(): SurveyComponent {
         .validateRandomGroupInstruction()
         .validatePriorityGroupInstruction()
         .validateParentRelevanceInstruction()
+        .validateValueMetaInstruction()
 
     val newChildren = mutableListOf<SurveyComponent>()
     validatedComponent.children.forEach {
@@ -41,6 +42,20 @@ private fun SurveyComponent.addInstructionDuplicateCodes(): SurveyComponent {
     }
     return duplicate(instructionList = newInstructions)
 }
+
+internal fun SurveyComponent.validateValueMetaInstruction(): SurveyComponent = duplicate(
+    instructionList = instructionList.map { instruction ->
+        if (instruction is Instruction.State
+            && instruction.reservedCode == ReservedCode.ValueMeta
+            && instruction.noErrors()
+            && instruction.isActive
+        ) {
+            instruction.addError(InstructionError.InvalidValueMetaInstruction)
+        } else {
+            instruction
+        }
+    }
+)
 
 private fun SurveyComponent.validateParentRelevanceInstruction(): SurveyComponent {
     val newInstructions = instructionList.toMutableList()

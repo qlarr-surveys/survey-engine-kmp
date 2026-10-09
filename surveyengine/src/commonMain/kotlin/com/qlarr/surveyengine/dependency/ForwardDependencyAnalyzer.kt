@@ -47,6 +47,32 @@ internal class ForwardDependencyAnalyzer(
         }
     }
 
+    fun validateValueMetaReferences(): ForwardDependencyAnalyzer {
+        components.forEachIndexed { index, surveyComponent ->
+            components[index] = surveyComponent.validateValueMetaReferences()
+        }
+        return this
+    }
+
+    private fun SurveyComponent.validateValueMetaReferences(parentCode: String = ""): SurveyComponent {
+        val uniqueCode = uniqueCode(parentCode)
+        var returnComponent = duplicate()
+        instructionList
+            .filterNot { it is Instruction.Format || it.code == ReservedCode.MaskedValue.code }
+            .forEach { instruction ->
+                dependencyMap[Dependent(uniqueCode, instruction.code)]
+                    ?.filter { it.reservedCode == ReservedCode.ValueMeta }
+                    ?.forEach { dependency ->
+                        returnComponent = returnComponent.addErrorToInstruction(
+                            returnComponent.instructionList.first { it.code == instruction.code },
+                            InstructionError.InvalidReference(dependency.toValueKey(), false)
+                        )
+                    }
+            }
+        return returnComponent.duplicate(
+            children = children.map { child -> child.validateValueMetaReferences(uniqueCode) })
+    }
+
     fun validateSkipDestinations(): ForwardDependencyAnalyzer {
         val endGroupCode: String? = if (components.isNotEmpty()) {
             (components[0] as? Survey)

@@ -68,11 +68,11 @@ QlarrScripts = {
                 .replace("&nbsp;", "")
         }
     },
-    safeAccess: function(obj, prop) {
+    safeAccess: function(obj, prop, fallback) {
         if (Object.prototype.hasOwnProperty.call(obj, prop)) {
             return obj[prop];
-        } else {
-            throw new Error(`Property "${prop}" is not accessible.`);
+        } else  {
+            return fallback;
         }
     },
     isValidSqlDateTime: function(sqlDateTime) {

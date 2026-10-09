@@ -46,6 +46,8 @@ sealed class InstructionError(val name: String = "") {
     data object DuplicateInstructionCode : InstructionError("DuplicateInstructionCode")
     @Serializable(with = InstructionErrorSerializer::class)
     data object InvalidInstructionInEndGroup : InstructionError("InvalidInstructionInEndGroup")
+    @Serializable(with = InstructionErrorSerializer::class)
+    data object InvalidValueMetaInstruction : InstructionError("InvalidValueMetaInstruction")
 
 }
 
@@ -114,6 +116,7 @@ object InstructionErrorSerializer : KSerializer<InstructionError> {
                 InstructionError.SkipInsideRepeatable,
                 InstructionError.DuplicateInstructionCode,
                 InstructionError.InvalidInstructionInEndGroup,
+                InstructionError.InvalidValueMetaInstruction,
                 InstructionError.PriorityLimitMismatch,
                 InstructionError.SkipToEndOfEndGroup -> {
                     // do nothing
@@ -217,6 +220,8 @@ object InstructionErrorSerializer : KSerializer<InstructionError> {
             "DuplicateInstructionCode" -> InstructionError.DuplicateInstructionCode
 
             "InvalidInstructionInEndGroup" -> InstructionError.InvalidInstructionInEndGroup
+
+            "InvalidValueMetaInstruction" -> InstructionError.InvalidValueMetaInstruction
 
             "PriorityLimitMismatch" -> InstructionError.PriorityLimitMismatch
 
