@@ -4,7 +4,11 @@ import com.qlarr.surveyengine.ext.copyComponentsToJson
 import com.qlarr.surveyengine.model.Survey
 import com.qlarr.surveyengine.model.jsonMapper
 import com.qlarr.surveyengine.scriptengine.getValidate
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 
 internal class ValidationUseCaseWrapperImpl(private val surveyJson: String) :
     ValidationUseCaseWrapper {
@@ -12,7 +16,10 @@ internal class ValidationUseCaseWrapperImpl(private val surveyJson: String) :
 
     init {
         val survey = jsonMapper.decodeFromString<Survey>(surveyJson)
-        useCase = ValidationUseCaseImpl(getValidate(), survey)
+        val quotaCodes = (jsonMapper.parseToJsonElement(surveyJson).jsonObject["quotas"] as? JsonArray)
+            ?.mapNotNull { (it as? JsonObject)?.get("code")?.jsonPrimitive?.contentOrNull }
+            ?: listOf()
+        useCase = ValidationUseCaseImpl(getValidate(), survey, quotaCodes)
     }
 
 

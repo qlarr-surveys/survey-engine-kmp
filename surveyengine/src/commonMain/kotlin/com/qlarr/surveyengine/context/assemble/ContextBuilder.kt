@@ -18,7 +18,8 @@ import kotlinx.serialization.json.putJsonArray
 
 internal class ContextBuilder(
     val components: MutableList<SurveyComponent> = mutableListOf(),
-    val scriptEngine: ScriptEngineValidate
+    val scriptEngine: ScriptEngineValidate,
+    private val quotaCodes: List<String> = listOf()
 
 ) {
     val replacements: MutableMap<String, String> = mutableMapOf()
@@ -84,6 +85,7 @@ internal class ContextBuilder(
             components[index] = newComponent
         }
         components.addStateToAllComponents()
+        components.addQuotaSkipInstructions(quotaCodes, DependencyMapper(sanitizedNestedComponents).dependencyMap)
 
         val dependencyMapper = DependencyMapper(sanitizedNestedComponents)
 

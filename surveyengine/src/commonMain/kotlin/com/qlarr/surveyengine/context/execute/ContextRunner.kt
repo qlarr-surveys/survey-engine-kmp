@@ -88,6 +88,11 @@ internal class ContextRunner(
                             returnDependencies.remove(skipManifesto.dependency)
                         }
                     }
+                    skipMap[dependent.componentCode]
+                        ?.map { it.dependency.componentCode }
+                        ?.distinct()
+                        ?.filter { source -> returnDependencies.none { it.componentCode == source && it.reservedCode is Skip } }
+                        ?.forEach { source -> returnDependencies.remove(Dependency(source, Relevance)) }
                     returnMap[dependent] = returnDependencies
                 }
             }
