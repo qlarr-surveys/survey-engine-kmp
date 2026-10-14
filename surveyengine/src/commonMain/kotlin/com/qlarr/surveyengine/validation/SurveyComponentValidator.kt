@@ -15,7 +15,7 @@ internal fun SurveyComponent.validateInstructions(): SurveyComponent {
         .validateRandomGroupInstruction()
         .validatePriorityGroupInstruction()
         .validateParentRelevanceInstruction()
-        .validateVariableInstruction()
+        .validateQuotaInstruction()
 
     val newChildren = mutableListOf<SurveyComponent>()
     validatedComponent.children.forEach {
@@ -40,16 +40,16 @@ private fun SurveyComponent.addInstructionDuplicateCodes(): SurveyComponent {
     return duplicate(instructionList = newInstructions)
 }
 
-private fun SurveyComponent.validateVariableInstruction(): SurveyComponent {
+private fun SurveyComponent.validateQuotaInstruction(): SurveyComponent {
     if (this is Survey) {
         return this
     }
     val newInstructions = instructionList.toMutableList()
     instructionList.forEachIndexed { index, instruction ->
-        if (instruction is Instruction.State && instruction.reservedCode is ReservedCode.Variable
-            && instruction.noErrors()
+        if (instruction is Instruction.State && instruction.noErrors()
+            && (instruction.reservedCode is ReservedCode.Quota || instruction.reservedCode is ReservedCode.QuotaFull)
         ) {
-            newInstructions[index] = instruction.addError(InstructionError.VariableNotOnSurvey)
+            newInstructions[index] = instruction.addError(InstructionError.QuotaNotOnSurvey)
         }
     }
     return duplicate(instructionList = newInstructions)

@@ -1,7 +1,6 @@
 package com.qlarr.surveyengine.dependency
 
 import com.qlarr.surveyengine.context.addErrorToInstruction
-import com.qlarr.surveyengine.context.assemble.isQuotaSkip
 import com.qlarr.surveyengine.model.*
 import com.qlarr.surveyengine.model.InstructionError.ForwardDependency
 
@@ -29,14 +28,13 @@ internal class ForwardDependencyAnalyzer(
         } else {
             val accessibleDependencies = componentIndices.accessibleDependencies(uniqueCode)
             var returnComponent = duplicate()
-            instructionList.filterNot { it.isQuotaSkip() }.forEach { instruction ->
+            instructionList.forEach { instruction ->
                 val dependent = Dependent(uniqueCode, instruction.code)
                 dependencyMap[dependent]?.forEach { dependency ->
                     //it is OK to depend on oneself
                     if (dependency.componentCode != uniqueCode
                         && dependency != langDependency
                         && dependency != modeDependency
-                        && dependency.reservedCode !is ReservedCode.Variable
                         && !accessibleDependencies.contains(dependency)
                     ) {
                         returnComponent =

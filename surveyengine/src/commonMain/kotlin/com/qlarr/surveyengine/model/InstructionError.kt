@@ -45,7 +45,7 @@ sealed class InstructionError(val name: String = "") {
     @Serializable(with = InstructionErrorSerializer::class)
     data object InvalidInstructionInEndGroup : InstructionError("InvalidInstructionInEndGroup")
     @Serializable(with = InstructionErrorSerializer::class)
-    data object VariableNotOnSurvey : InstructionError("VariableNotOnSurvey")
+    data object QuotaNotOnSurvey : InstructionError("QuotaNotOnSurvey")
 
 }
 
@@ -114,7 +114,7 @@ object InstructionErrorSerializer : KSerializer<InstructionError> {
                 InstructionError.DuplicateInstructionCode,
                 InstructionError.InvalidInstructionInEndGroup,
                 InstructionError.PriorityLimitMismatch,
-                InstructionError.VariableNotOnSurvey,
+                InstructionError.QuotaNotOnSurvey,
                 InstructionError.SkipToEndOfEndGroup -> {
                     // do nothing
                 }
@@ -219,7 +219,7 @@ object InstructionErrorSerializer : KSerializer<InstructionError> {
 
             "PriorityLimitMismatch" -> InstructionError.PriorityLimitMismatch
 
-            "VariableNotOnSurvey" -> InstructionError.VariableNotOnSurvey
+            "QuotaNotOnSurvey" -> InstructionError.QuotaNotOnSurvey
 
             "SkipToEndOfEndGroup" -> InstructionError.SkipToEndOfEndGroup
 

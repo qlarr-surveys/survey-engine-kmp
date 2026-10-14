@@ -14,12 +14,8 @@ interface ValidationUseCase {
     fun validate(validateSpecialTypeGroups: Boolean = true): ValidationOutput
 }
 
-class ValidationUseCaseImpl(
-    scriptEngine: ScriptEngineValidate,
-    survey: Survey,
-    quotaCodes: List<String> = listOf()
-) : ValidationUseCase {
-    private val contextManager = ContextBuilder(listOf(survey).toMutableList(), scriptEngine, quotaCodes)
+class ValidationUseCaseImpl(scriptEngine: ScriptEngineValidate, survey: Survey) : ValidationUseCase {
+    private val contextManager = ContextBuilder(listOf(survey).toMutableList(), scriptEngine)
     override fun validate(validateSpecialTypeGroups: Boolean): ValidationOutput {
 
         contextManager.validate(validateSpecialTypeGroups)

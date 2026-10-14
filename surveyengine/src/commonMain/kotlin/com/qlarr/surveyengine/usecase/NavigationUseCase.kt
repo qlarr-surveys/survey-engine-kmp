@@ -1,5 +1,6 @@
 package com.qlarr.surveyengine.usecase
 
+import com.qlarr.surveyengine.context.assemble.screenedOutByQuota
 import com.qlarr.surveyengine.context.execute.*
 import com.qlarr.surveyengine.context.instructionsMap
 import com.qlarr.surveyengine.context.nestedComponents
@@ -37,8 +38,7 @@ class NavigationUseCaseImp(
     private val contextExecutor = ContextExecutor()
     private var survey = validationOutput.survey.sanitize()
         .replaceOrAddInstruction(Instruction.SimpleState(lang, ReservedCode.Lang)) as Survey
-    private val inputVariables = survey.inputVariables()
-    private val inputValues = inputVariables
+    private val inputValues = survey.inputs()
         .mapNotNull { input -> stringValues[input.toValueKey()]?.let { input to it } }
         .toMap()
     private val dependencyMapper = DependencyMapper(validationOutput.impactMap)
@@ -133,7 +133,7 @@ class NavigationUseCaseImp(
             "Survey",
             ReservedCode.Validity
         )]!!.jsonPrimitive.boolean
-        val newNavIndex =
+        val nextNavIndex =
             survey.navigate(
                 navigationIndex,
                 navigationDirection,
@@ -142,6 +142,14 @@ class NavigationUseCaseImp(
                 skipInvalid,
                 currentIndexValidity
             )
+        // quotas are checked only when moving forward (Next, or Submit), never on Previous or a Jump
+        val screenedOut = navigationDirection is NavigationDirection.Next
+                && !nextNavIndex.showError
+                && survey.screenedOutByQuota(nextNavIndex, stateBindings, dependencyMapper.dependencyMap)
+        if (screenedOut) {
+            stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
+        }
+        val newNavIndex = if (screenedOut) survey.endIndex() else nextNavIndex
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
         extraBindings.putAll(runtimeContextBuilder.addValidityInstruction(survey, newNavIndex))
@@ -162,7 +170,7 @@ class NavigationUseCaseImp(
 
         val toSave: Map<Dependent, JsonElement> = formatBindings + stateBindings.apply {
             putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
-        }.filterStateToSave(dependenciesToSave, inputVariables)
+        }.filterStateToSave(dependenciesToSave)
 
         return NavigationOutput(
             reducedSurvey = reducedSurvey,
@@ -186,9 +194,10 @@ class NavigationUseCaseImp(
     }
 }
 
-private fun Survey.inputVariables(): Set<Dependency> = instructionList
+// inputs the caller passes in with the values (whether each quota is full)
+private fun Survey.inputs(): Set<Dependency> = instructionList
     .filterIsInstance<Instruction.State>()
-    .filter { it.reservedCode is ReservedCode.Variable && !it.isActive }
+    .filter { it.reservedCode is ReservedCode.QuotaFull && !it.isActive }
     .map { Dependency(code, it.reservedCode) }
     .toSet()
 
@@ -197,8 +206,7 @@ private fun Map<Dependency, JsonElement>.filterBindings(dependencies: Set<Depend
 }
 
 private fun Map<Dependency, JsonElement>.filterStateToSave(
-    dependencies: Set<Dependency>,
-    inputVariables: Set<Dependency>
+    dependencies: Set<Dependency>
 ): Map<Dependent, JsonElement> {
     return filterKeys {
         when (it.reservedCode) {
@@ -226,7 +234,8 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
             ReservedCode.Disqualified,
             ReservedCode.Value -> true
 
-            is ReservedCode.Variable -> it !in inputVariables
+            is ReservedCode.Quota -> true
+            is ReservedCode.QuotaFull -> false
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean
             ReservedCode.MaskedValue -> this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]
