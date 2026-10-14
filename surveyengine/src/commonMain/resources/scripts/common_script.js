@@ -69,7 +69,7 @@ QlarrScripts = {
         }
     },
     safeAccess: function(obj, prop, fallback) {
-        if (Object.prototype.hasOwnProperty.call(obj, prop)) {
+        if (obj != null && Object.prototype.hasOwnProperty.call(obj, prop)) {
             return obj[prop];
         } else  {
             return fallback;
