@@ -134,6 +134,26 @@ class QuotaTest {
     }
 
     @Test
+    fun question_hidden_by_a_condition_still_ahead_holds_the_screen_out_back() {
+        val survey = validate(
+            design(quota("QT1", """Q1.value == "male" && Q3.value != "a""""), q3Relevance = """Q2.value == "yes"""")
+        )
+        // Q3 is hidden only because Q2 is unanswered: it may still show, so nothing is decided
+        val afterQ1 = navigate(survey, """{"Q1.value":"male","Survey.quota_QT1_full":true}""", "G1")
+        assertEquals(NavigationIndex.Group("G2"), afterQ1.navigationIndex)
+        assertEquals(JsonPrimitive(false), afterQ1.toSave["Survey.disqualified"])
+
+        // Q2 answered "no": Q3 stays hidden, so the quota is decided
+        val hidden = navigate(survey, """{"Q1.value":"male","Q2.value":"no","Survey.quota_QT1_full":true}""", "G2")
+        assertEquals(NavigationIndex.End("G4"), hidden.navigationIndex)
+        assertEquals(JsonPrimitive(true), hidden.toSave["Survey.disqualified"])
+
+        // Q2 answered "yes": Q3 shows, so wait for it
+        val shown = navigate(survey, """{"Q1.value":"male","Q2.value":"yes","Survey.quota_QT1_full":true}""", "G2")
+        assertEquals(NavigationIndex.Group("G3"), shown.navigationIndex)
+    }
+
+    @Test
     fun quota_reading_no_question_screens_out_on_the_first_next() {
         val survey = validate(design(quota("QT1", """Survey.lang == "en"""")))
         val start = navigate(survey, """{"Survey.quota_QT1_full":true}""", null, NavigationDirection.Start)

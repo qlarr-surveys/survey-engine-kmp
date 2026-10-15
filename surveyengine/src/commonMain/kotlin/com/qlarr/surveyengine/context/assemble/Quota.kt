@@ -32,14 +32,21 @@ internal fun Survey.screenedOutByQuota(
 ): Boolean {
     val passed = if (navigationIndex is NavigationIndex.End) null else navBefore(navigationIndex, bindings).toSet()
     fun isTrue(dependency: Dependency) = bindings[dependency]?.jsonPrimitive?.booleanOrNull == true
+    fun isHidden(question: String) =
+        bindings[Dependency(question, ReservedCode.Relevance)]?.jsonPrimitive?.booleanOrNull == false
+
+    fun isSettled(question: String, seen: Set<String>): Boolean {
+        if (passed == null || question in passed) return true
+        if (!isHidden(question)) return false
+        return dependencyMap.answeredQuestions(Dependent(question, ReservedCode.Relevance.code))
+            .filter { it != question }
+            .all { it !in seen && isSettled(it, seen + question) }
+    }
     return quotas().any { quota ->
         val met = Dependency("Survey", quota.reservedCode)
         isTrue(met)
                 && isTrue(Dependency("Survey", quota.fullCode()))
-                && dependencyMap.questionDependencies(met.toDependent()).all { question ->
-            passed == null || question in passed
-                    || bindings[Dependency(question, ReservedCode.Relevance)]?.jsonPrimitive?.booleanOrNull == false
-        }
+                && dependencyMap.answeredQuestions(met.toDependent()).all { isSettled(it, emptySet()) }
     }
 }
 
@@ -49,13 +56,13 @@ private fun Survey.quotas() = instructionList
 
 private fun Instruction.State.fullCode() = ReservedCode.QuotaFull("${code}_full")
 
-private fun DependencyMap.questionDependencies(start: Dependent): Set<String> {
+private fun DependencyMap.answeredQuestions(start: Dependent): Set<String> {
     val found = linkedSetOf<String>()
     val visited = mutableSetOf<Dependent>()
     fun walk(dependent: Dependent) {
         if (!visited.add(dependent)) return
         this[dependent]?.forEach { dependency ->
-            if (dependency.componentCode.startsWith("Q")) {
+            if (dependency.reservedCode == ReservedCode.Value) {
                 found.add(dependency.componentCode.splitToComponentCodes().first())
             } else {
                 walk(dependency.toDependent())
