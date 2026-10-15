@@ -25,11 +25,11 @@ internal fun MutableList<SurveyComponent>.addQuotaInputs() {
     this[0] = survey
 }
 
-internal fun Survey.screenedOutByQuota(
+internal fun Survey.screenOutQuota(
     navigationIndex: NavigationIndex,
     bindings: Map<Dependency, JsonElement>,
     dependencyMap: DependencyMap
-): Boolean {
+): String? {
     val passed = if (navigationIndex is NavigationIndex.End) null else navBefore(navigationIndex, bindings).toSet()
     fun isTrue(dependency: Dependency) = bindings[dependency]?.jsonPrimitive?.booleanOrNull == true
     fun isHidden(question: String) =
@@ -42,12 +42,12 @@ internal fun Survey.screenedOutByQuota(
             .filter { it != question }
             .all { it !in seen && isSettled(it, seen + question) }
     }
-    return quotas().any { quota ->
+    return quotas().firstOrNull { quota ->
         val met = Dependency("Survey", quota.reservedCode)
         isTrue(met)
                 && isTrue(Dependency("Survey", quota.fullCode()))
                 && dependencyMap.answeredQuestions(met.toDependent()).all { isSettled(it, emptySet()) }
-    }
+    }?.code?.removePrefix("quota_")
 }
 
 private fun Survey.quotas() = instructionList

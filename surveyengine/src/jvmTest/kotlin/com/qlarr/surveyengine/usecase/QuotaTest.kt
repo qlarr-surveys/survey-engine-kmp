@@ -65,6 +65,7 @@ class QuotaTest {
         val afterQ2 = navigate(survey, """{"Q1.value":"male","Q2.value":"young","Survey.quota_QT1_full":true}""", "G2")
         assertEquals(NavigationIndex.End("G4"), afterQ2.navigationIndex)
         assertEquals(JsonPrimitive(true), afterQ2.toSave["Survey.disqualified"])
+        assertEquals(JsonPrimitive("QT1"), afterQ2.toSave["Survey.screened_out_by_quota"])
     }
 
     @Test
@@ -72,6 +73,7 @@ class QuotaTest {
         val output = navigate(validate(design(quota("QT1", """Q1.value == "male""""))), """{"Q1.value":"male"}""", "G1")
         assertEquals(NavigationIndex.Group("G2"), output.navigationIndex)
         assertEquals(JsonPrimitive(false), output.toSave["Survey.disqualified"])
+        assertFalse(output.toSave.containsKey("Survey.screened_out_by_quota"))
     }
 
     @Test
@@ -188,6 +190,30 @@ class QuotaTest {
         assertEquals(NavigationIndex.Group("G2"), open.navigationIndex)
         val full = navigate(survey, """{"Q1.value":"female","Survey.quota_QT2_full":true}""", "G1")
         assertEquals(NavigationIndex.End("G4"), full.navigationIndex)
+        assertEquals(JsonPrimitive("QT2"), full.toSave["Survey.screened_out_by_quota"])
+    }
+
+    @Test
+    fun only_the_first_screening_quota_is_recorded() {
+        val survey = validate(design(quota("QT1", """Q1.value == "male""""), quota("QT2", """Q1.value != "female"""")))
+        val output = navigate(
+            survey,
+            """{"Q1.value":"male","Survey.quota_QT1_full":true,"Survey.quota_QT2_full":true}""",
+            "G1"
+        )
+        assertEquals(NavigationIndex.End("G4"), output.navigationIndex)
+        assertEquals(JsonPrimitive("QT1"), output.toSave["Survey.screened_out_by_quota"])
+    }
+
+    @Test
+    fun disqualifying_skip_is_not_recorded_as_a_quota_screen_out() {
+        val survey = validate(
+            design(quota("QT1", """Q1.value == "male""""), disqualifyOnQ1 = """Q1.value == "male"""")
+        )
+        val output = navigate(survey, """{"Q1.value":"male","Survey.quota_QT1_full":true}""", "G1")
+        assertEquals(NavigationIndex.End("G4"), output.navigationIndex)
+        assertEquals(JsonPrimitive(true), output.toSave["Survey.disqualified"])
+        assertFalse(output.toSave.containsKey("Survey.screened_out_by_quota"))
     }
 
     @Test
@@ -285,6 +311,7 @@ class QuotaTest {
         vararg quotas: JsonObject,
         q3Relevance: String? = null,
         skipOnQ1: String? = null,
+        disqualifyOnQ1: String? = null,
         quotaOnQ1: JsonObject? = null,
         randomize: Boolean = false
     ) = buildJsonObject {
@@ -316,6 +343,17 @@ class QuotaTest {
                     put("skipToComponent", "G3")
                     put("toEnd", false)
                     put("disqualify", false)
+                    put("text", text)
+                    put("returnType", "boolean")
+                    put("isActive", true)
+                }
+            },
+            disqualifyOnQ1?.let { text ->
+                buildJsonObject {
+                    put("code", "skip_to_G4")
+                    put("skipToComponent", "G4")
+                    put("toEnd", false)
+                    put("disqualify", true)
                     put("text", text)
                     put("returnType", "boolean")
                     put("isActive", true)

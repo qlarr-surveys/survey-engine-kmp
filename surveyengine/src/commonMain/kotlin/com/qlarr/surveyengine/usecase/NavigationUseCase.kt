@@ -1,6 +1,6 @@
 package com.qlarr.surveyengine.usecase
 
-import com.qlarr.surveyengine.context.assemble.screenedOutByQuota
+import com.qlarr.surveyengine.context.assemble.screenOutQuota
 import com.qlarr.surveyengine.context.execute.*
 import com.qlarr.surveyengine.context.instructionsMap
 import com.qlarr.surveyengine.context.nestedComponents
@@ -142,14 +142,14 @@ class NavigationUseCaseImp(
                 skipInvalid,
                 currentIndexValidity
             )
-        // quotas are checked only when moving forward (Next, or Submit), never on Previous or a Jump
-        val screenedOut = navigationDirection is NavigationDirection.Next
-                && !nextNavIndex.showError
-                && survey.screenedOutByQuota(nextNavIndex, stateBindings, dependencyMapper.dependencyMap)
-        if (screenedOut) {
+        val disqualified = stateBindings[Dependency("Survey", ReservedCode.Disqualified)]?.jsonPrimitive?.booleanOrNull == true
+        val screenOutQuota = if (navigationDirection is NavigationDirection.Next && !nextNavIndex.showError && !disqualified)
+            survey.screenOutQuota(nextNavIndex, stateBindings, dependencyMapper.dependencyMap)
+        else null
+        if (screenOutQuota != null) {
             stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
         }
-        val newNavIndex = if (screenedOut) survey.endIndex() else nextNavIndex
+        val newNavIndex = if (screenOutQuota != null) survey.endIndex() else nextNavIndex
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
         extraBindings.putAll(runtimeContextBuilder.addValidityInstruction(survey, newNavIndex))
@@ -170,7 +170,9 @@ class NavigationUseCaseImp(
 
         val toSave: Map<Dependent, JsonElement> = formatBindings + stateBindings.apply {
             putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
-        }.filterStateToSave(dependenciesToSave)
+        }.filterStateToSave(dependenciesToSave) + listOfNotNull(
+            screenOutQuota?.let { Dependent("Survey", "screened_out_by_quota") to JsonPrimitive(it) }
+        )
 
         return NavigationOutput(
             reducedSurvey = reducedSurvey,
