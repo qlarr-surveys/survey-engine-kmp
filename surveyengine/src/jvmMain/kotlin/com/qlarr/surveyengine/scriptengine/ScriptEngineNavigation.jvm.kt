@@ -40,11 +40,14 @@ actual fun getValidate(): ScriptEngineValidate {
     return object : ScriptEngineValidate {
         override fun validate(input: String): String {
             val scriptParams: Bindings = engine.createBindings()
-            // Build JSON array using kotlinx.serialization
-            val items = Json.parseToJsonElement(input).jsonArray
-            scriptParams["instructionList"] = items.toString()
-            val result = compiledScript.eval(scriptParams).toString()
-            return result
+            try {
+                // Build JSON array using kotlinx.serialization
+                val items = Json.parseToJsonElement(input).jsonArray
+                scriptParams["instructionList"] = items.toString()
+                return compiledScript.eval(scriptParams).toString()
+            } finally {
+                (scriptParams as AutoCloseable).close()
+            }
         }
     }
 }
@@ -59,8 +62,12 @@ actual fun getNavigate(): ScriptEngineNavigate {
     return object : ScriptEngineNavigate {
         override fun navigate(script: String): String {
             val scriptParams: Bindings = engine.createBindings()
-            scriptParams["params"] = script
-            return compiledScript.eval(scriptParams).toString()
+            try {
+                scriptParams["params"] = script
+                return compiledScript.eval(scriptParams).toString()
+            } finally {
+                (scriptParams as AutoCloseable).close()
+            }
         }
 
     }
@@ -78,8 +85,12 @@ actual fun getCalculate(): ScriptEngineCalculate {
     return object : ScriptEngineCalculate {
         override fun calculate(script: String): String {
             val scriptParams: Bindings = engine.createBindings()
-            scriptParams["params"] = script
-            return compiledScript.eval(scriptParams).toString()
+            try {
+                scriptParams["params"] = script
+                return compiledScript.eval(scriptParams).toString()
+            } finally {
+                (scriptParams as AutoCloseable).close()
+            }
         }
     }
 }
