@@ -11,22 +11,25 @@ import javax.script.Compilable
 import javax.script.CompiledScript
 import javax.script.ScriptEngine
 
+
+private fun createEngine(limit: Long): ScriptEngine = GraalJSScriptEngine.create(null,
+    Context.newBuilder("js")
+        .allowHostAccess(HostAccess.NONE)
+        .allowHostClassLookup { false }
+        .resourceLimits(
+            ResourceLimits.newBuilder()
+                .statementLimit(limit, null)
+                .build()
+        )
+        .allowIO(false)
+        .option("js.ecmascript-version", "2021"))
+
 actual fun getValidate(): ScriptEngineValidate {
 
     val classLoader = object {}.javaClass.classLoader
     val script =
         classLoader.getResourceAsStream("survey-engine-script/survey-engine-script.min.js")!!.reader().readText()
-    val engine: ScriptEngine = GraalJSScriptEngine.create(null,
-        Context.newBuilder("js")
-            .allowHostAccess(HostAccess.NONE)
-            .allowHostClassLookup { false }
-            .resourceLimits(
-                ResourceLimits.newBuilder()
-                    .statementLimit(10_000_000, null)
-                    .build()
-            ) // Set resource limits
-            .allowIO(false)
-            .option("js.ecmascript-version", "2021"))
+    val engine = createEngine(10_000_000)
     val compiledScript: CompiledScript = (engine as Compilable).compile(
         "$script;" +
                 "const EMScript = typeof globalThis !== 'undefined' ? globalThis.EMScript : this.EMScript;" +
@@ -37,28 +40,21 @@ actual fun getValidate(): ScriptEngineValidate {
     return object : ScriptEngineValidate {
         override fun validate(input: String): String {
             val scriptParams: Bindings = engine.createBindings()
-            // Build JSON array using kotlinx.serialization
-            val items = Json.parseToJsonElement(input).jsonArray
-            scriptParams["instructionList"] = items.toString()
-            val result = compiledScript.eval(scriptParams).toString()
-            return result
+            try {
+                // Build JSON array using kotlinx.serialization
+                val items = Json.parseToJsonElement(input).jsonArray
+                scriptParams["instructionList"] = items.toString()
+                return compiledScript.eval(scriptParams).toString()
+            } finally {
+                (scriptParams as AutoCloseable).close()
+            }
         }
     }
 }
 
-actual fun getNavigate(): ScriptEngineNavigate {
-    val engine: ScriptEngine = GraalJSScriptEngine.create(null,
-        Context.newBuilder("js")
-            .allowHostAccess(HostAccess.NONE)
-            .allowHostClassLookup { false }
-            .resourceLimits(
-                ResourceLimits.newBuilder()
-                    .statementLimit(1000000, null)
-                    .build()
-            ) // Set resource limits
-            .allowIO(false)
-            .option("js.ecmascript-version", "2021"))
 
+actual fun getNavigate(): ScriptEngineNavigate {
+    val engine = createEngine(1000000)
     val compiledScript: CompiledScript = (engine as Compilable).compile(
         engineScript().script +
                 "\nnavigate(JSON.parse(params)) "
@@ -66,11 +62,35 @@ actual fun getNavigate(): ScriptEngineNavigate {
     return object : ScriptEngineNavigate {
         override fun navigate(script: String): String {
             val scriptParams: Bindings = engine.createBindings()
-            scriptParams["params"] = script
-            return compiledScript.eval(scriptParams).toString()
+            try {
+                scriptParams["params"] = script
+                return compiledScript.eval(scriptParams).toString()
+            } finally {
+                (scriptParams as AutoCloseable).close()
+            }
         }
 
     }
 
 
+}
+
+
+actual fun getCalculate(): ScriptEngineCalculate {
+    val engine = createEngine(1000000)
+    val compiledScript: CompiledScript = (engine as Compilable).compile(
+        engineScript().script +
+                "\ncalculate(JSON.parse(params)) "
+    )
+    return object : ScriptEngineCalculate {
+        override fun calculate(script: String): String {
+            val scriptParams: Bindings = engine.createBindings()
+            try {
+                scriptParams["params"] = script
+                return compiledScript.eval(scriptParams).toString()
+            } finally {
+                (scriptParams as AutoCloseable).close()
+            }
+        }
+    }
 }

@@ -39,6 +39,27 @@ actual fun getNavigate(): ScriptEngineNavigate {
 }
 
 
+actual fun getCalculate(): ScriptEngineCalculate {
+    val context = JSContext()
+
+    context.exceptionHandler = { _, exception ->
+        println("JavaScript Error: ${exception?.toString()}")
+    }
+
+    context.evaluateScript(engineScript().script)
+
+    return object : ScriptEngineCalculate {
+        override fun calculate(script: String): String {
+            return try {
+                val result = context.evaluateScript("calculate($script)")
+                result?.toString() ?: ""
+            } catch (e: Exception) {
+                throw RuntimeException("JavaScript execution error: ${e.message}", e)
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalForeignApi::class)
 actual fun getValidate(): ScriptEngineValidate {
 
