@@ -17,6 +17,10 @@ fun createNavigationEngine(): ScriptEngineNavigate = getNavigate()
 @JsExport
 fun createValidationEngine(): ScriptEngineValidate = getValidate()
 
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+fun createCalculationEngine(): ScriptEngineCalculate = getCalculate()
+
 // commonScript()/engineScript() return CommonScriptProvider/EngineScriptProvider, which are not
 // @JsExport-able. These wrappers expose the raw script strings so JS consumers of the npm package can
 // read them directly.
@@ -40,22 +44,30 @@ actual fun getValidate(): ScriptEngineValidate {
     }
 }
 
-// Compiles the engine script (common + initial, which defines the global `navigate` function and its
-// helpers) once into a reusable function, then calls `navigate(JSON.parse(params))`. This mirrors the
+// Compiles the engine script (common + initial, which defines the global `navigate`/`calculate` functions
+// and their helpers) once into a reusable function, then calls `entryPoint(JSON.parse(params))`. This mirrors the
 // JVM implementation, which compiles the same script into a GraalVM context. The script text is passed
 // as an argument to the JS factory so the Kotlin compiler's identifier mangling never touches it.
-private fun compileNavigate(engineScript: String): (String) -> String {
+private fun compileEntryPoint(engineScript: String, entryPoint: String): (String) -> String {
     val factory = js(
-        "(function(src){ var fn = new Function('params', src + '\\n;return navigate(JSON.parse(params));'); return fn; })"
+        "(function(src, entry){ var fn = new Function('params', src + '\\n;return ' + entry + '(JSON.parse(params));'); return fn; })"
     )
-    return factory(engineScript).unsafeCast<(String) -> String>()
+    return factory(engineScript, entryPoint).unsafeCast<(String) -> String>()
 }
 
 actual fun getNavigate(): ScriptEngineNavigate {
-    val navigateFn = compileNavigate(engineScript().script)
+    val navigateFn = compileEntryPoint(engineScript().script, "navigate")
     return object : ScriptEngineNavigate {
         override fun navigate(script: String): String {
             return navigateFn(script)
+        }
+    }
+}
+actual fun getCalculate(): ScriptEngineCalculate {
+    val calculateFn = compileEntryPoint(engineScript().script, "calculate")
+    return object : ScriptEngineCalculate {
+        override fun calculate(script: String): String {
+            return calculateFn(script)
         }
     }
 }

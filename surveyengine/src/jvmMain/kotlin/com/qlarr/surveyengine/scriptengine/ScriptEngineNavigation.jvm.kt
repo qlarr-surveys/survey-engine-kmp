@@ -11,22 +11,25 @@ import javax.script.Compilable
 import javax.script.CompiledScript
 import javax.script.ScriptEngine
 
+
+private fun createEngine(limit: Long): ScriptEngine = GraalJSScriptEngine.create(null,
+    Context.newBuilder("js")
+        .allowHostAccess(HostAccess.NONE)
+        .allowHostClassLookup { false }
+        .resourceLimits(
+            ResourceLimits.newBuilder()
+                .statementLimit(limit, null)
+                .build()
+        )
+        .allowIO(false)
+        .option("js.ecmascript-version", "2021"))
+
 actual fun getValidate(): ScriptEngineValidate {
 
     val classLoader = object {}.javaClass.classLoader
     val script =
         classLoader.getResourceAsStream("survey-engine-script/survey-engine-script.min.js")!!.reader().readText()
-    val engine: ScriptEngine = GraalJSScriptEngine.create(null,
-        Context.newBuilder("js")
-            .allowHostAccess(HostAccess.NONE)
-            .allowHostClassLookup { false }
-            .resourceLimits(
-                ResourceLimits.newBuilder()
-                    .statementLimit(10_000_000, null)
-                    .build()
-            ) // Set resource limits
-            .allowIO(false)
-            .option("js.ecmascript-version", "2021"))
+    val engine = createEngine(10_000_000)
     val compiledScript: CompiledScript = (engine as Compilable).compile(
         "$script;" +
                 "const EMScript = typeof globalThis !== 'undefined' ? globalThis.EMScript : this.EMScript;" +
@@ -46,19 +49,9 @@ actual fun getValidate(): ScriptEngineValidate {
     }
 }
 
-actual fun getNavigate(): ScriptEngineNavigate {
-    val engine: ScriptEngine = GraalJSScriptEngine.create(null,
-        Context.newBuilder("js")
-            .allowHostAccess(HostAccess.NONE)
-            .allowHostClassLookup { false }
-            .resourceLimits(
-                ResourceLimits.newBuilder()
-                    .statementLimit(1000000, null)
-                    .build()
-            ) // Set resource limits
-            .allowIO(false)
-            .option("js.ecmascript-version", "2021"))
 
+actual fun getNavigate(): ScriptEngineNavigate {
+    val engine = createEngine(1000000)
     val compiledScript: CompiledScript = (engine as Compilable).compile(
         engineScript().script +
                 "\nnavigate(JSON.parse(params)) "
@@ -73,4 +66,20 @@ actual fun getNavigate(): ScriptEngineNavigate {
     }
 
 
+}
+
+
+actual fun getCalculate(): ScriptEngineCalculate {
+    val engine = createEngine(1000000)
+    val compiledScript: CompiledScript = (engine as Compilable).compile(
+        engineScript().script +
+                "\ncalculate(JSON.parse(params)) "
+    )
+    return object : ScriptEngineCalculate {
+        override fun calculate(script: String): String {
+            val scriptParams: Bindings = engine.createBindings()
+            scriptParams["params"] = script
+            return compiledScript.eval(scriptParams).toString()
+        }
+    }
 }

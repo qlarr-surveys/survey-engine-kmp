@@ -46,6 +46,44 @@ function navigate(navigationInput) {
     return JSON.stringify(qlarrVariables);
 }
 
+function calculate(calculationInput) {
+    var calculationVariables = {};
+    calculationInput.codes.forEach(function(componentCode) {
+        eval(componentCode + " = {};");
+        calculationVariables[componentCode] = eval(componentCode);
+    });
+    Object.keys(calculationInput.values).forEach(function(key) {
+        var names = key.split('.');
+        calculationVariables[names[0]][names[1]] = calculationInput.values[key];
+    });
+    var calculationResults = {};
+    var calculationErrors = {};
+    calculationInput.calculations.forEach(function(calculation) {
+        var calculationValue;
+        try {
+            calculationValue = eval(calculation.expression);
+        } catch (e) {
+            calculationErrors[calculation.code] = calculationError(e && e.name ? e.name : "Error", e);
+            return;
+        }
+        var serializedValue;
+        try {
+            serializedValue = JSON.stringify(calculationValue);
+        } catch (e) {
+            calculationErrors[calculation.code] = calculationError("NotSerializable", e);
+            return;
+        }
+        if (serializedValue !== undefined && serializedValue !== "null") {
+            calculationResults[calculation.code] = JSON.parse(serializedValue);
+        }
+    });
+    return JSON.stringify({results: calculationResults, errors: calculationErrors});
+}
+
+function calculationError(name, e) {
+    return {name: String(name), message: String(e && e.message !== undefined ? e.message : e)};
+}
+
 function verifyValue(code, returnType, value) {
     if (isCorrectReturnType(returnType, value)) {
         return value;
