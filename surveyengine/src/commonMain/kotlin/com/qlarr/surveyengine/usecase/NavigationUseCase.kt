@@ -196,7 +196,6 @@ class NavigationUseCaseImp(
     }
 }
 
-// inputs the caller passes in with the values (whether each quota is full)
 private fun Survey.inputs(): Set<Dependency> = instructionList
     .filterIsInstance<Instruction.State>()
     .filter { it.reservedCode is ReservedCode.QuotaFull && !it.isActive }

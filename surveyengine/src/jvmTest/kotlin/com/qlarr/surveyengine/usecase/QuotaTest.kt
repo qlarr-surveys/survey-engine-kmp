@@ -14,12 +14,6 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-/**
- * A quota (`quota_<code>` on the Survey, its text the condition, saved) gets the input
- * `quota_<code>_full`; moving forward screens the respondent out once a quota is met and full and
- * every question it reads is behind them or hidden.
- * Survey: G1(Q1), G2(Q2), G3(Q3), G4 end.
- */
 class QuotaTest {
 
     @Test
@@ -82,7 +76,6 @@ class QuotaTest {
         val afterQ1 = navigate(survey, """{"Q1.value":"male","Survey.quota_QT1_full":true}""", "G1")
         assertEquals(NavigationIndex.Group("G2"), afterQ1.navigationIndex)
 
-        // Q2 left blank: passing it is enough, so the quota can't go over its limit
         val afterQ2 = navigate(survey, """{"Q1.value":"male","Survey.quota_QT1_full":true}""", "G2")
         assertEquals(NavigationIndex.End("G4"), afterQ2.navigationIndex)
         assertEquals(JsonPrimitive(true), afterQ2.toSave["Survey.disqualified"])
@@ -91,7 +84,6 @@ class QuotaTest {
     @Test
     fun negated_condition_waits_for_its_question_in_randomized_order() {
         val survey = validate(design(quota("QT1", """Q2.value == "a" && Q3.value != "b""""), randomize = true))
-        // G3 drawn first: Q3 is answered, Q2 (ahead) not yet, so nothing is decided
         val order = """"G2.order":2,"G3.order":1"""
         val afterQ3 = navigate(survey, """{$order,"Q3.value":"c","Survey.quota_QT1_full":true}""", "G3")
         assertEquals(NavigationIndex.Group("G2"), afterQ3.navigationIndex)
@@ -106,7 +98,6 @@ class QuotaTest {
     fun negated_question_still_ahead_holds_the_screen_out_back() {
         val survey = validate(design(quota("QT1", """Q2.value != "x" && Q3.value == "c""""), randomize = true))
         val order = """"G2.order":2,"G3.order":1"""
-        // met already holds (Q2 unanswered) but Q2 is still ahead
         val afterQ3 = navigate(survey, """{$order,"Q3.value":"c","Survey.quota_QT1_full":true}""", "G3")
         assertEquals(NavigationIndex.Group("G2"), afterQ3.navigationIndex)
 
@@ -140,17 +131,14 @@ class QuotaTest {
         val survey = validate(
             design(quota("QT1", """Q1.value == "male" && Q3.value != "a""""), q3Relevance = """Q2.value == "yes"""")
         )
-        // Q3 is hidden only because Q2 is unanswered: it may still show, so nothing is decided
         val afterQ1 = navigate(survey, """{"Q1.value":"male","Survey.quota_QT1_full":true}""", "G1")
         assertEquals(NavigationIndex.Group("G2"), afterQ1.navigationIndex)
         assertEquals(JsonPrimitive(false), afterQ1.toSave["Survey.disqualified"])
 
-        // Q2 answered "no": Q3 stays hidden, so the quota is decided
         val hidden = navigate(survey, """{"Q1.value":"male","Q2.value":"no","Survey.quota_QT1_full":true}""", "G2")
         assertEquals(NavigationIndex.End("G4"), hidden.navigationIndex)
         assertEquals(JsonPrimitive(true), hidden.toSave["Survey.disqualified"])
 
-        // Q2 answered "yes": Q3 shows, so wait for it
         val shown = navigate(survey, """{"Q1.value":"male","Q2.value":"yes","Survey.quota_QT1_full":true}""", "G2")
         assertEquals(NavigationIndex.Group("G3"), shown.navigationIndex)
     }

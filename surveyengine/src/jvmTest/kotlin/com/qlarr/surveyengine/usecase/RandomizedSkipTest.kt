@@ -8,7 +8,6 @@ import kotlinx.serialization.json.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-/** Skips in randomized sibling groups can skip each other; the drawn order decides which one applies. */
 class RandomizedSkipTest {
     private fun q(code: String, skipText: String?) = buildJsonObject {
         put("code", code); put("type", "text")
