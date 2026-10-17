@@ -81,6 +81,7 @@ internal class ContextBuilder(
             clear()
             addAll(newComponents)
         }
+        components.addQuotaInputs()
         components.forEachIndexed { index, surveyComponent ->
             val newComponent = surveyComponent.validateInstructions()
             components[index] = newComponent

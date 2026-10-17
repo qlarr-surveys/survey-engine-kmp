@@ -4,7 +4,7 @@ import com.qlarr.surveyengine.model.*
 
 @Suppress("UNCHECKED_CAST")
 internal fun Survey.sanitize(): Survey {
-    return copy(groups = children.sanitize() as List<Group>)
+    return copy(instructionList = instructionList.filterNoErrors(), groups = children.sanitize() as List<Group>)
 }
 
 internal fun List<SurveyComponent>.sanitize(): List<SurveyComponent> {
