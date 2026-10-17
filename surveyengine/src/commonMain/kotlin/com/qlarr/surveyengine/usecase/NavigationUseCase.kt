@@ -33,11 +33,12 @@ class NavigationUseCaseImp(
     private val skipInvalid: Boolean,
     private val surveyMode: SurveyMode,
 ) : NavigationUseCase {
-    private val values = stringValues.withDependencyKeys(validationOutput.schema)
     private val startupRandomValues = mutableMapOf<Dependency, Int>()
     private val contextExecutor = ContextExecutor()
     private var survey = validationOutput.survey.sanitize()
         .replaceOrAddInstruction(Instruction.SimpleState(lang, ReservedCode.Lang)) as Survey
+    private val values = stringValues.withDependencyKeys(validationOutput.schema) +
+            stringValues.valueMetaBindings(survey.nestedComponents())
     private val inputValues = survey.inputs()
         .mapNotNull { input -> stringValues[input.toValueKey()]?.let { input to it } }
         .toMap()
@@ -196,6 +197,16 @@ class NavigationUseCaseImp(
     }
 }
 
+private fun Map<String, JsonElement>.valueMetaBindings(
+    components: List<ChildlessComponent>
+): Map<Dependency, JsonElement> = components
+    .filter { component -> component.instructionList.any { it.code == ReservedCode.ValueMeta.code } }
+    .mapNotNull { component ->
+        val dependency = Dependency(component.code, ReservedCode.ValueMeta)
+        (get(dependency.toValueKey()) as? JsonObject)?.let { dependency to it }
+    }
+    .toMap()
+
 private fun Survey.inputs(): Set<Dependency> = instructionList
     .filterIsInstance<Instruction.State>()
     .filter { it.reservedCode is ReservedCode.QuotaFull && !it.isActive }
@@ -233,7 +244,8 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
 
             ReservedCode.Mode,
             ReservedCode.Disqualified,
-            ReservedCode.Value -> true
+            ReservedCode.Value,
+            ReservedCode.ValueMeta -> true
 
             is ReservedCode.Quota -> true
             is ReservedCode.QuotaFull -> false

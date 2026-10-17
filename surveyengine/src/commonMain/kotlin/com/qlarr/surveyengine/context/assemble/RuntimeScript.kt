@@ -5,6 +5,7 @@ import com.qlarr.surveyengine.model.DependencyMap
 import com.qlarr.surveyengine.model.Dependent
 import com.qlarr.surveyengine.model.Instruction
 import com.qlarr.surveyengine.model.Instruction.State
+import com.qlarr.surveyengine.model.exposed.ReturnType
 
 fun List<ChildlessComponent>.runtimeScript(
     dependencyMap: DependencyMap,
@@ -27,7 +28,7 @@ fun ChildlessComponent.componentRuntimeScript(
     val parts = instructionList.mapNotNull {
         when (it) {
             is State -> {
-                it.stateRuntimeScript(code, dependencyMap, replacements)
+                it.stateRuntimeScript(code, dependencyMap, replacements, it.returnType)
             }
 
             is Instruction.Format -> {
@@ -51,13 +52,20 @@ fun ChildlessComponent.componentRuntimeScript(
 fun State.stateRuntimeScript(
     componentCode: String,
     dependencyMap: DependencyMap,
-    replacements: Map<String, String>
+    replacements: Map<String, String>,
+    returnType: ReturnType
 ): String? {
     return if (!isActive || !reservedCode.isRuntime) {
         null
     } else {
         val key = "$componentCode.$code"
         var finalText = if (replacements.containsKey(key)) replacements[key]!! else text
+        finalText = when (returnType){
+            ReturnType.Boolean -> "Boolean($finalText)"
+            ReturnType.Double,
+            ReturnType.Int -> "Number($finalText)"
+            else -> finalText
+        }
         dependencyMap[Dependent(componentCode, code)]?.forEach {
             val dependencyCode = Regex("(?<![\\w\\d])${it.asCode()}(?![\\w\\d])")
             val newDependencyCode = "state.${it.asCode()}"

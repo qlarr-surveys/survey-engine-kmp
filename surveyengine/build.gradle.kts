@@ -174,7 +174,7 @@ kotlin {
         // Required properties
         // Specify the required Pod version here
         // Otherwise, the Gradle project version is used
-        version = "0.2.1"
+        version = "0.5.0"
         summary = "Some description for a Kotlin/Native module"
         homepage = "Link to a Kotlin/Native module homepage"
 
@@ -217,18 +217,27 @@ val assembleNpmPackage by tasks.registering {
         out.resolve("scripts").deleteRecursively()
         out.resolve("survey-engine-script").deleteRecursively()
 
-        // Publish under the scoped name.
+        // The compiled dist has no README, so npm would publish the package without one. Copy the
+        // repository README into the package directory so it shows on the npm listing.
+        rootProject.file("README.md").copyTo(out.resolve("README.md"), overwrite = true)
+
+        // Publish under the scoped name, and declare the repository so npm provenance can verify the
+        // package against the GitHub Actions build it was published from.
         val pkg = out.resolve("package.json")
         pkg.writeText(
             pkg.readText()
-                .replace("\"name\": \"qlarr-survey-engine\"", "\"name\": \"@qlarr/survey-engine\"")
+                .replace(
+                    "\"name\": \"qlarr-survey-engine\"",
+                    "\"name\": \"@qlarr/survey-engine\",\n  \"repository\": " +
+                        "{\"type\": \"git\", \"url\": \"git+https://github.com/qlarr-surveys/survey-engine-kmp.git\"}"
+                )
         )
         logger.lifecycle("npm package assembled at: ${out.absolutePath}")
     }
 }
 
 group = "com.qlarr.survey-engine"
-version = "0.2.1"
+version = "0.5.0"
 publishing {
     publications {
         // This creates a publication for each target

@@ -158,4 +158,130 @@ class ComponentValidatorTest {
         val validated = components.map { it.validateInstructions() }
         assertEquals(InstructionError.InvalidChildReferences(listOf("A9")), validated[0].instructionList[0].errors[0])
     }
+
+    private fun wellFormedRepeatable() = RepeatInfo.Repeatable(
+        range = listOf("a", "b"),
+        relevanceInstruction = "Qbrands.value.includes('\$repeat_token')"
+    )
+
+    @Test
+    fun well_formed_repeatable_has_no_errors() {
+        val survey = Survey(
+            groups = listOf(
+                Group("G1", repeatInfo = wellFormedRepeatable(), questions = listOf(Question("Q1"))),
+                Group("G2", repeatInfo = wellFormedRepeatable()) // sibling repeatable is fine
+            )
+        )
+        val validated = listOf(survey).validateRepeatables()[0]
+        assertEquals(emptyList(), validated.children.map { it.errors }.flatten())
+    }
+
+    @Test
+    fun repeatable_nested_in_repeatable_flags_the_inner_one() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1", repeatInfo = wellFormedRepeatable(),
+                    questions = listOf(Question("Q1", repeatInfo = wellFormedRepeatable()))
+                )
+            )
+        )
+        val validated = listOf(survey).validateRepeatables()[0]
+        val group = validated.children[0]
+        val question = group.children[0]
+        assertEquals(emptyList(), group.errors)
+        assertEquals(listOf(ComponentError.NESTED_REPEATABLE), question.errors)
+    }
+
+    @Test
+    fun only_outermost_offender_is_flagged_and_subtree_is_excluded() {
+        // G1(repeatable) > Q1(repeatable): only Q1 is flagged, its subtree is excluded
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1", repeatInfo = wellFormedRepeatable(),
+                    questions = listOf(
+                        Question(
+                            "Q1", repeatInfo = wellFormedRepeatable(),
+                            answers = listOf(Answer("A1"))
+                        )
+                    )
+                )
+            )
+        )
+        val validated = listOf(survey).validateRepeatables()[0]
+        val question = validated.children[0].children[0]
+        val answer = question.children[0]
+        assertEquals(listOf(ComponentError.NESTED_REPEATABLE), question.errors)
+        assertEquals(emptyList(), answer.errors)
+    }
+
+    @Test
+    fun empty_range_and_missing_token_are_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf(), relevanceInstruction = "includes('\$repeat_token')")
+                ),
+                Group(
+                    "G2",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "includes('x')")
+                ),
+                Group(
+                    "G3",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf(), relevanceInstruction = "no token")
+                )
+            )
+        )
+        val validated = listOf(survey).validateRepeatables()[0]
+        assertEquals(listOf(ComponentError.EMPTY_REPEAT_RANGE), validated.children[0].errors)
+        assertEquals(listOf(ComponentError.MISSING_REPEAT_TOKEN), validated.children[1].errors)
+        assertEquals(
+            listOf(ComponentError.EMPTY_REPEAT_RANGE, ComponentError.MISSING_REPEAT_TOKEN),
+            validated.children[2].errors
+        )
+    }
+
+    @Test
+    fun invalid_range_tokens_are_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "Brand X"), relevanceInstruction = "x \$repeat_token")
+                ),
+                Group(
+                    "G2",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a", "b_1"), relevanceInstruction = "x \$repeat_token")
+                )
+            )
+        )
+        val validated = listOf(survey).validateRepeatables()[0]
+        assertEquals(listOf(ComponentError.INVALID_REPEAT_TOKEN), validated.children[0].errors)
+        assertEquals(emptyList(), validated.children[1].errors)
+    }
+
+    @Test
+    fun repeatable_with_an_authored_conditional_relevance_is_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    instructionList = listOf(SimpleState("Qx.value == 1", ReservedCode.ConditionalRelevance)),
+                    repeatInfo = wellFormedRepeatable()
+                ),
+                Group(
+                    "G2",
+                    instructionList = listOf(SimpleState("true", ReservedCode.ConditionalRelevance)),
+                    repeatInfo = wellFormedRepeatable()
+                ),
+                Group("G3", repeatInfo = wellFormedRepeatable())
+            )
+        )
+        val validated = listOf(survey).validateRepeatables()[0]
+        assertEquals(listOf(ComponentError.REPEATABLE_WITH_RELEVANCE), validated.children[0].errors)
+        assertEquals(emptyList(), validated.children[1].errors) // trivial "true" relevance is allowed
+        assertEquals(emptyList(), validated.children[2].errors) // no relevance is fine
+    }
 }

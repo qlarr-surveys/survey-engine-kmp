@@ -10,6 +10,7 @@ import com.qlarr.surveyengine.scriptengine.getValidate
 import com.qlarr.surveyengine.usecase.wrapToSurvey
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @Suppress("LocalVariableName")
@@ -220,6 +221,153 @@ class ContextBuilderTest {
             contextManager.components[0].children[0].children[3].instructionList[0].errors[0]
         )
         contextManager.components
+    }
+
+    @Test
+    fun a_repeatable_surfaces_its_first_copys_validation_error_on_the_template() {
+        val survey = Survey(
+            groups = listOf(
+                Group("G0", questions = listOf(Question("Qbrands", instructionList = listOf(SimpleState("", Value))))),
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(
+                        range = listOf("a", "b"),
+                        relevanceInstruction = "Qbrands.value.includes('\$repeat_token')"
+                    ),
+                    questions = listOf(
+                        Question("Q1", instructionList = listOf(SimpleState("Qzzz.value == 1", ConditionalRelevance)))
+                    )
+                )
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        val q1 = contextManager.components[0].children.first { it.code == "G1" }.children.first { it.code == "Q1" }
+        val relevance = q1.instructionList.first {
+            it is SimpleState && it.reservedCode == ConditionalRelevance
+        }
+        assertTrue(relevance.errors.isNotEmpty()) // copied from Q1_a's failed validation
+    }
+
+    @Test
+    fun a_repeatables_broken_relevance_instruction_surfaces_on_repeat_info() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(
+                        range = listOf("a", "b"),
+                        relevanceInstruction = "Qzzz.value.includes('\$repeat_token')"
+                    ),
+                    questions = listOf(Question("Q1"))
+                )
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        val g1 = contextManager.components[0].children.first { it.code == "G1" }
+        val repeatable = g1.repeatInfo as RepeatInfo.Repeatable
+        assertTrue(repeatable.relevanceInstructionErrors.isNotEmpty())
+        assertTrue(repeatable.relevanceInstructionErrors[0] is InstructionError.ScriptError)
+    }
+
+    @Test
+    fun a_skip_from_a_repeatable_is_flagged_and_does_not_crash() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(
+                        range = listOf("a", "b"),
+                        relevanceInstruction = "true || '\$repeat_token'"
+                    ),
+                    instructionList = listOf(SkipInstruction(skipToComponent = "G2", text = "true")),
+                    questions = listOf(Question("Q1"))
+                ),
+                Group("G2", questions = listOf(Question("Q2")))
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        val g1 = contextManager.components[0].children.first { it.code == "G1" }
+        val templateSkip = g1.instructionList.first { it is SkipInstruction }
+        assertTrue(templateSkip.errors.contains(InstructionError.SkipInsideRepeatable))
+
+        val g1a = contextManager.components[0].children.first { it.code == "G1_a" }
+        val copySkip = g1a.instructionList.first { it is SkipInstruction }
+        assertTrue(copySkip.errors.contains(InstructionError.SkipInsideRepeatable))
+    }
+
+    @Test
+    fun a_skip_inside_a_repeatable_descendant_is_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(
+                        range = listOf("a"),
+                        relevanceInstruction = "true || '\$repeat_token'"
+                    ),
+                    questions = listOf(
+                        Question("Q1", instructionList = listOf(SkipInstruction(skipToComponent = "Q2", text = "true"))),
+                        Question("Q2")
+                    )
+                )
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        val g1 = contextManager.components[0].children.first { it.code == "G1" }
+        val q1 = g1.children.first { it.code == "Q1" }
+        val skip = q1.instructionList.first { it is SkipInstruction }
+        assertTrue(skip.errors.contains(InstructionError.SkipInsideRepeatable))
+    }
+
+    @Test
+    fun a_skip_outside_any_repeatable_is_not_flagged() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    instructionList = listOf(SkipInstruction(skipToComponent = "G2", text = "true")),
+                    questions = listOf(Question("Q1"))
+                ),
+                Group("G2", questions = listOf(Question("Q2")))
+            )
+        )
+        val contextManager = ContextBuilder(mutableListOf(survey), getValidate())
+        contextManager.validate()
+
+        val g1 = contextManager.components[0].children.first { it.code == "G1" }
+        val skip = g1.instructionList.first { it is SkipInstruction }
+        assertFalse(skip.errors.contains(InstructionError.SkipInsideRepeatable))
+    }
+
+    @Test
+    fun sanitized_nested_components_drops_repeatable_templates() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1",
+                    repeatInfo = RepeatInfo.Repeatable(range = listOf("a"), relevanceInstruction = "Qx.includes('\$repeat_token')"),
+                    questions = listOf(Question("Q1"))
+                ),
+                Group("G2", repeatInfo = RepeatInfo.Repeated("a"), questions = listOf(Question("Q2"))),
+                Group("G3", questions = listOf(Question("Q3")))
+            )
+        )
+
+        val codes = listOf(survey).sanitizedNestedComponents().map { it.code }
+
+        assertFalse("G1" in codes)   // repeatable template dropped
+        assertFalse("Q1" in codes)   // ...and its descendants
+        assertTrue("G2" in codes)    // repeated kept
+        assertTrue("Q2" in codes)
+        assertTrue("G3" in codes)
     }
 
     @Test

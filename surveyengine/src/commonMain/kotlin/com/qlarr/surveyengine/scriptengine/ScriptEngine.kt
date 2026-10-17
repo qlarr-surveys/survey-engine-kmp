@@ -8,6 +8,7 @@ import kotlin.js.JsExport
 
 expect fun getNavigate(): ScriptEngineNavigate
 expect fun getValidate(): ScriptEngineValidate
+expect fun getCalculate(): ScriptEngineCalculate
 
 
 @OptIn(ExperimentalJsExport::class)
@@ -25,6 +26,12 @@ interface ScriptEngineNavigate {
     // The script is: NavigationInstructionsInput
     // The output is: NavigationInstructionsInput
     fun navigate(script: String): String
+}
+
+@OptIn(ExperimentalJsExport::class)
+@JsExport
+interface ScriptEngineCalculate {
+    fun calculate(script: String): String
 }
 
 @Serializable

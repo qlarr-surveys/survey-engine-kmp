@@ -177,7 +177,7 @@ fun SurveyComponent.addErrorToInstruction(
 }
 
 fun List<SurveyComponent>.indexableCodes(): List<String> {
-    return mapNotNull {
+    return notRepeatable().mapNotNull {
         if (it.noErrors() && it.hasUniqueCode())
             mutableListOf(it.code)
                 .apply {

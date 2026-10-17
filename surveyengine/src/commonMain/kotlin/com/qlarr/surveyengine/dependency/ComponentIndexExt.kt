@@ -10,13 +10,25 @@ import com.qlarr.surveyengine.model.codes
 fun List<SurveyComponent>.componentIndices(
     parentIndex: ComponentIndex? = null,
     parentRandomInstruction: Instruction.RandomGroups? = null,
-    parentPriority: Instruction.PriorityGroups? = null
+    parentPriority: Instruction.PriorityGroups? = null,
+    includeRepeatables: Boolean = true,
+    scope: String? = null,
+    scopeType: RepetitionType? = null
 ): List<ComponentIndex> {
     val returnList = mutableListOf<ComponentIndex>()
     val indices = indices(parentRandomInstruction)
     forEachIndexed { index, surveyComponent ->
+        if (!includeRepeatables && surveyComponent.repeatInfo is RepeatInfo.Repeatable) {
+            return@forEachIndexed
+        }
         if (surveyComponent is Survey || surveyComponent.noErrors()) {
             val code = surveyComponent.uniqueCode(parentIndex?.code ?: "")
+            val componentScope = if (surveyComponent.repeatInfo != null) code else scope
+            val componentScopeType = when (surveyComponent.repeatInfo) {
+                is RepeatInfo.Repeatable -> RepetitionType.REPEATABLE
+                is RepeatInfo.Repeated -> RepetitionType.REPEATED
+                null -> scopeType
+            }
             val hasUniqueCode = surveyComponent.hasUniqueCode()
             val componentIndex = ComponentIndex(
                 code = code,
@@ -24,12 +36,16 @@ fun List<SurveyComponent>.componentIndices(
                 minIndex = indices.first[index],
                 maxIndex = indices.second[index],
                 dependencies = surveyComponent.accessibleDependencies().toSet(),
-                children = surveyComponent.children.map { it.uniqueCode(code) },
+                children = surveyComponent.children
+                    .filter { includeRepeatables || it.repeatInfo !is RepeatInfo.Repeatable }
+                    .map { it.uniqueCode(code) },
                 prioritisedSiblings = parentPriority?.codes()
                     ?.firstOrNull { it.contains(surveyComponent.code) }
                     ?.map {
                         if (hasUniqueCode) it else (parentIndex?.code ?: "") + it
-                    }?.toSet() ?: setOf()
+                    }?.toSet() ?: setOf(),
+                repetitionScope = componentScope,
+                repetitionType = componentScopeType
             )
             returnList.add(componentIndex)
             val randomInstruction =
@@ -40,7 +56,10 @@ fun List<SurveyComponent>.componentIndices(
                 surveyComponent.children.componentIndices(
                     componentIndex,
                     randomInstruction,
-                    priorityInstruction
+                    priorityInstruction,
+                    includeRepeatables,
+                    componentScope,
+                    componentScopeType
                 )
             )
         }
@@ -91,7 +110,11 @@ fun List<ComponentIndex>.accessibleDependencies(code: String): List<Dependency> 
     }
     dependencies.addAll(accessibleSiblings(componentIndex))
     dependencies.addAll(childrenDependencies(componentIndex))
-    return dependencies
+    val sourceScope = componentIndex.repetitionScope
+    return dependencies.filter { dependency ->
+        val targetScope = firstOrNull { it.code == dependency.componentCode }?.repetitionScope
+        targetScope == null || targetScope == sourceScope
+    }
 }
 
 fun List<ComponentIndex>.jumpDestinations(code: String): List<String> {

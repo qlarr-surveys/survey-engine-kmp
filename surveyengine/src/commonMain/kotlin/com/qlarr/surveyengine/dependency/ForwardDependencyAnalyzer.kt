@@ -8,7 +8,7 @@ internal class ForwardDependencyAnalyzer(
     private val components: MutableList<SurveyComponent>,
     private val dependencyMap: DependencyMap
 ) {
-    private val componentIndices = components.componentIndices()
+    private val componentIndices = components.componentIndices(includeRepeatables = false)
 
     fun validateForwardDependencies(): ForwardDependencyAnalyzer {
         components.forEachIndexed { index, surveyComponent ->
@@ -45,6 +45,32 @@ internal class ForwardDependencyAnalyzer(
             returnComponent.duplicate(
                 children = children.toMutableList().map { child -> child.validateForwardDependencies(uniqueCode) })
         }
+    }
+
+    fun validateValueMetaReferences(): ForwardDependencyAnalyzer {
+        components.forEachIndexed { index, surveyComponent ->
+            components[index] = surveyComponent.validateValueMetaReferences()
+        }
+        return this
+    }
+
+    private fun SurveyComponent.validateValueMetaReferences(parentCode: String = ""): SurveyComponent {
+        val uniqueCode = uniqueCode(parentCode)
+        var returnComponent = duplicate()
+        instructionList
+            .filterNot { it is Instruction.Format || it.code == ReservedCode.MaskedValue.code }
+            .forEach { instruction ->
+                dependencyMap[Dependent(uniqueCode, instruction.code)]
+                    ?.filter { it.reservedCode == ReservedCode.ValueMeta }
+                    ?.forEach { dependency ->
+                        returnComponent = returnComponent.addErrorToInstruction(
+                            returnComponent.instructionList.first { it.code == instruction.code },
+                            InstructionError.InvalidReference(dependency.toValueKey(), false)
+                        )
+                    }
+            }
+        return returnComponent.duplicate(
+            children = children.map { child -> child.validateValueMetaReferences(uniqueCode) })
     }
 
     fun validateSkipDestinations(): ForwardDependencyAnalyzer {

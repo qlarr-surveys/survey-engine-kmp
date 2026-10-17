@@ -30,6 +30,7 @@ data class ChildlessComponent(
 sealed class SurveyComponent(
     open val code: String,
     open val instructionList: List<Instruction>,
+    open val repeatInfo: RepeatInfo?,
     open val errors: List<ComponentError>
 ) {
     abstract fun clearErrors(): SurveyComponent
@@ -96,7 +97,7 @@ data class Survey(
     override val instructionList: List<Instruction> = listOf(),
     val groups: List<Group> = listOf(),
     override val errors: List<ComponentError> = listOf()
-) : SurveyComponent("Survey", instructionList, errors) {
+) : SurveyComponent("Survey", instructionList, null, errors) {
 
     @Transient
     override val elementType: SurveyElementType = SurveyElementType.SURVEY
@@ -139,8 +140,9 @@ data class Group(
     override val instructionList: List<Instruction> = listOf(),
     val questions: List<Question> = listOf(),
     val groupType: GroupType = GroupType.GROUP,
+    override val repeatInfo: RepeatInfo? = null,
     override val errors: List<ComponentError> = listOf()
-) : SurveyComponent(code, instructionList, errors) {
+) : SurveyComponent(code, instructionList, repeatInfo, errors) {
 
     @Transient
     override val elementType: SurveyElementType = SurveyElementType.GROUP
@@ -179,8 +181,9 @@ data class Question(
     override val code: String,
     override val instructionList: List<Instruction> = listOf(),
     val answers: List<Answer> = listOf(),
+    override val repeatInfo: RepeatInfo? = null,
     override val errors: List<ComponentError> = listOf()
-) : SurveyComponent(code, instructionList, errors) {
+) : SurveyComponent(code, instructionList, repeatInfo, errors) {
 
     @Transient
     override val elementType: SurveyElementType = SurveyElementType.QUESTION
@@ -221,7 +224,7 @@ data class Answer(
     override val instructionList: List<Instruction> = listOf(),
     val answers: List<Answer> = listOf(),
     override val errors: List<ComponentError> = listOf()
-) : SurveyComponent(code, instructionList, errors) {
+) : SurveyComponent(code, instructionList, null, errors) {
 
     @Transient
     override val elementType: SurveyElementType = SurveyElementType.ANSWER
@@ -257,6 +260,7 @@ data class Answer(
 }
 
 fun List<SurveyComponent>.withoutErrors() = filter { it.noErrors() }
+fun List<SurveyComponent>.notRepeatable() = filter { it.repeatInfo !is RepeatInfo.Repeatable }
 
 
 @OptIn(ExperimentalSerializationApi::class)
@@ -273,6 +277,9 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
                 json.encodeToJsonElement(ListSerializer(serializer<Instruction>()), value.instructionList)
             )
 
+            value.repeatInfo?.let {
+                put("repeatInfo", json.encodeToJsonElement(RepeatInfoSerializer, it))
+            }
 
             if (value.errors.isNotEmpty()) {
                 put("errors", json.encodeToJsonElement(ListSerializer(serializer<ComponentError>()), value.errors))
@@ -322,6 +329,9 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
         val errors: List<ComponentError> = jsonElement["errors"]?.let {
             json.decodeFromJsonElement(ListSerializer(serializer<ComponentError>()), it)
         } ?: listOf()
+        val repeatInfo: RepeatInfo? = jsonElement["repeatInfo"]?.let {
+            json.decodeFromJsonElement(RepeatInfoSerializer, it)
+        }
 
         return if (code.isSurveyCode()) {
             val groups: List<Group> = jsonElement["groups"]?.let {
@@ -336,12 +346,12 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
             val questions: List<Question> = jsonElement["questions"]?.let {
                 json.decodeFromJsonElement(ListSerializer(serializer<Question>()), it)
             } ?: listOf()
-            Group(code, instructionList, questions,groupType, errors)
+            Group(code, instructionList, questions, groupType, repeatInfo, errors)
         } else if (code.isQuestionCode()) {
             val answers: List<Answer> = jsonElement["answers"]?.let {
                 json.decodeFromJsonElement(ListSerializer(serializer<Answer>()), it)
             } ?: listOf()
-            Question(code, instructionList, answers, errors)
+            Question(code, instructionList, answers, repeatInfo, errors)
         } else if (code.isAnswerCode()) {
 
             val answers: List<Answer> = jsonElement["answers"]?.let {
@@ -353,5 +363,86 @@ object SurveyComponentSerializer : KSerializer<SurveyComponent> {
         }
 
 
+    }
+}
+
+const val REPEAT_TOKEN_PLACEHOLDER = "\$repeat_token"
+
+@Serializable(with = RepeatInfoSerializer::class)
+sealed class RepeatInfo {
+    @Serializable(with = RepeatInfoSerializer::class)
+    data class Repeated(
+        val token: String
+    ) : RepeatInfo()
+
+    @Serializable(with = RepeatInfoSerializer::class)
+    data class Repeatable(
+        val range: List<String> = listOf(),
+        val relevanceInstruction: String,
+        val relevanceInstructionErrors: List<InstructionError> = listOf()
+    ) : RepeatInfo()
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+@Serializer(forClass = RepeatInfo::class)
+object RepeatInfoSerializer : KSerializer<RepeatInfo> {
+
+    override fun serialize(encoder: Encoder, value: RepeatInfo) {
+        val jsonObject = buildJsonObject {
+            when (value) {
+                is RepeatInfo.Repeated -> {
+                    put("type", "repeated")
+                    put("token", value.token)
+                }
+
+                is RepeatInfo.Repeatable -> {
+                    put("type", "repeatable")
+                    put("range", JsonArray(value.range.map { JsonPrimitive(it) }))
+                    put("relevanceInstruction", value.relevanceInstruction)
+                    if (value.relevanceInstructionErrors.isNotEmpty()) {
+                        put(
+                            "relevanceInstructionErrors",
+                            jsonMapper.encodeToJsonElement(
+                                ListSerializer(serializer<InstructionError>()),
+                                value.relevanceInstructionErrors
+                            )
+                        )
+                    }
+                }
+            }
+        }
+        (encoder as? JsonEncoder)?.encodeJsonElement(jsonObject) ?: encoder.encodeString(jsonObject.toString())
+    }
+
+    override fun deserialize(decoder: Decoder): RepeatInfo {
+        val jsonElement = when (decoder) {
+            is JsonDecoder -> decoder.decodeJsonElement()
+            else -> Json.parseToJsonElement(decoder.decodeString())
+        }
+
+        if (jsonElement !is JsonObject) throw SerializationException("Expected JsonObject")
+
+        val type = jsonElement["type"]?.jsonPrimitive?.content
+            ?: throw SerializationException("RepeatInfo requires a 'type' field")
+
+        return when (type) {
+            "repeated" -> {
+                val token = jsonElement["token"]?.jsonPrimitive?.content
+                    ?: throw SerializationException("Repeated requires a 'token' field")
+                RepeatInfo.Repeated(token)
+            }
+
+            "repeatable" -> {
+                val range = jsonElement["range"]?.jsonArray?.map { it.jsonPrimitive.content } ?: emptyList()
+                val relevanceInstruction = jsonElement["relevanceInstruction"]?.jsonPrimitive?.content
+                    ?: throw SerializationException("Repeatable requires a 'relevanceInstruction' field")
+                val relevanceInstructionErrors = jsonElement["relevanceInstructionErrors"]?.let {
+                    jsonMapper.decodeFromJsonElement(ListSerializer(serializer<InstructionError>()), it)
+                } ?: listOf()
+                RepeatInfo.Repeatable(range, relevanceInstruction, relevanceInstructionErrors)
+            }
+
+            else -> throw SerializationException("Unknown RepeatInfo type: $type")
+        }
     }
 }

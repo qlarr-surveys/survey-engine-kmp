@@ -248,14 +248,16 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
             children = if (children.isNotEmpty()) children.map { it.addValidityInstructions(qualifiedCode) } else listOf())
     // we do not add validity instructions to End Groups
     if (this is Survey || (this is Group && groupType != GroupType.END)) {
-        validationText = children.withoutErrors().joinToString(
-            postfix = "",
-            separator = " && ",
-            transform = {
-                "(!${it.uniqueCode(qualifiedCode)}.in_current_navigation || !${it.uniqueCode(qualifiedCode)}.relevance || ${
-                    it.uniqueCode(qualifiedCode)
-                }.validity)"
-            })
+        validationText = children.withoutErrors()
+            .notRepeatable()
+            .joinToString(
+                postfix = "",
+                separator = " && ",
+                transform = {
+                    "(!${it.uniqueCode(qualifiedCode)}.in_current_navigation || !${it.uniqueCode(qualifiedCode)}.relevance || ${
+                        it.uniqueCode(qualifiedCode)
+                    }.validity)"
+                })
     } else if (this is Question || this is Answer) {
         if (hasEnumRule() && enumValues().isNotEmpty()) {
             returnComponent = returnComponent.insertOrOverrideState(
@@ -282,10 +284,10 @@ private fun SurveyComponent.addValidityInstructions(parentCode: String = ""): Su
                 transform = { "$qualifiedCode.${it.code}" }
             )
         }
-        val childrenWithValidity = returnComponent.children.filter {
-            it.getStateInstruction(Validity)?.let { validityInstruction ->
-                validityInstruction.text != "true"
-            } ?: false
+        val childrenWithValidity = returnComponent.children.notRepeatable().filter {
+                    it.getStateInstruction(Validity)?.let { validityInstruction ->
+                        validityInstruction.text != "true"
+                    } ?: false
         }
         validationText = if (childrenWithValidity.isEmpty()) validationText else
             childrenWithValidity.joinToString(

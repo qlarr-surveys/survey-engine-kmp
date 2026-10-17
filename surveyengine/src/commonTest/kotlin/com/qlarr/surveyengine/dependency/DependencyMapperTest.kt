@@ -138,7 +138,7 @@ class DependencyMapperTest {
     @BeforeTest
     fun setup() {
         contextBuilder = ContextBuilder(mutableListOf(GROUP_G1, GROUP_G2, GROUP_G3, GROUP_G4), getValidate())
-        dependencyMapper = DependencyMapper(contextBuilder.sanitizedNestedComponents)
+        dependencyMapper = DependencyMapper(contextBuilder.sanitizedNestedComponents())
     }
 
     @Test

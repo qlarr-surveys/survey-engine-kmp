@@ -75,6 +75,8 @@ sealed class ReservedCode(
     @Serializable(with = ReservedCodeSerializer::class)
     data object MaskedValue : ReservedCode("masked_value", isAccessible = true, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
+    data object ValueMeta : ReservedCode("value_meta", isAccessible = true, accessibleByChildren = true, isRuntime = false)
+    @Serializable(with = ReservedCodeSerializer::class)
     data object RelevanceMap : ReservedCode("relevance_map", executionOrder = 8)
     @Serializable(with = ReservedCodeSerializer::class)
     data object ValidityMap : ReservedCode("validity_map", executionOrder = 8)
@@ -102,7 +104,7 @@ sealed class ReservedCode(
     fun defaultReturnType(): ReturnType {
         return when (this) {
             is Order, is Priority -> ReturnType.Int
-            is Meta, RelevanceMap, ValidityMap -> ReturnType.Map
+            is Meta, RelevanceMap, ValidityMap, ValueMeta -> ReturnType.Map
             is BeforeNavigation, AfterNavigation -> ReturnType.List(emptySet())
             is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
@@ -113,7 +115,7 @@ sealed class ReservedCode(
     fun validReturnType(returnType: ReturnType): Boolean {
         return when (this) {
             is Order, is Priority -> returnType == ReturnType.Int
-            is Meta, RelevanceMap, ValidityMap -> returnType == ReturnType.Map
+            is Meta, RelevanceMap, ValidityMap, ValueMeta -> returnType == ReturnType.Map
             is BeforeNavigation, AfterNavigation -> returnType is ReturnType.List
             is Lang, is Mode, is Value, is MaskedValue, is Label -> returnType == ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
@@ -125,7 +127,7 @@ sealed class ReservedCode(
 
     fun defaultIsActive(): Boolean {
         return when (this) {
-            Order, Value, Meta, ShowErrors, Lang, Mode, Priority, Label, InCurrentNavigation -> false
+            Order, Value, ValueMeta, Meta, ShowErrors, Lang, Mode, Priority, Label, InCurrentNavigation -> false
             else -> true
         }
     }
@@ -168,6 +170,7 @@ fun String.toReservedCode(): ReservedCode {
         this == "has_previous" -> ReservedCode.HasPrevious
         this == "has_next" -> ReservedCode.HasNext
         this == "masked_value" -> ReservedCode.MaskedValue
+        this == "value_meta" -> ReservedCode.ValueMeta
         this == "label" -> ReservedCode.Label
         this == "in_current_navigation" -> ReservedCode.InCurrentNavigation
         this == "before_navigation" -> ReservedCode.BeforeNavigation
@@ -203,6 +206,7 @@ fun String.isReservedCode(): Boolean {
         "has_next",
         "disqualified",
         "masked_value",
+        "value_meta",
         "relevance_map",
         "validity_map",
         "label",

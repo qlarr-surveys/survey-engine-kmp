@@ -1,8 +1,11 @@
 package com.qlarr.surveyengine.validation
 
+import com.qlarr.surveyengine.ext.VALID_REPEAT_TOKEN
 import com.qlarr.surveyengine.ext.getDuplicates
 import com.qlarr.surveyengine.ext.splitToComponentCodes
 import com.qlarr.surveyengine.model.*
+
+private val REPEAT_TOKEN_REGEX = Regex(VALID_REPEAT_TOKEN)
 
 internal fun SurveyComponent.validateInstructions(): SurveyComponent {
     if (hasErrors()) {
@@ -15,6 +18,7 @@ internal fun SurveyComponent.validateInstructions(): SurveyComponent {
         .validateRandomGroupInstruction()
         .validatePriorityGroupInstruction()
         .validateParentRelevanceInstruction()
+        .validateValueMetaInstruction()
         .validateQuotaInstruction()
 
     val newChildren = mutableListOf<SurveyComponent>()
@@ -54,6 +58,20 @@ private fun SurveyComponent.validateQuotaInstruction(): SurveyComponent {
     }
     return duplicate(instructionList = newInstructions)
 }
+
+internal fun SurveyComponent.validateValueMetaInstruction(): SurveyComponent = duplicate(
+    instructionList = instructionList.map { instruction ->
+        if (instruction is Instruction.State
+            && instruction.reservedCode == ReservedCode.ValueMeta
+            && instruction.noErrors()
+            && instruction.isActive
+        ) {
+            instruction.addError(InstructionError.InvalidValueMetaInstruction)
+        } else {
+            instruction
+        }
+    }
+)
 
 private fun SurveyComponent.validateParentRelevanceInstruction(): SurveyComponent {
     val newInstructions = instructionList.toMutableList()
@@ -98,6 +116,64 @@ fun List<SurveyComponent>.validateDuplicates(parentCode: String = ""): List<Surv
     }
     return returnList
 }
+
+fun List<SurveyComponent>.validateRepeatables(insideRepeatable: Boolean = false): List<SurveyComponent> =
+    map { component ->
+        // An already-errored component is excluded from everything else, including its subtree.
+        if (component.hasErrors()) {
+            return@map component
+        }
+
+        val repeatable = component.repeatInfo as? RepeatInfo.Repeatable
+
+        // A repeatable nested inside another repeatable is the outermost offender: flag it and
+        // stop descending, so its subtree is excluded from the rest of validation and expansion.
+        if (repeatable != null && insideRepeatable) {
+            return@map component.addError(ComponentError.NESTED_REPEATABLE)
+        }
+
+        var validated = if (insideRepeatable || repeatable != null) {
+            component.flagSkipsInsideRepeatable()
+        } else {
+            component
+        }
+        if (repeatable != null) {
+            if (repeatable.range.isEmpty()) {
+                validated = validated.addError(ComponentError.EMPTY_REPEAT_RANGE)
+            }
+            if (repeatable.range.any { !it.matches(REPEAT_TOKEN_REGEX) }) {
+                validated = validated.addError(ComponentError.INVALID_REPEAT_TOKEN)
+            }
+            if (!repeatable.relevanceInstruction.contains(REPEAT_TOKEN_PLACEHOLDER)) {
+                validated = validated.addError(ComponentError.MISSING_REPEAT_TOKEN)
+            }
+            if (component.instructionList.any {
+                    it is Instruction.State && it.reservedCode == ReservedCode.ConditionalRelevance &&
+                            it.noErrors() && it.text != "true"
+                }) {
+                validated = validated.addError(ComponentError.REPEATABLE_WITH_RELEVANCE)
+            }
+            // A malformed repeatable is excluded from everything else too.
+            if (validated.hasErrors()) {
+                return@map validated
+            }
+        }
+
+        validated.duplicate(
+            children = validated.children.validateRepeatables(insideRepeatable || repeatable != null)
+        )
+    }
+
+private fun SurveyComponent.flagSkipsInsideRepeatable(): SurveyComponent =
+    duplicate(
+        instructionList = instructionList.map { instruction ->
+            if (instruction is Instruction.SkipInstruction) {
+                instruction.addError(InstructionError.SkipInsideRepeatable)
+            } else {
+                instruction
+            }
+        }
+    )
 
 fun List<SurveyComponent>.validateReservedCode(): List<SurveyComponent> {
     val returnList = toMutableList()

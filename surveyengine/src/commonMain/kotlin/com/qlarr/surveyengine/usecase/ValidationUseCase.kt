@@ -19,13 +19,13 @@ class ValidationUseCaseImpl(scriptEngine: ScriptEngineValidate, survey: Survey) 
     override fun validate(validateSpecialTypeGroups: Boolean): ValidationOutput {
 
         contextManager.validate(validateSpecialTypeGroups)
-        val sanitisedComponents = contextManager.sanitizedNestedComponents
+        val sanitisedComponents = contextManager.sanitizedNestedComponents()
         val dependencyMapper = DependencyMapper(sanitisedComponents, true)
 
         dependencyMapper.correctedInstructions.forEach { entry ->
             val dependency = entry.key
             val instructionText = entry.value
-            val parents = contextManager.sanitizedNestedComponents.parents(dependency.componentCode)
+            val parents = contextManager.sanitizedNestedComponents().parents(dependency.componentCode)
             contextManager.components.correctInstruction(
                 parents.reversed(),
                 dependency.componentCode.splitToComponentCodes().last(),
@@ -37,7 +37,7 @@ class ValidationUseCaseImpl(scriptEngine: ScriptEngineValidate, survey: Survey) 
             survey = contextManager.components[0] as Survey,
             impactMap = dependencyMapper.impactMap.toStringImpactMap(),
             schema = contextManager.components.getSchema(),
-            script = contextManager.sanitizedNestedComponents.runtimeScript(
+            script = contextManager.sanitizedNestedComponents().runtimeScript(
                 dependencyMapper.dependencyMap,
                 contextManager.replacements
             ),
