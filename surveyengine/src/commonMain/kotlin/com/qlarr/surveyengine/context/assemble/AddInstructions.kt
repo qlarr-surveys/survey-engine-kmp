@@ -346,6 +346,7 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
                     .insertOrOverrideState(AfterNavigation, "[]", false)
                     .insertOrOverrideState(HasPrevious, "false", false)
                     .insertOrOverrideState(HasNext, "false", false)
+                    .removeQuotaInputs()
             }
 
             else -> {
@@ -361,6 +362,7 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
                     .removeState(ValidationRule("validation_enum"))
                     .removeState(ModeRelevance)
                     .removeState(NotSkipped)
+                    .removeQuotaSkipInstructions()
                     .insertOrOverrideState(Priority, index.toString(), false)
             }
         }

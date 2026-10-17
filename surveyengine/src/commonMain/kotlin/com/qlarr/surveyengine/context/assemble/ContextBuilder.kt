@@ -27,6 +27,7 @@ internal class ContextBuilder(
         .withReplacements(replacements)
     lateinit var componentIndexList: List<ComponentIndex>
     private lateinit var validatedSystemInstructions: MutableList<ComponentInstruction>
+    private lateinit var dependencyMap: DependencyMap
     lateinit var skipMap: Map<String, List<NotSkippedInstructionManifesto>>
 
     init {
@@ -92,15 +93,13 @@ internal class ContextBuilder(
         }
         components.addStateToAllComponents()
 
-        val dependencyMapper = DependencyMapper(sanitizedNestedComponents())
+        dependencyMap = DependencyMapper(sanitizedNestedComponents()).dependencyMap
 
         ForwardDependencyAnalyzer(
-            components, dependencyMapper.dependencyMap
+            components, dependencyMap
         ).validateForwardDependencies()
             .validateValueMetaReferences()
             .validateSkipDestinations()
-        components.addDisqualifyInstruction(sanitizedNestedComponents())
-        componentIndexList = components.componentIndices()
 
         sanitizedNestedComponents().let { sanitisedComponents ->
             val systemInstructions = sanitisedComponents.map { childlessComponent ->
@@ -118,7 +117,7 @@ internal class ContextBuilder(
             return systemInstructions.map { instruction ->
                 ScriptValidationInput(
                     componentInstruction = instruction,
-                    dependencies = dependencyMapper.dependencyMap[Dependent(
+                    dependencies = dependencyMap[Dependent(
                         instruction.componentCode,
                         instruction.instruction.code
                     )]?.map {
@@ -143,9 +142,12 @@ internal class ContextBuilder(
         }.toMutableList()
         components.replaceInstruction("")
         components.apply {
+            addQuotaInputs()
+            addQuotaSkipInstructions(dependencyMap)
             addDisqualifyInstruction(components.sanitizedNestedComponents())
             addPreviousNextInstruction()
             addPrioritisedInstruction("")
+            componentIndexList = components.componentIndices()
             skipMap = addNotSkippedInstructions(componentIndexList)
             addModeRelevanceInstruction()
             addParentRelevanceInstruction()

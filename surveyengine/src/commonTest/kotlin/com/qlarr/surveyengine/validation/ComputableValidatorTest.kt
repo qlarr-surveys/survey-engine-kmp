@@ -284,4 +284,35 @@ class ComponentValidatorTest {
         assertEquals(emptyList(), validated.children[1].errors) // trivial "true" relevance is allowed
         assertEquals(emptyList(), validated.children[2].errors) // no relevance is fine
     }
+
+    @Test
+    fun quota_instructions_outside_survey_are_flagged() {
+        val group = Group(
+            "G1",
+            instructionList = listOf(SimpleState("true", ReservedCode.Quota("quota_g"))),
+            questions = listOf(
+                Question(
+                    "Q1",
+                    instructionList = listOf(
+                        SimpleState("true", ReservedCode.Quota("quota_q")),
+                        SimpleState("false", ReservedCode.IsQuotaMet("is_quota_met_q"))
+                    )
+                )
+            )
+        )
+        val validated = group.validateInstructions()
+        assertEquals(listOf(InstructionError.QuotaNotOnSurvey), validated.instructionList[0].errors)
+        assertEquals(listOf(InstructionError.QuotaNotOnSurvey), validated.children[0].instructionList[0].errors)
+        assertEquals(listOf(InstructionError.QuotaNotOnSurvey), validated.children[0].instructionList[1].errors)
+    }
+
+    @Test
+    fun quota_instructions_on_survey_are_valid() {
+        val survey = Survey(
+            instructionList = listOf(SimpleState("true", ReservedCode.Quota("quota_a"))),
+            groups = listOf(Group("G1", questions = listOf(Question("Q1"))))
+        )
+        val validated = survey.validateInstructions()
+        assertEquals(emptyList(), validated.instructionList[0].errors)
+    }
 }
