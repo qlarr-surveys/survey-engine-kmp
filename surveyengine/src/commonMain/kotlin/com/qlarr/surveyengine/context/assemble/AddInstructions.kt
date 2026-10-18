@@ -197,7 +197,6 @@ private fun MutableList<SurveyComponent>.addPrioritisedInstruction(
     }
     forEachIndexed { index, surveyComponent ->
         val hasUniqueCode = surveyComponent.elementType.hasUniqueCode()
-        val code = surveyComponent.uniqueCode(parentCode)
         priorityGroups.containingCode(surveyComponent.code)?.let { priorityGroup ->
             val text = priorityGroup.weights
                 .filter { weight ->
@@ -337,6 +336,7 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
         val newComponent = when (surveyComponent) {
             is Survey -> {
                 surveyComponent
+                    .removeQuotaMetStates()
                     .replaceOrAddInstruction(Instruction.SimpleState("en", Lang))
                     .insertOrOverrideState(Mode, "mixed", false)
                     .insertOrOverrideState(Disqualified, "false", false)
@@ -370,6 +370,13 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
                 children = surveyComponent.children.toMutableList().apply { addStateToAllComponents() })
         )
     }
+}
+
+private fun SurveyComponent.removeQuotaMetStates(): SurveyComponent {
+    return duplicate(
+        instructionList = instructionList
+            .filterNot { (it as? Instruction.State)?.reservedCode is IsQuotaMet }
+    )
 }
 
 private fun SurveyComponent.addOrder(index: Int): SurveyComponent {

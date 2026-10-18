@@ -209,7 +209,7 @@ private fun Map<String, JsonElement>.valueMetaBindings(
 
 private fun Survey.inputs(): Set<Dependency> = instructionList
     .filterIsInstance<Instruction.State>()
-    .filter { it.reservedCode is ReservedCode.QuotaFull && !it.isActive }
+    .filter { it.reservedCode is ReservedCode.IsQuotaMet && !it.isActive }
     .map { Dependency(code, it.reservedCode) }
     .toSet()
 
@@ -248,7 +248,7 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
             ReservedCode.ValueMeta -> true
 
             is ReservedCode.Quota -> true
-            is ReservedCode.QuotaFull -> false
+            is ReservedCode.IsQuotaMet -> false
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean
             ReservedCode.MaskedValue -> this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]

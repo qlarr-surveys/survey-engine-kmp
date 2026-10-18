@@ -16,7 +16,7 @@ internal fun MutableList<SurveyComponent>.addQuotaInputs() {
         survey = survey.replaceOrAddInstruction(
             Instruction.SimpleState(
                 text = "false",
-                reservedCode = quota.fullCode(),
+                reservedCode = quota.toIsMet(),
                 returnType = ReturnType.Boolean,
                 isActive = false
             )
@@ -45,7 +45,7 @@ internal fun Survey.screenOutQuota(
     return quotas().firstOrNull { quota ->
         val met = Dependency("Survey", quota.reservedCode)
         isTrue(met)
-                && isTrue(Dependency("Survey", quota.fullCode()))
+                && isTrue(Dependency("Survey", quota.toIsMet()))
                 && dependencyMap.answeredQuestions(met.toDependent()).all { isSettled(it, emptySet()) }
     }?.code?.removePrefix("quota_")
 }
@@ -54,7 +54,11 @@ private fun Survey.quotas() = instructionList
     .filterIsInstance<Instruction.State>()
     .filter { it.reservedCode is ReservedCode.Quota && it.noErrors() }
 
-private fun Instruction.State.fullCode() = ReservedCode.QuotaFull("${code}_full")
+private fun Instruction.State.toIsMet() = when (this.reservedCode) {
+    is ReservedCode.Quota -> ReservedCode.IsQuotaMet(IS_QUOTA_MET_PREFIX + code.replace(QUOTA_INSTRUCTION_PREFIX, ""))
+    else -> throw IllegalStateException("can only convert from Quota")
+}
+
 
 private fun DependencyMap.answeredQuestions(start: Dependent): Set<String> {
     val found = linkedSetOf<String>()

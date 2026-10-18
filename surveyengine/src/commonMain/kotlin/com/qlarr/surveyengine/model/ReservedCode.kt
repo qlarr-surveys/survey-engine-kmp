@@ -71,7 +71,7 @@ sealed class ReservedCode(
     data class Quota(override val code: String) :
         ReservedCode(code, executionOrder = 8, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
-    data class QuotaFull(override val code: String) : ReservedCode(code, executionOrder = 8)
+    data class IsQuotaMet(override val code: String) : ReservedCode(code, executionOrder = 8)
     @Serializable(with = ReservedCodeSerializer::class)
     data object MaskedValue : ReservedCode("masked_value", isAccessible = true, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
@@ -109,7 +109,7 @@ sealed class ReservedCode(
             is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
-            is Disqualified,  is HasPrevious, is HasNext, is Quota, is QuotaFull -> ReturnType.Boolean
+            is Disqualified,  is HasPrevious, is HasNext, is Quota, is IsQuotaMet -> ReturnType.Boolean
         }
     }
     fun validReturnType(returnType: ReturnType): Boolean {
@@ -117,10 +117,11 @@ sealed class ReservedCode(
             is Order, is Priority -> returnType == ReturnType.Int
             is Meta, RelevanceMap, ValidityMap, ValueMeta -> returnType == ReturnType.Map
             is BeforeNavigation, AfterNavigation -> returnType is ReturnType.List
-            is Lang, is Mode, is Value, is MaskedValue, is Label -> returnType == ReturnType.String
+            is Lang, is Mode, is MaskedValue, is Label -> returnType == ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
-            is Disqualified,  is HasPrevious, is HasNext, is Quota, is QuotaFull -> returnType == ReturnType.Boolean
+            is Disqualified,  is HasPrevious, is HasNext, is Quota, is IsQuotaMet -> returnType == ReturnType.Boolean
+            is Value -> throw IllegalArgumentException("Value can have the return type it wants")
         }
     }
 
@@ -148,8 +149,10 @@ object ReservedCodeSerializer : KSerializer<ReservedCode> {
 
 const val VALIDATION_INSTRUCTION_PATTERN = "validation_[a-z0-9][a-z0-9_]*\$"
 const val SKIP_INSTRUCTION_PATTERN = "skip_to_[A-Za-z0-9][A-Za-z0-9_]*\$"
-const val QUOTA_INSTRUCTION_PATTERN = "quota_[A-Za-z0-9][A-Za-z0-9_]*\$"
-const val QUOTA_FULL_INSTRUCTION_PATTERN = "quota_[A-Za-z0-9][A-Za-z0-9_]*_full\$"
+const val QUOTA_INSTRUCTION_PREFIX = "quota_"
+const val QUOTA_INSTRUCTION_PATTERN = "$QUOTA_INSTRUCTION_PREFIX[A-Za-z0-9][A-Za-z0-9_]*\$"
+const val IS_QUOTA_MET_PREFIX = "is_quota_met_"
+const val IS_QUOTA_MET_PATTERN = "$IS_QUOTA_MET_PREFIX[A-Za-z0-9][A-Za-z0-9_]*\$"
 
 fun String.toReservedCode(): ReservedCode {
     return when {
@@ -178,13 +181,15 @@ fun String.toReservedCode(): ReservedCode {
         this == "after_navigation" -> ReservedCode.AfterNavigation
         this == "relevance_map" -> ReservedCode.RelevanceMap
         this == "validity_map" -> ReservedCode.ValidityMap
-        this.matches(Regex(VALIDATION_INSTRUCTION_PATTERN)) -> ReservedCode.ValidationRule(this)
-        this.matches(Regex(SKIP_INSTRUCTION_PATTERN)) -> ReservedCode.Skip(this)
-        this.matches(Regex(QUOTA_FULL_INSTRUCTION_PATTERN)) -> ReservedCode.QuotaFull(this)
-        this.matches(Regex(QUOTA_INSTRUCTION_PATTERN)) -> ReservedCode.Quota(this)
+        this.matches(VALIDATION_INSTRUCTION_PATTERN.regex()) -> ReservedCode.ValidationRule(this)
+        this.matches(SKIP_INSTRUCTION_PATTERN.regex()) -> ReservedCode.Skip(this)
+        this.matches(IS_QUOTA_MET_PATTERN.regex()) -> ReservedCode.IsQuotaMet(this)
+        this.matches(QUOTA_INSTRUCTION_PATTERN.regex()) -> ReservedCode.Quota(this)
         else -> throw IllegalStateException("")
     }
 }
+
+internal fun String.regex() = Regex(this)
 
 fun String.isReservedCode(): Boolean {
     return this in listOf(
@@ -214,9 +219,10 @@ fun String.isReservedCode(): Boolean {
         "before_navigation",
         "after_navigation"
     )
-            || this.matches(Regex(VALIDATION_INSTRUCTION_PATTERN))
-            || this.matches(Regex(SKIP_INSTRUCTION_PATTERN))
-            || this.matches(Regex(QUOTA_INSTRUCTION_PATTERN))
+            || this.matches(VALIDATION_INSTRUCTION_PATTERN.regex())
+            || this.matches(SKIP_INSTRUCTION_PATTERN.regex())
+            || this.matches(QUOTA_INSTRUCTION_PATTERN.regex())
+            || this.matches(IS_QUOTA_MET_PATTERN.regex())
 }
 
 

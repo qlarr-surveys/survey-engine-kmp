@@ -51,7 +51,7 @@ private fun SurveyComponent.validateQuotaInstruction(): SurveyComponent {
     val newInstructions = instructionList.toMutableList()
     instructionList.forEachIndexed { index, instruction ->
         if (instruction is Instruction.State && instruction.noErrors()
-            && (instruction.reservedCode is ReservedCode.Quota || instruction.reservedCode is ReservedCode.QuotaFull)
+            && (instruction.reservedCode is ReservedCode.Quota || instruction.reservedCode is ReservedCode.IsQuotaMet)
         ) {
             newInstructions[index] = instruction.addError(InstructionError.QuotaNotOnSurvey)
         }
