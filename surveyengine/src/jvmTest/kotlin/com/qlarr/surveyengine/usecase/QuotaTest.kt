@@ -51,7 +51,7 @@ class QuotaTest {
     }
 
     @Test
-    fun full_met_quota_screens_out_once_its_questions_are_behind() {
+    fun full_met_quota_screens_out_once_its_condition_is_true() {
         val survey = validate(design(quota("QT1", """Q1.value == "male" && Q2.value == "young"""")))
         val afterQ1 = navigate(survey, """{"Q1.value":"male","Survey.is_quota_met_QT1":true}""", "G1")
         assertEquals(NavigationIndex.Group("G2"), afterQ1.navigationIndex)
@@ -71,18 +71,7 @@ class QuotaTest {
     }
 
     @Test
-    fun or_condition_waits_until_every_question_it_reads_is_behind() {
-        val survey = validate(design(quota("QT1", """Q1.value == "male" || Q2.value == "young"""")))
-        val afterQ1 = navigate(survey, """{"Q1.value":"male","Survey.is_quota_met_QT1":true}""", "G1")
-        assertEquals(NavigationIndex.Group("G2"), afterQ1.navigationIndex)
-
-        val afterQ2 = navigate(survey, """{"Q1.value":"male","Survey.is_quota_met_QT1":true}""", "G2")
-        assertEquals(NavigationIndex.End("G4"), afterQ2.navigationIndex)
-        assertEquals(JsonPrimitive(true), afterQ2.toSave["Survey.disqualified"])
-    }
-
-    @Test
-    fun negated_condition_waits_for_its_question_in_randomized_order() {
+    fun negated_condition_screens_out_once_true_in_randomized_order() {
         val survey = validate(design(quota("QT1", """Q2.value == "a" && Q3.value != "b""""), randomize = true))
         val order = """"G2.order":2,"G3.order":1"""
         val afterQ3 = navigate(survey, """{$order,"Q3.value":"c","Survey.is_quota_met_QT1":true}""", "G3")
@@ -95,19 +84,7 @@ class QuotaTest {
     }
 
     @Test
-    fun negated_question_still_ahead_holds_the_screen_out_back() {
-        val survey = validate(design(quota("QT1", """Q2.value != "x" && Q3.value == "c""""), randomize = true))
-        val order = """"G2.order":2,"G3.order":1"""
-        val afterQ3 = navigate(survey, """{$order,"Q3.value":"c","Survey.is_quota_met_QT1":true}""", "G3")
-        assertEquals(NavigationIndex.Group("G2"), afterQ3.navigationIndex)
-
-        val afterQ2 = navigate(survey, """{$order,"Q2.value":"x","Q3.value":"c","Survey.is_quota_met_QT1":true}""", "G2")
-        assertEquals(NavigationIndex.End("G4"), afterQ2.navigationIndex)
-        assertEquals(JsonPrimitive(false), afterQ2.toSave["Survey.disqualified"])
-    }
-
-    @Test
-    fun hidden_question_does_not_hold_the_screen_out_back() {
+    fun condition_on_a_hidden_question_screens_out() {
         val survey = validate(
             design(quota("QT1", """Q1.value == "male" && Q3.value != "young""""), q3Relevance = """Q1.value != "male"""")
         )
@@ -117,30 +94,13 @@ class QuotaTest {
     }
 
     @Test
-    fun question_jumped_over_by_a_skip_does_not_hold_the_screen_out_back() {
+    fun condition_on_a_skipped_question_screens_out() {
         val survey = validate(
             design(quota("QT1", """Q1.value == "male" && Q2.value != "young""""), skipOnQ1 = """Q1.value == "male"""")
         )
         val output = navigate(survey, """{"Q1.value":"male","Survey.is_quota_met_QT1":true}""", "G1")
         assertEquals(NavigationIndex.End("G4"), output.navigationIndex)
         assertEquals(JsonPrimitive(true), output.toSave["Survey.disqualified"])
-    }
-
-    @Test
-    fun question_hidden_by_a_condition_still_ahead_holds_the_screen_out_back() {
-        val survey = validate(
-            design(quota("QT1", """Q1.value == "male" && Q3.value != "a""""), q3Relevance = """Q2.value == "yes"""")
-        )
-        val afterQ1 = navigate(survey, """{"Q1.value":"male","Survey.is_quota_met_QT1":true}""", "G1")
-        assertEquals(NavigationIndex.Group("G2"), afterQ1.navigationIndex)
-        assertEquals(JsonPrimitive(false), afterQ1.toSave["Survey.disqualified"])
-
-        val hidden = navigate(survey, """{"Q1.value":"male","Q2.value":"no","Survey.is_quota_met_QT1":true}""", "G2")
-        assertEquals(NavigationIndex.End("G4"), hidden.navigationIndex)
-        assertEquals(JsonPrimitive(true), hidden.toSave["Survey.disqualified"])
-
-        val shown = navigate(survey, """{"Q1.value":"male","Q2.value":"yes","Survey.is_quota_met_QT1":true}""", "G2")
-        assertEquals(NavigationIndex.Group("G3"), shown.navigationIndex)
     }
 
     @Test
@@ -171,22 +131,13 @@ class QuotaTest {
     }
 
     @Test
-    fun jumping_past_the_quota_questions_screens_out() {
+    fun jumping_forward_with_a_full_met_quota_screens_out() {
         val survey = validate(design(quota("QT1", """Q1.value == "male"""")))
         val values = """{"Q1.value":"male","Survey.is_quota_met_QT1":true}"""
         val output = navigate(survey, values, "G1", NavigationDirection.Jump(NavigationIndex.Group("G3")))
         assertEquals(NavigationIndex.End("G4"), output.navigationIndex)
         assertEquals(JsonPrimitive(true), output.toSave["Survey.disqualified"])
         assertEquals(JsonPrimitive("QT1"), output.toSave["Survey.screened_out_by_quota"])
-    }
-
-    @Test
-    fun jumping_before_the_quota_questions_does_not_screen_out() {
-        val survey = validate(design(quota("QT1", """Q3.value == "x"""")))
-        val values = """{"Q3.value":"x","Survey.is_quota_met_QT1":true}"""
-        val output = navigate(survey, values, "G1", NavigationDirection.Jump(NavigationIndex.Group("G2")))
-        assertEquals(NavigationIndex.Group("G2"), output.navigationIndex)
-        assertEquals(JsonPrimitive(false), output.toSave["Survey.disqualified"])
     }
 
     @Test

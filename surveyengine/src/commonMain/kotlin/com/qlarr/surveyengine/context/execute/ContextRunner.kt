@@ -88,6 +88,8 @@ internal class ContextRunner(
                             returnDependencies.remove(skipManifesto.dependency)
                         }
                     }
+                    // A skip source's relevance only matters alongside its skip instruction...
+                    // once all its skip dependencies are dropped, drop its relevance too to avoid a cycle
                     skipMap[dependent.componentCode]
                         ?.map { it.dependency.componentCode }
                         ?.distinct()

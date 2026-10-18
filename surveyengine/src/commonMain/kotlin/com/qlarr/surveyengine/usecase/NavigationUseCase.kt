@@ -144,7 +144,7 @@ class NavigationUseCaseImp(
         val movesForward =
             navigationDirection is NavigationDirection.Next || navigationDirection is NavigationDirection.Jump
         val screenOutQuota = if (movesForward && !nextNavIndex.showError && !disqualified)
-            survey.screenOutQuota(nextNavIndex, stateBindings, dependencyMapper.dependencyMap)
+            survey.screenOutQuota(stateBindings)
         else null
         if (screenOutQuota != null) {
             stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
