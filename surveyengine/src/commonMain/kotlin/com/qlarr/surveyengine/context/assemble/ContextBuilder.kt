@@ -143,6 +143,7 @@ internal class ContextBuilder(
         }.toMutableList()
         components.replaceInstruction("")
         components.apply {
+            components.addQuotaInputs()
             addDisqualifyInstruction(components.sanitizedNestedComponents())
             addPreviousNextInstruction()
             addPrioritisedInstruction("")

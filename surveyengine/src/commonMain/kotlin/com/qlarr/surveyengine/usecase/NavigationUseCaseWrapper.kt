@@ -26,7 +26,7 @@ interface NavigationUseCaseWrapper {
             navigationIndex: NavigationIndex? = null,
             navigationDirection: NavigationDirection = NavigationDirection.Start,
             skipInvalid: Boolean,
-            surveyMode: SurveyMode
+            surveyMode: SurveyMode,
         ): NavigationUseCaseWrapper {
             return NavigationUseCaseWrapperImpl(
                 processedSurvey = processedSurvey,
@@ -36,7 +36,7 @@ interface NavigationUseCaseWrapper {
                 lang = lang,
                 navigationMode = navigationMode,
                 navigationIndex = navigationIndex,
-                navigationDirection = navigationDirection
+                navigationDirection = navigationDirection,
             )
         }
     }
