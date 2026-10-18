@@ -153,14 +153,50 @@ class QuotaTest {
     }
 
     @Test
-    fun only_moving_forward_screens_out() {
+    fun quota_code_ending_in_full_is_a_quota() {
+        val survey = validate(design(quota("QT1_full", """Q1.value == "male"""")))
+        assertEquals(false, surveyInstruction(survey, "is_quota_met_QT1_full")!!["isActive"]!!.jsonPrimitive.boolean)
+        val output = navigate(survey, """{"Q1.value":"male","Survey.is_quota_met_QT1_full":true}""", "G1")
+        assertEquals(NavigationIndex.End("G4"), output.navigationIndex)
+        assertEquals(JsonPrimitive("QT1_full"), output.toSave["Survey.screened_out_by_quota"])
+    }
+
+    @Test
+    fun moving_back_does_not_screen_out() {
         val survey = validate(design(quota("QT1", """Q1.value == "male"""")))
         val values = """{"Q1.value":"male","Survey.is_quota_met_QT1":true}"""
         val previous = navigate(survey, values, "G2", NavigationDirection.Previous)
         assertEquals(NavigationIndex.Group("G1"), previous.navigationIndex)
-        val jump = navigate(survey, values, "G1", NavigationDirection.Jump(NavigationIndex.Group("G3")))
-        assertEquals(NavigationIndex.Group("G3"), jump.navigationIndex)
-        assertEquals(JsonPrimitive(false), jump.toSave["Survey.disqualified"])
+        assertEquals(JsonPrimitive(false), previous.toSave["Survey.disqualified"])
+    }
+
+    @Test
+    fun jumping_past_the_quota_questions_screens_out() {
+        val survey = validate(design(quota("QT1", """Q1.value == "male"""")))
+        val values = """{"Q1.value":"male","Survey.is_quota_met_QT1":true}"""
+        val output = navigate(survey, values, "G1", NavigationDirection.Jump(NavigationIndex.Group("G3")))
+        assertEquals(NavigationIndex.End("G4"), output.navigationIndex)
+        assertEquals(JsonPrimitive(true), output.toSave["Survey.disqualified"])
+        assertEquals(JsonPrimitive("QT1"), output.toSave["Survey.screened_out_by_quota"])
+    }
+
+    @Test
+    fun jumping_before_the_quota_questions_does_not_screen_out() {
+        val survey = validate(design(quota("QT1", """Q3.value == "x"""")))
+        val values = """{"Q3.value":"x","Survey.is_quota_met_QT1":true}"""
+        val output = navigate(survey, values, "G1", NavigationDirection.Jump(NavigationIndex.Group("G2")))
+        assertEquals(NavigationIndex.Group("G2"), output.navigationIndex)
+        assertEquals(JsonPrimitive(false), output.toSave["Survey.disqualified"])
+    }
+
+    @Test
+    fun jumping_to_the_end_with_a_full_met_quota_disqualifies() {
+        val survey = validate(design(quota("QT1", """Q3.value == "x"""")))
+        val values = """{"Q3.value":"x","Survey.is_quota_met_QT1":true}"""
+        val output = navigate(survey, values, "G1", NavigationDirection.Jump(NavigationIndex.End("G4")))
+        assertEquals(NavigationIndex.End("G4"), output.navigationIndex)
+        assertEquals(JsonPrimitive(true), output.toSave["Survey.disqualified"])
+        assertEquals(JsonPrimitive("QT1"), output.toSave["Survey.screened_out_by_quota"])
     }
 
     @Test

@@ -100,13 +100,15 @@ sealed class ReservedCode(
     data object Label : ReservedCode("label", isRuntime = false, isAccessible = true, accessibleByChildren = true)
     @Serializable(with = ReservedCodeSerializer::class)
     data object InCurrentNavigation : ReservedCode("in_current_navigation", isRuntime = false, isAccessible = true)
+    @Serializable(with = ReservedCodeSerializer::class)
+    data object ScreenedOutByQuota : ReservedCode("screened_out_by_quota", isRuntime = false, isAccessible = false)
 
     fun defaultReturnType(): ReturnType {
         return when (this) {
             is Order, is Priority -> ReturnType.Int
             is Meta, RelevanceMap, ValidityMap, ValueMeta -> ReturnType.Map
             is BeforeNavigation, AfterNavigation -> ReturnType.List(emptySet())
-            is Lang, is Mode, is Value, is MaskedValue, is Label -> ReturnType.String
+            is Lang, is Mode, is Value, is MaskedValue, is Label, is ScreenedOutByQuota -> ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
             is Disqualified,  is HasPrevious, is HasNext, is Quota, is IsQuotaMet -> ReturnType.Boolean
@@ -117,7 +119,7 @@ sealed class ReservedCode(
             is Order, is Priority -> returnType == ReturnType.Int
             is Meta, RelevanceMap, ValidityMap, ValueMeta -> returnType == ReturnType.Map
             is BeforeNavigation, AfterNavigation -> returnType is ReturnType.List
-            is Lang, is Mode, is MaskedValue, is Label -> returnType == ReturnType.String
+            is Lang, is Mode, is MaskedValue, is Label, is ScreenedOutByQuota -> returnType == ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
             is Disqualified,  is HasPrevious, is HasNext, is Quota, is IsQuotaMet -> returnType == ReturnType.Boolean
@@ -176,6 +178,7 @@ fun String.toReservedCode(): ReservedCode {
         this == "value_meta" -> ReservedCode.ValueMeta
         this == "label" -> ReservedCode.Label
         this == "in_current_navigation" -> ReservedCode.InCurrentNavigation
+        this == "screened_out_by_quota" -> ReservedCode.ScreenedOutByQuota
         this == "before_navigation" -> ReservedCode.BeforeNavigation
         this == "disqualified" -> ReservedCode.Disqualified
         this == "after_navigation" -> ReservedCode.AfterNavigation
@@ -217,6 +220,7 @@ fun String.isReservedCode(): Boolean {
         "label",
         "in_current_navigation",
         "before_navigation",
+        "screened_out_by_quota",
         "after_navigation"
     )
             || this.matches(VALIDATION_INSTRUCTION_PATTERN.regex())
