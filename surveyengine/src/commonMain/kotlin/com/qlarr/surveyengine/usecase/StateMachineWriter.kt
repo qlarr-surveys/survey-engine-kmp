@@ -32,7 +32,7 @@ internal class StateMachineWriter(scriptInput: ScriptInput) {
         val componentDependents = mutableMapOf<String, JsonElement>()
 
         instructionList.filterIsInstance<Instruction.Format>().forEach { instruction ->
-            componentVariables[instruction.code] = formatBindings[Dependent(code, instruction.code)]!!
+            componentVariables[instruction.code] = formatBindings[Dependent(code, instruction.code)] ?: JsonPrimitive("")
         }
         bindings.filter { it.key.componentCode == code }.forEach {
             componentVariables[it.key.reservedCode.code] = it.value
