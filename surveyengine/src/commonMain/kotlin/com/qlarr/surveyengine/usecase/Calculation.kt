@@ -28,6 +28,10 @@ internal sealed class CalculationError {
     @Serializable
     @SerialName("DuplicateCode")
     data object DuplicateCode : CalculationError()
+
+    @Serializable
+    @SerialName("OutOfDate")
+    data object OutOfDate : CalculationError()
 }
 
 @Serializable
