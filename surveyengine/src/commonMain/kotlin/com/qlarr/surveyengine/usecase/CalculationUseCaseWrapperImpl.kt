@@ -27,4 +27,7 @@ internal class CalculationUseCaseWrapperImpl(processedSurvey: String) : Calculat
         )
         return jsonMapper.encodeToString(MapSerializer(String.serializer(), CalculationOutput.serializer()), output)
     }
+
+    override fun getCalculationScript(calculations: String, values: String): String =
+        useCase.getCalculationScript(jsonMapper.decodeFromString(calculations), jsonMapper.decodeFromString<JsonObject>(values))
 }

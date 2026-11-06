@@ -51,7 +51,7 @@ internal class CalculationUseCase(
         calculations: List<Calculation>,
         responses: Map<String, JsonObject>
     ): Map<String, CalculationOutput> {
-        val runnable = calculations.filter { it.errors.isEmpty() }
+        val runnable = calculations.runnable()
         return responses.mapValues { (_, values) ->
             if (runnable.isEmpty()) {
                 CalculationOutput()
@@ -69,6 +69,11 @@ internal class CalculationUseCase(
             }
         }
     }
+
+    fun getCalculationScript(calculations: List<Calculation>, values: JsonObject): String =
+        calculationScript(calculations.runnable(), values)
+
+    private fun List<Calculation>.runnable() = filter { it.errors.isEmpty() }
 
     private fun validateScripts(calculations: List<Calculation>): List<List<ValidationScriptError>> {
         if (calculations.isEmpty()) {
