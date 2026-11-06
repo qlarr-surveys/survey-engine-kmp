@@ -52,10 +52,10 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@qlarr/survey-engine-script@0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@qlarr/survey-engine-script/-/survey-engine-script-0.2.1.tgz#64a0e6d8cceeeca9a77847e47bab95045e698801"
-  integrity sha512-TQU1oWLn6/Lxworonk+QMeSebYXw2lnBP3VynIetcOFh9X4hNxifqcC2TwR2GQs1Yqdu3zOYR5B/96TOU/h4pQ==
+"@qlarr/survey-engine-script@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@qlarr/survey-engine-script/-/survey-engine-script-0.2.4.tgz#f40e54858ff073451cf50a45ad10991c9bb11c34"
+  integrity sha512-ZCjVV70OEzh7rV7vU3jF3YLHOWxic5GJKBRam6eG6XaX520dkuJqcOAiaxNUrTPpkMG4Kjm6TBNQb5meCpEEAg==
   dependencies:
     acorn "^8.12.1"
 

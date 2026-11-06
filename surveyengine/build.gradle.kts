@@ -15,7 +15,7 @@ plugins {
 // decode at runtime. commonMain/resources/scripts is the single source of truth.
 // Single source of truth for the survey-engine-script version. Used both for the JS target's npm
 // dependency and for the build-time fetch that embeds the compiled script into JVM/iOS resources.
-val surveyEngineScriptVersion = "0.2.1"
+val surveyEngineScriptVersion = "0.2.4"
 
 // JVM (GraalVM classpath) and iOS (app bundle) can't npm-install at runtime, so they load the
 // compiled `survey-engine-script.min.js` as an embedded resource. This task pulls that exact file
