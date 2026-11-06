@@ -111,10 +111,14 @@ fun DependencyMap.getSequence(
 ): List<Dependency> {
     val returnList = toBeSorted.toMutableList()
     var sortingHappened = false
+    val positions = HashMap<Dependency, Int>(toBeSorted.size * 2)
+    toBeSorted.forEachIndexed { index, dependency ->
+        if (dependency !in positions) positions[dependency] = index
+    }
     toBeSorted.forEachIndexed { index, dependency ->
         val dependencies: List<Dependency>? = get(dependency.toDependent())
         if (dependencies?.isNotEmpty() == true) {
-            val potentialIndex: Int = dependencies.maxOf { toBeSorted.indexOf(it) }
+            val potentialIndex: Int = dependencies.maxOf { positions[it] ?: -1 }
             if (index < potentialIndex) {
                 sortingHappened = true
                 returnList.remove(dependency)

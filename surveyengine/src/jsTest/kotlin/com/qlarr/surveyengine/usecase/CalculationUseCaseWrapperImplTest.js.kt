@@ -52,6 +52,36 @@ class CalculationUseCaseWrapperImplTest {
         assertEquals(null, output["r1"]!!.errors["throws"])
     }
 
+    @Test
+    fun split_calculation_matches_calculate() {
+        val calculations = JsonArray(
+            listOf(
+                calculation("adult", "Qage.value >= 18"),
+                calculation("big_int", "1n"),
+                calculation("throws", "Qname.value.toFixed()")
+            )
+        ).toString()
+        val values = """{"Qage.value": 34, "other": 1}"""
+        val script = wrapper.getCalculationScript(calculations, values)
+        val split = getCalculate().calculate(script)
+        val direct = jsonMapper.parseToJsonElement(
+            wrapper.calculate(getCalculate(), calculations, """{"r1": $values}""")
+        ).jsonObject["r1"]
+        assertEquals(direct, jsonMapper.parseToJsonElement(split))
+    }
+
+    @Test
+    fun split_calculation_only_scripts_calculations_without_errors() {
+        val withError = buildJsonObject {
+            put("code", "bad")
+            put("expression", "Qage.value")
+            putJsonArray("errors") { addJsonObject { put("name", "InvalidCode") } }
+        }
+        val calculations = JsonArray(listOf(withError, calculation("age", "Qage.value"))).toString()
+        val script = jsonMapper.parseToJsonElement(wrapper.getCalculationScript(calculations, "{}")).jsonObject
+        assertEquals(listOf("age"), script["calculations"]!!.jsonArray.map { it.jsonObject["code"]!!.jsonPrimitive.content })
+    }
+
     private fun calculation(code: String, expression: String) = buildJsonObject {
         put("code", code)
         put("expression", expression)

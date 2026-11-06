@@ -9,6 +9,7 @@ import kotlin.js.JsExport
 interface CalculationUseCaseWrapper {
     fun validate(calculations: String): String
     fun calculate(scriptEngine: ScriptEngineCalculate, calculations: String, responses: String): String
+    fun getCalculationScript(calculations: String, values: String): String
 
     companion object {
         fun create(processedSurvey: String): CalculationUseCaseWrapper =
