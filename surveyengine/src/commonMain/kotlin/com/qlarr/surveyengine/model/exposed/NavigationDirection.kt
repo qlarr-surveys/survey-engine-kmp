@@ -29,6 +29,12 @@ sealed class NavigationDirection {
     ) : NavigationDirection()
 
 
+    data class StartAt(
+        val navigationIndex: NavigationIndex.Question,
+        override val name: String = "START_AT"
+    ) : NavigationDirection()
+
+
     data object Next : NavigationDirection() {
         override val name: String = "NEXT"
     }
@@ -57,6 +63,9 @@ object NavigationDirectionSerializer : KSerializer<NavigationDirection> {
             when (value) {
                 is NavigationDirection.Jump -> {
                     put("navigationIndex", json.encodeToJsonElement(value.navigationIndex))
+                }
+                is NavigationDirection.StartAt -> {
+                    put("navigationIndex", json.encodeToJsonElement<NavigationIndex>(value.navigationIndex))
                 }
                 // Other cases don't need additional fields
                 else -> { /* No additional fields needed */
@@ -93,6 +102,14 @@ object NavigationDirectionSerializer : KSerializer<NavigationDirection> {
                 } ?: throw SerializationException("Jump direction missing 'navigationIndex' field")
 
                 NavigationDirection.Jump(navigationIndex)
+            }
+            "START_AT" -> {
+                val navigationIndex = jsonElement["navigationIndex"]?.let {
+                    json.decodeFromJsonElement<NavigationIndex>(it)
+                } ?: throw SerializationException("StartAt direction missing 'navigationIndex' field")
+                if (navigationIndex !is NavigationIndex.Question)
+                    throw SerializationException("StartAt direction requires a question navigationIndex")
+                NavigationDirection.StartAt(navigationIndex)
             }
 
             else -> throw SerializationException("Unknown navigation direction: $name")
