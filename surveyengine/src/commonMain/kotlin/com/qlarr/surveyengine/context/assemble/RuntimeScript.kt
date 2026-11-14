@@ -5,6 +5,7 @@ import com.qlarr.surveyengine.model.DependencyMap
 import com.qlarr.surveyengine.model.Dependent
 import com.qlarr.surveyengine.model.Instruction
 import com.qlarr.surveyengine.model.Instruction.State
+import com.qlarr.surveyengine.model.ReservedCode
 import com.qlarr.surveyengine.model.exposed.ReturnType
 
 fun List<ChildlessComponent>.runtimeScript(
@@ -60,10 +61,10 @@ fun State.stateRuntimeScript(
     } else {
         val key = "$componentCode.$code"
         var finalText = if (replacements.containsKey(key)) replacements[key]!! else text
-        finalText = when (returnType){
-            ReturnType.Boolean -> "Boolean($finalText)"
-            ReturnType.Double,
-            ReturnType.Int -> "Number($finalText)"
+        finalText = when {
+            reservedCode == ReservedCode.RelevantValue -> finalText
+            returnType == ReturnType.Boolean -> "Boolean($finalText)"
+            returnType == ReturnType.Double || returnType == ReturnType.Int -> "Number($finalText)"
             else -> finalText
         }
         dependencyMap[Dependent(componentCode, code)]?.forEach {

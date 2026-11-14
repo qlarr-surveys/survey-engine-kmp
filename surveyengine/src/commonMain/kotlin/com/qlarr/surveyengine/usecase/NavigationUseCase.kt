@@ -265,7 +265,8 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
             is ReservedCode.Skip,
             is ReservedCode.ValidationRule,
             ReservedCode.Validity,
-            ReservedCode.ValidityMap -> false
+            ReservedCode.ValidityMap,
+            ReservedCode.RelevantValue -> false
 
             ReservedCode.Mode,
             ReservedCode.Disqualified,

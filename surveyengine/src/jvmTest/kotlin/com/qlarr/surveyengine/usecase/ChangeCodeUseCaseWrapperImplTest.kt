@@ -1,6 +1,8 @@
 package com.qlarr.surveyengine.usecase
 
 import com.qlarr.surveyengine.common.loadFromResources
+import com.qlarr.surveyengine.model.jsonMapper
+import kotlinx.serialization.json.jsonObject
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -8,7 +10,7 @@ class ChangeCodeUseCaseWrapperImplTest {
 
     @Test
     fun changeCode() {
-        val input = loadFromResources("validationJsonOutput_1.json")
+        val input = loadValidated("validationJsonOutput_1.json")
 
         val beforeCount = countWordOccurrences(input, "Q375xtg")
         val beforeNoCount = countWordOccurrences(input, "Q1")
@@ -24,7 +26,7 @@ class ChangeCodeUseCaseWrapperImplTest {
     }
     @Test
     fun changeCodeWithSkip() {
-        val input = loadFromResources("validationJsonOutput_2.json")
+        val input = loadValidated("validationJsonOutput_2.json")
 
         val beforeGCount = countWordOccurrences(input, "G2")
         val beforeQCount = countWordOccurrences(input, "Q408hut")
@@ -46,7 +48,7 @@ class ChangeCodeUseCaseWrapperImplTest {
     }
     @Test
     fun changeCodeWithAnswers() {
-        val input = loadFromResources("validationJsonOutput_2.json")
+        val input = loadValidated("validationJsonOutput_2.json")
         val beforeCount = countWordOccurrences(input, "A2")
         val beforeNoCount = countWordOccurrences(input, "Aone")
         val output = ChangeCodeUseCaseWrapper.create(input).changeCode("Q408hutA2", "Q408hutAone")
@@ -58,12 +60,17 @@ class ChangeCodeUseCaseWrapperImplTest {
     }
     @Test
     fun changeCodeWithInstructions() {
-        val input = loadFromResources("validationJsonOutput_3.json")
+        val input = loadValidated("validationJsonOutput_3.json")
         val beforeCount = countWordOccurrences(input, "Qas")
         val output = ChangeCodeUseCaseWrapper.create(input).changeCode("Qas", "Qast")
         val afterCount = countWordOccurrences(output, "Qast")
         assertEquals(beforeCount, afterCount)
 
+    }
+
+    private fun loadValidated(fileName: String): String {
+        val validationOutput = jsonMapper.parseToJsonElement(loadFromResources(fileName)).jsonObject
+        return ValidationUseCaseWrapper.create(validationOutput.getValue("survey").toString()).validate()
     }
 
     private fun countWordOccurrences(text: String, word: String): Int {
