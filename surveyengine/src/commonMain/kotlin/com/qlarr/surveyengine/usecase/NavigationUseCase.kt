@@ -3,6 +3,7 @@ package com.qlarr.surveyengine.usecase
 import com.qlarr.surveyengine.context.assemble.screenOutQuota
 import com.qlarr.surveyengine.context.execute.*
 import com.qlarr.surveyengine.context.instructionsMap
+import com.qlarr.surveyengine.context.nestedComponentCodes
 import com.qlarr.surveyengine.context.nestedComponents
 import com.qlarr.surveyengine.dependency.DependencyMapper
 import com.qlarr.surveyengine.dependency.toDependent
@@ -42,6 +43,8 @@ class NavigationUseCaseImp(
     private val dependencyMapper = DependencyMapper(validationOutput.impactMap)
     private val skipMap = validationOutput.skipMap
     private lateinit var contextRunner: ContextRunner
+    private val startsFresh = navigationDirection == NavigationDirection.Start ||
+            navigationDirection is NavigationDirection.StartAt
 
 
     override fun navigate(scriptEngine: ScriptEngineNavigate): NavigationOutput {
@@ -52,7 +55,7 @@ class NavigationUseCaseImp(
 
     override fun getNavigationScript(): String {
         val alphaSorted = mutableMapOf<Dependency, Int>()
-        if (navigationDirection == NavigationDirection.Start) {
+        if (startsFresh) {
             startupRandomValues.putAll(survey.randomize(RandomOption.entries) { getLabel(it) })
             startupRandomValues.putAll(survey.setPriorities())
         } else {
@@ -150,6 +153,9 @@ class NavigationUseCaseImp(
             stateBindings[Dependency("Survey", ReservedCode.Disqualified)] = JsonPrimitive(true)
         }
         val newNavIndex = if (screenOutQuota != null) survey.endIndex() else nextNavIndex
+        if (navigationDirection is NavigationDirection.StartAt) {
+            stateBindings.forceRelevance(survey.questionWithAncestryCodes(navigationDirection.navigationIndex.questionId))
+        }
 
         extraBindings.putAll(runtimeContextBuilder.addShowErrorsInstruction(survey, !newNavIndex.showError))
         extraBindings.putAll(runtimeContextBuilder.addValidityInstruction(survey, newNavIndex))
@@ -160,7 +166,7 @@ class NavigationUseCaseImp(
             putAll(extraBindings)
         }
         val dependenciesToSave = validationOutput.schema.filter {
-            if (navigationDirection == NavigationDirection.Start)
+            if (startsFresh)
                 it.columnName == ColumnName.ORDER || it.columnName == ColumnName.PRIORITY || values.keys.contains(
                     it.toDependency()
                 )
@@ -218,6 +224,18 @@ private fun Instruction.State.isInput() =
 private fun Instruction.State.acceptsInput(value: JsonElement) = when (reservedCode) {
     is ReservedCode.IsQuotaMet -> (value as? JsonPrimitive)?.booleanOrNull != null
     else -> value is JsonObject
+}
+
+private fun Survey.questionWithAncestryCodes(questionId: String): List<String> {
+    val group = groups.first { group -> group.questions.any { it.code == questionId } }
+    val question = group.questions.first { it.code == questionId }
+    return listOf(group.code, question.code) + question.children.nestedComponentCodes(question.code)
+}
+
+private fun MutableMap<Dependency, JsonElement>.forceRelevance(codes: List<String>) {
+    codes.map { Dependency(it, ReservedCode.Relevance) }
+        .filter { containsKey(it) }
+        .forEach { this[it] = JsonPrimitive(true) }
 }
 
 private fun Map<Dependency, JsonElement>.filterBindings(dependencies: Set<Dependency>): Map<Dependency, JsonElement> {

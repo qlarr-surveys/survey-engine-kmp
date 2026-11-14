@@ -27,6 +27,7 @@ fun Survey.navigate(
         NavigationDirection.Start -> firstRelevant(navigationMode, navigationBindings)
         is NavigationDirection.Next -> nextRelevant(navigationIndex!!, navigationMode, navigationBindings)
         is NavigationDirection.Jump -> navigationDirection.navigationIndex
+        is NavigationDirection.StartAt -> return navigationDirection.navigationIndex.with(false)
         NavigationDirection.Previous -> prevRelevant(navigationIndex!!, navigationMode, navigationBindings)
     }
     // we can get the whole survey validity from the bindings...
