@@ -53,6 +53,8 @@ sealed class ReservedCode(
     @Serializable(with = ReservedCodeSerializer::class)
     data object Value : ReservedCode("value", executionOrder = 3, true, true, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
+    data object RelevantValue : ReservedCode("relevant_value", executionOrder = 4, true, true)
+    @Serializable(with = ReservedCodeSerializer::class)
     data class ValidationRule(override val code: String) :
         ReservedCode(code, executionOrder = 5, requiresValidation = true)
     @Serializable(with = ReservedCodeSerializer::class)
@@ -108,7 +110,7 @@ sealed class ReservedCode(
             is Order, is Priority -> ReturnType.Int
             is Meta, RelevanceMap, ValidityMap, ValueMeta -> ReturnType.Map
             is BeforeNavigation, AfterNavigation -> ReturnType.List(emptySet())
-            is Lang, is Mode, is Value, is MaskedValue, is Label, is ScreenedOutByQuota -> ReturnType.String
+            is Lang, is Mode, is Value, is RelevantValue, is MaskedValue, is Label, is ScreenedOutByQuota -> ReturnType.String
             is Relevance, is Prioritised, is NotSkipped, is ConditionalRelevance, is ModeRelevance,
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
             is Disqualified,  is HasPrevious, is HasNext, is Quota, is IsQuotaMet -> ReturnType.Boolean
@@ -124,6 +126,7 @@ sealed class ReservedCode(
             is ChildrenRelevance, is InCurrentNavigation, is Skip, is Validity, is ValidationRule, is ShowErrors,
             is Disqualified,  is HasPrevious, is HasNext, is Quota, is IsQuotaMet -> returnType == ReturnType.Boolean
             is Value -> throw IllegalArgumentException("Value can have the return type it wants")
+            is RelevantValue -> true
         }
     }
 
@@ -167,6 +170,7 @@ fun String.toReservedCode(): ReservedCode {
         this == "meta" -> ReservedCode.Meta
         this == "show_errors" -> ReservedCode.ShowErrors
         this == "value" -> ReservedCode.Value
+        this == "relevant_value" -> ReservedCode.RelevantValue
         this == "relevance" -> ReservedCode.Relevance
         this == "mode_relevance" -> ReservedCode.ModeRelevance
         this == "conditional_relevance" -> ReservedCode.ConditionalRelevance
@@ -205,6 +209,7 @@ fun String.isReservedCode(): Boolean {
         "meta",
         "show_errors",
         "value",
+        "relevant_value",
         "relevance",
         "children_relevance",
         "mode_relevance",

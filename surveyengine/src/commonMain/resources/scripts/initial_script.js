@@ -154,7 +154,7 @@ function isCorrectReturnType(returnType, value) {
 
 function defaultValue(code, returnType) {
     const returnTypeName = typeof returnType == "object" ? returnType.type?.toLowerCase() || "" : returnType?.toLowerCase()
-    if (code == "value") {
+    if (code == "value" || code == "relevant_value") {
         return undefined;
     } else if (code == "relevance" || code == "conditional_relevance" || code == "validity" || code.startsWith("validation_")) {
         return true

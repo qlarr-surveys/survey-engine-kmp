@@ -328,11 +328,12 @@ internal fun MutableList<SurveyComponent>.addDisqualifyInstruction(
     }
 }
 
-internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
+internal fun MutableList<SurveyComponent>.addStateToAllComponents(parentCode: String = "") {
     forEachIndexed { index, surveyComponent ->
         if (surveyComponent.hasErrors()) {
             return@forEachIndexed
         }
+        val code = surveyComponent.uniqueCode(parentCode)
         val newComponent = when (surveyComponent) {
             is Survey -> {
                 surveyComponent
@@ -362,14 +363,25 @@ internal fun MutableList<SurveyComponent>.addStateToAllComponents() {
                     .removeState(ModeRelevance)
                     .removeState(NotSkipped)
                     .insertOrOverrideState(Priority, index.toString(), false)
+                    .addRelevantValue(code)
             }
         }
         set(
             index,
             newComponent.duplicate(
-                children = surveyComponent.children.toMutableList().apply { addStateToAllComponents() })
+                children = surveyComponent.children.toMutableList().apply { addStateToAllComponents(code) })
         )
     }
+}
+
+private fun SurveyComponent.addRelevantValue(code: String): SurveyComponent {
+    val value = getStateInstruction(Value) ?: return removeState(RelevantValue)
+    return insertOrOverrideState(
+        RelevantValue,
+        "$code.relevance ? $code.value : undefined",
+        true,
+        value.returnType
+    )
 }
 
 private fun SurveyComponent.removeQuotaMetStates(): SurveyComponent {
