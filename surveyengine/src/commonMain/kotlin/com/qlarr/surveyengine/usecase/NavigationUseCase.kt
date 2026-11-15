@@ -176,7 +176,7 @@ class NavigationUseCaseImp(
 
         val toSave: Map<Dependent, JsonElement> = formatBindings + stateBindings.apply {
             putAll(startupRandomValues.mapValues { JsonPrimitive(it.value) })
-        }.filterStateToSave(dependenciesToSave) + listOfNotNull(
+        }.filterStateToSave(dependenciesToSave, dropIrrelevantValues = newNavIndex is NavigationIndex.End) + listOfNotNull(
             screenOutQuota?.let { Dependent("Survey", ReservedCode.ScreenedOutByQuota.code) to JsonPrimitive(it) }
         )
 
@@ -242,9 +242,14 @@ private fun Map<Dependency, JsonElement>.filterBindings(dependencies: Set<Depend
     return filterKeys { dependencies.contains(it) }
 }
 
+// On completion, answers to irrelevant components are not saved
 private fun Map<Dependency, JsonElement>.filterStateToSave(
-    dependencies: Set<Dependency>
+    dependencies: Set<Dependency>,
+    dropIrrelevantValues: Boolean
 ): Map<Dependent, JsonElement> {
+    fun isIrrelevant(componentCode: String) =
+        this[Dependency(componentCode, ReservedCode.Relevance)]?.jsonPrimitive?.booleanOrNull == false
+
     return filterKeys {
         when (it.reservedCode) {
             ReservedCode.AfterNavigation,
@@ -270,15 +275,17 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
 
             ReservedCode.Mode,
             ReservedCode.Disqualified,
-            ReservedCode.Value,
             is ReservedCode.Quota,
-            ReservedCode.ScreenedOutByQuota,
-            ReservedCode.ValueMeta -> true
+            ReservedCode.ScreenedOutByQuota -> true
+
+            ReservedCode.Value,
+            ReservedCode.ValueMeta -> !(dropIrrelevantValues && isIrrelevant(it.componentCode))
 
             is ReservedCode.IsQuotaMet -> false
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean
-            ReservedCode.MaskedValue -> this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]
+            ReservedCode.MaskedValue -> !(dropIrrelevantValues && isIrrelevant(it.componentCode)) &&
+                    this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]
 
             Order,
             Priority -> dependencies.contains(it)
