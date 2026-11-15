@@ -32,15 +32,6 @@ class IrrelevantValuesTest {
         assertEquals(JsonPrimitive("y"), output.toSave["Q1.value"])
         assertFalse(output.toSave.containsKey("Q2.value"))
         assertEquals(JsonPrimitive(false), output.toSave["Q2.relevance"])
-    }
-
-    @Test
-    fun values_under_an_irrelevant_group_are_not_saved_on_completion() {
-        val output = navigate(
-            """{"Q1.value":"y","Q2.value":"hello","Q3.value":7}""",
-            NavigationIndex.Group("G1"),
-            NavigationDirection.Next
-        )
         assertFalse(output.toSave.containsKey("Q3.value"))
     }
 

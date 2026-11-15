@@ -251,6 +251,7 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
         this[Dependency(componentCode, ReservedCode.Relevance)]?.jsonPrimitive?.booleanOrNull == false
 
     return filterKeys {
+        val keepsValue = !(dropIrrelevantValues && isIrrelevant(it.componentCode))
         when (it.reservedCode) {
             ReservedCode.AfterNavigation,
             ReservedCode.BeforeNavigation,
@@ -279,13 +280,12 @@ private fun Map<Dependency, JsonElement>.filterStateToSave(
             ReservedCode.ScreenedOutByQuota -> true
 
             ReservedCode.Value,
-            ReservedCode.ValueMeta -> !(dropIrrelevantValues && isIrrelevant(it.componentCode))
+            ReservedCode.ValueMeta -> keepsValue
 
             is ReservedCode.IsQuotaMet -> false
 
             ReservedCode.Relevance -> !this[it]!!.jsonPrimitive.boolean
-            ReservedCode.MaskedValue -> !(dropIrrelevantValues && isIrrelevant(it.componentCode)) &&
-                    this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]
+            ReservedCode.MaskedValue -> keepsValue && this[it] != this[Dependency(it.componentCode, ReservedCode.Value)]
 
             Order,
             Priority -> dependencies.contains(it)
