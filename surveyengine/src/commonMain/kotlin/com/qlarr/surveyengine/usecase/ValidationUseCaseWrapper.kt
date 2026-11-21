@@ -20,7 +20,7 @@ interface ValidationUseCaseWrapper {
 
         private fun groups(surveyName: String) = buildJsonArray {
             add(buildJsonObject {
-                put("code", "G1")
+                put("code", "Gwelcome")
                 put("content", buildJsonObject {
                     put("en", buildJsonObject {
                         put("label", surveyName)
@@ -36,7 +36,7 @@ interface ValidationUseCaseWrapper {
                         put("label", "Thank you for taking the time to complete this survey.")
                     })
                 })
-                put("code", "G2")
+                put("code", "Gend")
                 put("groupType", "END")
                 put("questions", buildJsonArray {
                 })

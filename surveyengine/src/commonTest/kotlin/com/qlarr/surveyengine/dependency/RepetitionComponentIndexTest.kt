@@ -149,6 +149,118 @@ class RepetitionComponentIndexTest {
     }
 
     @Test
+    fun external_component_can_reference_into_a_repeated_copy() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1_a", repeatInfo = RepeatInfo.Repeated("a"),
+                    questions = listOf(
+                        Question("Q1_a", instructionList = value()),
+                        Question("Q2_a", instructionList = value())
+                    )
+                ),
+                Group("G2", questions = listOf(Question("Q3", instructionList = value())))
+            )
+        )
+
+        val indices = listOf(survey).componentIndices()
+
+        assertTrue("Q1_a" in indices.depsOf("Q3"))
+        assertTrue("Q2_a" in indices.depsOf("Q3"))
+        assertTrue("Q1_a" in indices.depsOf("G2"))
+    }
+
+    @Test
+    fun external_component_cannot_reference_a_repeated_copy_that_comes_after_it() {
+        val survey = Survey(
+            groups = listOf(
+                Group("G0", questions = listOf(Question("Q0", instructionList = value()))),
+                Group(
+                    "G1_a", repeatInfo = RepeatInfo.Repeated("a"),
+                    questions = listOf(Question("Q1_a", instructionList = value()))
+                )
+            )
+        )
+
+        assertFalse("Q1_a" in listOf(survey).componentIndices().depsOf("Q0"))
+    }
+
+    @Test
+    fun a_repeatable_can_reference_a_repeated_copy_of_another_repeatable() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1_a", repeatInfo = RepeatInfo.Repeated("a"),
+                    questions = listOf(Question("Q1_a", instructionList = value()))
+                ),
+                Group(
+                    "G2", repeatInfo = repeatable(),
+                    questions = listOf(Question("Q2", instructionList = value()))
+                )
+            )
+        )
+
+        assertTrue("Q1_a" in listOf(survey).componentIndices().depsOf("Q2"))
+    }
+
+    @Test
+    fun a_copy_can_reference_a_copy_of_another_repeatable() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1_a", repeatInfo = RepeatInfo.Repeated("a"),
+                    questions = listOf(Question("Q1_a", instructionList = value()))
+                ),
+                Group(
+                    "G2_a", repeatInfo = RepeatInfo.Repeated("a"),
+                    questions = listOf(Question("Q2_a", instructionList = value()))
+                )
+            )
+        )
+
+        assertTrue("Q1_a" in listOf(survey).componentIndices().depsOf("Q2_a"))
+    }
+
+    @Test
+    fun a_repeatable_cannot_reference_its_own_copies() {
+        val survey = Survey(
+            groups = listOf(
+                Group(
+                    "G1_a", repeatInfo = RepeatInfo.Repeated("a"),
+                    questions = listOf(Question("Q1_a", instructionList = value()))
+                ),
+                Group(
+                    "G1", repeatInfo = repeatable(),
+                    questions = listOf(Question("Q1", instructionList = value()))
+                )
+            )
+        )
+
+        assertFalse("Q1_a" in listOf(survey).componentIndices().depsOf("Q1"))
+    }
+
+    @Test
+    fun marks_repetition_source_on_repeatable_and_repeated_subtrees() {
+        val survey = Survey(
+            groups = listOf(
+                Group("G1", repeatInfo = repeatable(), questions = listOf(Question("Q1"))),
+                Group("G1_x_y", repeatInfo = RepeatInfo.Repeated("x_y"), questions = listOf(Question("Q1_x_y"))),
+                Group("G3", questions = listOf(Question("Q3")))
+            )
+        )
+
+        val indices = listOf(survey).componentIndices()
+        fun sourceOf(code: String) = indices.first { it.code == code }.repetitionSource
+
+        assertEquals("G1", sourceOf("G1"))
+        assertEquals("G1", sourceOf("Q1"))
+        assertEquals("G1", sourceOf("G1_x_y"))
+        assertEquals("G1", sourceOf("Q1_x_y"))
+        assertNull(sourceOf("G3"))
+        assertNull(sourceOf("Q3"))
+    }
+
+    @Test
     fun skip_destinations_exclude_repeatables_but_include_repeated() {
         val survey = Survey(
             groups = listOf(
