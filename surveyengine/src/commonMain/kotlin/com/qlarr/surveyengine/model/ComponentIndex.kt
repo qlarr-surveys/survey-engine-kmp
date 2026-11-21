@@ -13,7 +13,8 @@ data class ComponentIndex(
     val prioritisedSiblings: Set<String> = setOf(),
     val dependencies: Set<ReservedCode> = setOf(),
     val repetitionScope: String? = null,
-    val repetitionType: RepetitionType? = null
+    val repetitionType: RepetitionType? = null,
+    val repetitionSource: String? = null
 ) {
     fun hasSkip() = dependencies.any { it is ReservedCode.Skip }
 }

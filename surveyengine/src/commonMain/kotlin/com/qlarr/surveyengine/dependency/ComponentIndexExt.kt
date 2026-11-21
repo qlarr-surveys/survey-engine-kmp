@@ -13,7 +13,8 @@ fun List<SurveyComponent>.componentIndices(
     parentPriority: Instruction.PriorityGroups? = null,
     includeRepeatables: Boolean = true,
     scope: String? = null,
-    scopeType: RepetitionType? = null
+    scopeType: RepetitionType? = null,
+    source: String? = null
 ): List<ComponentIndex> {
     val returnList = mutableListOf<ComponentIndex>()
     val indices = indices(parentRandomInstruction)
@@ -28,6 +29,11 @@ fun List<SurveyComponent>.componentIndices(
                 is RepeatInfo.Repeatable -> RepetitionType.REPEATABLE
                 is RepeatInfo.Repeated -> RepetitionType.REPEATED
                 null -> scopeType
+            }
+            val componentSource = when (val repeatInfo = surveyComponent.repeatInfo) {
+                is RepeatInfo.Repeatable -> code
+                is RepeatInfo.Repeated -> code.removeSuffix("_${repeatInfo.token}")
+                null -> source
             }
             val hasUniqueCode = surveyComponent.hasUniqueCode()
             val componentIndex = ComponentIndex(
@@ -45,7 +51,8 @@ fun List<SurveyComponent>.componentIndices(
                         if (hasUniqueCode) it else (parentIndex?.code ?: "") + it
                     }?.toSet() ?: setOf(),
                 repetitionScope = componentScope,
-                repetitionType = componentScopeType
+                repetitionType = componentScopeType,
+                repetitionSource = componentSource
             )
             returnList.add(componentIndex)
             val randomInstruction =
@@ -59,7 +66,8 @@ fun List<SurveyComponent>.componentIndices(
                     priorityInstruction,
                     includeRepeatables,
                     componentScope,
-                    componentScopeType
+                    componentScopeType,
+                    componentSource
                 )
             )
         }
@@ -110,10 +118,12 @@ fun List<ComponentIndex>.accessibleDependencies(code: String): List<Dependency> 
     }
     dependencies.addAll(accessibleSiblings(componentIndex))
     dependencies.addAll(childrenDependencies(componentIndex))
-    val sourceScope = componentIndex.repetitionScope
     return dependencies.filter { dependency ->
-        val targetScope = firstOrNull { it.code == dependency.componentCode }?.repetitionScope
-        targetScope == null || targetScope == sourceScope
+        val target = firstOrNull { it.code == dependency.componentCode }
+        target?.repetitionScope == null
+                || target.repetitionScope == componentIndex.repetitionScope
+                || (target.repetitionType == RepetitionType.REPEATED
+                && target.repetitionSource != componentIndex.repetitionSource)
     }
 }
 
